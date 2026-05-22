@@ -21,14 +21,15 @@
   --yellow:#aa8800;
   --gold:#aa7700;
   --text:#1a2644;
-  --muted:#6677aa;
-  --border:rgba(0,20,80,0.1);
+  --muted:#475a88;
+  --border:rgba(0,20,80,0.15);
   --byd-blue:#0055b3;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;overflow-x:hidden;}
 h1,h2,h3,h4,h5,h6{font-family:'Montserrat',sans-serif;}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:3px;}
 
 /* ═══ HERO ═══════════════════════════ */
 .hero{
@@ -669,7 +670,7 @@ footer{text-align:center;padding:3rem 1.5rem;color:var(--muted);font-size:.82rem
       <line x1="10" y1="6" x2="670" y2="6" stroke="#2a5a8a" stroke-width="1"/>
       <line x1="10" y1="3" x2="10" y2="9" stroke="#2a5a8a" stroke-width="1"/>
       <line x1="670" y1="3" x2="670" y2="9" stroke="#2a5a8a" stroke-width="1"/>
-      <text x="340" y="4" text-anchor="middle" font-family="monospace" font-size="9" fill="#5a7099">≈ 960 mm</text>
+      <text x="340" y="4" text-anchor="middle" font-family="monospace" font-size="9" fill="#475a88">≈ 960 mm</text>
     </svg>
   </div>
 
@@ -1623,7 +1624,7 @@ function drawNailFrame() {
   ctx.fillText('BYD Blade Battery (LFP)', half + half/2, NH*0.05);
 
   ctx.font = `${Math.max(8,NW*0.012)}px 'Segoe UI',sans-serif`;
-  ctx.fillStyle = '#6677aa';
+  ctx.fillStyle = '#475a88';
   ctx.fillText('NMC Chemistry', half/2, NH*0.09);
   ctx.fillText('LFP Chemistry', half+half/2, NH*0.09);
 
@@ -1856,7 +1857,7 @@ function drawTempGauge(ctx, x, y, w, h, val, maxT, isDanger) {
   ctx.textAlign = 'center';
   ctx.fillText(`${tempVal}°`, x + w/2, fillY > y+4 ? fillY - 4 : y - 4);
   // label
-  ctx.fillStyle = '#6677aa';
+  ctx.fillStyle = '#475a88';
   ctx.font = `${Math.max(5,w*0.5)}px Segoe UI,sans-serif`;
   ctx.fillText('°C', x+w/2, y+h+12);
   ctx.restore();
@@ -2060,7 +2061,7 @@ function drawThermalIdle() {
       ctx.strokeRect(c*thCellW+1, r*thCellH+1, thCellW-2, thCellH-2);
     }
   }
-  ctx.fillStyle = '#7788aa';
+  ctx.fillStyle = '#475a88';
   ctx.font = `${Math.max(10,TW*0.018)}px 'Segoe UI',sans-serif`;
   ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.fillText('Click a button above to simulate a thermal event', TW/2, TH/2);
@@ -2101,7 +2102,7 @@ function buildNMC() {
   });
   // "weak bond" label
   const l = document.createElement('div');
-  l.style.cssText = 'position:absolute;bottom:0;width:100%;text-align:center;font-size:.68rem;color:rgba(255,100,50,.7);';
+  l.style.cssText = 'position:absolute;bottom:0;width:100%;text-align:center;font-size:.68rem;color:#b83000;';
   l.textContent = '⚠ Weak Ni/Co-O bonds — release O² under heat';
   el.appendChild(l);
 }
@@ -2125,7 +2126,7 @@ function buildLFP() {
     el.appendChild(d);
   });
   const l = document.createElement('div');
-  l.style.cssText = 'position:absolute;bottom:0;width:100%;text-align:center;font-size:.68rem;color:rgba(0,200,100,.7);';
+  l.style.cssText = 'position:absolute;bottom:0;width:100%;text-align:center;font-size:.68rem;color:#006428;';
   l.textContent = '✓ Strong Fe-O bonds — stable at high temperature';
   el.appendChild(l);
 }
@@ -2357,7 +2358,7 @@ function drawSeqFrame() {
   ctx.fillStyle='#cc3300'; ctx.fillText('NMC Cell  ·  Sunwoda / EX30', half/2, SQH*0.05);
   ctx.fillStyle='#006a30'; ctx.fillText('BYD Blade LFP', half+half/2, SQH*0.05);
   ctx.font=`${Math.max(8,SQW*0.011)}px 'Segoe UI',sans-serif`;
-  ctx.fillStyle='#6677aa';
+  ctx.fillStyle='#475a88';
   ctx.fillText('69 kWh · NMC Prismatic', half/2, SQH*0.09);
   ctx.fillText('Blade CTP · LFP', half+half/2, SQH*0.09);
 
@@ -2508,7 +2509,7 @@ function drawNMCLayers(ctx, z) {
   ctx.strokeStyle='#5a3800';ctx.lineWidth=.8;ctx.strokeRect(x,acy,w,z.collH);
 
   // electrolyte fill label bottom
-  ctx.fillStyle='rgba(100,150,200,0.4)';
+  ctx.fillStyle='#3a5599';
   ctx.font=`${Math.max(7,w*0.028)}px 'Segoe UI',sans-serif`;ctx.textAlign='center';
   ctx.fillText('Organic Electrolyte', x+w/2, ely+12);
   if(s>=6){
@@ -2696,7 +2697,7 @@ function drawSeqTempBadge(ctx, x, y, h, step, type) {
   ctx.font=`bold ${Math.max(6,SQW*0.011)}px monospace`;
   ctx.textAlign='center';
   ctx.fillText(`${tVal}°`, x+6, fillY > y+4 ? fillY-4 : y-4);
-  ctx.fillStyle='#6677aa';
+  ctx.fillStyle='#475a88';
   ctx.font=`${Math.max(5,SQW*0.009)}px monospace`;
   ctx.fillText('°C', x+6, y+barH+12);
   ctx.restore();
@@ -2783,19 +2784,19 @@ function drawTempTimeline(prog) {
   for(let t=0;t<=maxT;t+=5){
     const {x}=tlCurveToCanvas(t,0,maxT,maxTemp,padL,padR,padT,padB);
     ctx.beginPath();ctx.moveTo(x,padT);ctx.lineTo(x,TLH-padB);ctx.stroke();
-    ctx.fillStyle='#6677aa';ctx.font=`${Math.max(8,TLW*0.012)}px monospace`;
+    ctx.fillStyle='#475a88';ctx.font=`${Math.max(8,TLW*0.012)}px monospace`;
     ctx.textAlign='center';ctx.fillText(`${t}s`,x,TLH-padB+16);
   }
   const tempTicks=[0,100,200,300,400,500,600];
   tempTicks.forEach(t=>{
     const {y}=tlCurveToCanvas(0,t,maxT,maxTemp,padL,padR,padT,padB);
     ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(TLW-padR,y);ctx.stroke();
-    ctx.fillStyle='#6677aa';ctx.font=`${Math.max(8,TLW*0.012)}px monospace`;
+    ctx.fillStyle='#475a88';ctx.font=`${Math.max(8,TLW*0.012)}px monospace`;
     ctx.textAlign='right';ctx.fillText(`${t}°C`,padL-6,y+4);
   });
 
   // axis labels
-  ctx.fillStyle='#8899bb';
+  ctx.fillStyle='#475a88';
   ctx.font=`${Math.max(8,TLW*0.012)}px 'Segoe UI',sans-serif`;
   ctx.textAlign='center';ctx.fillText('Time after Internal Short Circuit (seconds)',TLW/2,TLH-8);
   ctx.save();ctx.translate(14,TLH/2);ctx.rotate(-Math.PI/2);
