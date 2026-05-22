@@ -1,0 +1,2934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BYD Blade Battery – How It Changed Everything</title>
+<style>
+:root{
+  --bg:#030610;
+  --bg2:#080f1e;
+  --bg3:#0d1828;
+  --blue:#0090ff;
+  --blue2:#00c3ff;
+  --green:#00e676;
+  --green2:#69ffb4;
+  --red:#ff3b2a;
+  --orange:#ff8c00;
+  --yellow:#ffdc00;
+  --gold:#ffa800;
+  --text:#d8e8ff;
+  --muted:#5a7099;
+  --border:rgba(255,255,255,0.07);
+  --byd-blue:#0055b3;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;overflow-x:hidden;}
+
+/* ═══ HERO ═══════════════════════════ */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  position:relative;overflow:hidden;text-align:center;padding:2rem;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 55%,#041530 0%,#030610 65%);
+}
+.orb{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none;}
+.ob1{width:600px;height:300px;background:#002050;top:10%;left:-10%;opacity:.5;animation:oDrift 12s ease-in-out infinite;}
+.ob2{width:400px;height:200px;background:#003a00;bottom:10%;right:-5%;opacity:.4;animation:oDrift 9s 4s ease-in-out infinite;}
+.ob3{width:300px;height:300px;background:#002850;top:30%;right:20%;opacity:.3;animation:oDrift 15s 2s ease-in-out infinite;}
+@keyframes oDrift{0%,100%{transform:translate(0,0);}50%{transform:translate(30px,20px);}}
+
+/* HERO BLADE VISUAL */
+.hero-blade-wrap{
+  position:relative;z-index:2;width:min(700px,90vw);
+  margin:0 auto 3rem;
+  animation:fadeUp .8s ease both;
+}
+.blade-svg-hero{width:100%;height:auto;}
+
+.hero-content{position:relative;z-index:2;}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:rgba(0,144,255,.12);border:1px solid rgba(0,144,255,.35);
+  color:#5ab8ff;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  padding:.35rem 1.1rem;border-radius:99px;margin-bottom:1.5rem;
+  animation:fadeUp .7s ease both;
+}
+.byd-dot{width:8px;height:8px;background:#0090ff;border-radius:50%;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
+
+h1.hero-title{
+  font-size:clamp(2rem,5.5vw,4rem);font-weight:900;letter-spacing:-.03em;
+  line-height:1.05;margin-bottom:1rem;
+  animation:fadeUp .8s .1s ease both;
+}
+.hl-blade{
+  background:linear-gradient(90deg,#0090ff,#00c3ff,#00e676);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{
+  font-size:clamp(.95rem,2.2vw,1.2rem);color:var(--muted);
+  max-width:580px;margin:0 auto 2.5rem;line-height:1.7;
+  animation:fadeUp .8s .2s ease both;
+}
+.hero-sub strong{color:var(--text);}
+
+.hero-cta{
+  display:inline-flex;align-items:center;gap:.6rem;
+  background:linear-gradient(135deg,#004aaa,#0090ff);
+  color:#fff;font-weight:700;font-size:1rem;
+  padding:.85rem 2.2rem;border-radius:99px;text-decoration:none;
+  box-shadow:0 4px 24px rgba(0,144,255,.4);
+  transition:transform .2s,box-shadow .2s;
+  animation:fadeUp .8s .3s ease both;
+}
+.hero-cta:hover{transform:translateY(-2px);box-shadow:0 8px 36px rgba(0,144,255,.6);}
+
+.hero-stats{
+  display:flex;gap:2rem;flex-wrap:wrap;justify-content:center;
+  margin-top:2.5rem;z-index:2;position:relative;
+  animation:fadeUp .8s .5s ease both;
+}
+.hstat{text-align:center;}
+.hstat-num{font-size:1.8rem;font-weight:800;color:#00c3ff;}
+.hstat-lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+
+.scroll-hint{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.4rem;
+  color:var(--muted);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  z-index:2;animation:sbob 2s ease-in-out infinite;
+}
+.scroll-arr{width:18px;height:18px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);}
+@keyframes sbob{0%,100%{transform:translateX(-50%)translateY(0);}50%{transform:translateX(-50%)translateY(8px);}}
+
+/* ═══ SHARED SECTION ═══════════════════ */
+.sec{padding:5.5rem 1.5rem;max-width:1100px;margin:0 auto;}
+.sec-full{padding:5.5rem 1.5rem;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.sec-inner{max-width:1100px;margin:0 auto;}
+
+.sec-tag{text-align:center;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem;}
+.sec-title{text-align:center;font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.9rem;}
+.sec-desc{text-align:center;color:var(--muted);font-size:.98rem;line-height:1.7;max-width:620px;margin:0 auto 3rem;}
+.sec-desc strong{color:var(--text);}
+
+/* ═══ CELL SIZE COMPARISON ═════════════ */
+.cell-compare{
+  display:flex;gap:2rem;align-items:flex-end;justify-content:center;flex-wrap:wrap;
+  padding:2rem 0;
+}
+.cell-item{
+  display:flex;flex-direction:column;align-items:center;gap:.8rem;
+  cursor:pointer;transition:transform .3s;
+}
+.cell-item:hover{transform:translateY(-6px);}
+
+.cell-18650{
+  width:36px;height:130px;border-radius:18px;
+  background:linear-gradient(180deg,#555 0%,#888 30%,#666 100%);
+  border:2px solid #777;
+  box-shadow:inset -4px 0 8px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.08);
+  position:relative;overflow:hidden;
+}
+.cell-21700{
+  width:42px;height:140px;border-radius:21px;
+  background:linear-gradient(180deg,#555 0%,#888 30%,#666 100%);
+  border:2px solid #777;
+  box-shadow:inset -4px 0 8px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.08);
+  position:relative;
+}
+.cell-stripe{
+  position:absolute;top:0;left:8px;width:4px;height:100%;
+  background:rgba(255,255,255,.12);border-radius:2px;
+}
+
+.cell-blade-wrap{
+  width:320px;height:54px;
+  background:linear-gradient(180deg,#1a3a6a 0%,#0d2244 50%,#1a3a6a 100%);
+  border:2px solid #2a5590;
+  border-radius:6px;
+  box-shadow:0 0 30px rgba(0,144,255,.25),inset 0 2px 4px rgba(255,255,255,.08);
+  position:relative;overflow:hidden;
+}
+.blade-inner-stripe{
+  position:absolute;top:4px;left:0;right:0;height:2px;
+  background:rgba(0,195,255,.2);
+}
+.blade-inner-stripe2{
+  position:absolute;bottom:4px;left:0;right:0;height:2px;
+  background:rgba(0,195,255,.2);
+}
+.blade-end-cap{
+  position:absolute;right:-6px;top:8px;bottom:8px;width:10px;
+  background:#2a5590;border-radius:0 4px 4px 0;
+}
+
+.cell-name{font-size:.85rem;font-weight:700;color:var(--text);}
+.cell-dim{font-size:.72rem;color:var(--muted);}
+.cell-chem{
+  font-size:.68rem;font-weight:700;letter-spacing:.08em;
+  padding:.2rem .6rem;border-radius:99px;
+}
+.chem-nmc{background:rgba(255,80,0,.15);color:#ff8c5a;}
+.chem-lfp{background:rgba(0,230,118,.12);color:#00e676;}
+
+.cell-tooltip{
+  position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);
+  background:#0d1828;border:1px solid var(--border);
+  border-radius:10px;padding:.8rem 1rem;
+  font-size:.78rem;line-height:1.5;white-space:nowrap;
+  color:var(--text);pointer-events:none;
+  opacity:0;transition:opacity .2s;z-index:10;
+  box-shadow:0 8px 24px rgba(0,0,0,.5);
+}
+.cell-item:hover .cell-tooltip{opacity:1;}
+
+/* ═══ CTP COMPARISON ══════════════════ */
+.ctp-wrap{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;
+}
+.ctp-tabs{
+  display:flex;border-bottom:1px solid var(--border);
+}
+.ctp-tab{
+  flex:1;padding:1rem;text-align:center;cursor:pointer;
+  font-size:.9rem;font-weight:600;color:var(--muted);
+  transition:all .25s;border:none;background:none;
+}
+.ctp-tab.active{color:var(--blue2);background:rgba(0,195,255,.07);border-bottom:2px solid var(--blue2);}
+
+#ctpCanvas{display:block;width:100%;height:auto;}
+
+.ctp-legend{
+  display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center;
+  padding:1rem;border-top:1px solid var(--border);
+}
+.ctp-leg{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--muted);}
+.ctp-dot{width:12px;height:12px;border-radius:2px;flex-shrink:0;}
+
+/* ═══ CHEMISTRY ═══════════════════════ */
+.chem-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:640px){.chem-grid{grid-template-columns:1fr;}}
+
+.chem-card{
+  border-radius:18px;padding:2rem 1.5rem;
+  position:relative;overflow:hidden;
+}
+.chem-nmc-card{
+  background:rgba(255,60,0,.06);border:1px solid rgba(255,60,0,.2);
+}
+.chem-lfp-card{
+  background:rgba(0,230,118,.05);border:1px solid rgba(0,230,118,.2);
+}
+.chem-head{display:flex;align-items:center;gap:.8rem;margin-bottom:1.5rem;}
+.chem-icon{font-size:2rem;}
+.chem-head h3{font-size:1.1rem;font-weight:700;}
+.chem-nmc-card .chem-head h3{color:#ff8c5a;}
+.chem-lfp-card .chem-head h3{color:#00e676;}
+
+.molecule-wrap{
+  display:flex;align-items:center;justify-content:center;
+  height:100px;margin-bottom:1.5rem;position:relative;
+}
+
+/* NMC molecule atoms */
+.atom{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:800;position:absolute;
+  border:2px solid transparent;
+}
+.atom-li{background:#1a3a6e;border-color:#3a6fd8;color:#8ab4f8;}
+.atom-ni{background:#3a1800;border-color:#c06000;color:#ffaa60;}
+.atom-mn{background:#2a0040;border-color:#9030d0;color:#cc80ff;}
+.atom-co{background:#002a3a;border-color:#0088bb;color:#40ccff;}
+.atom-o{
+  background:#3a0000;border-color:#cc3300;color:#ff8888;
+  animation:oVibrate 1.5s ease-in-out infinite;
+}
+.atom-fe{background:#1a2a10;border-color:#60aa00;color:#aade60;}
+.atom-p{background:#003a1a;border-color:#00aa55;color:#50ff99;}
+.atom-lfp-o{background:#003a1a;border-color:#00aa55;color:#50ff99;}
+
+@keyframes oVibrate{0%,100%{transform:translate(0,0);}25%{transform:translate(1px,-1px);}75%{transform:translate(-1px,1px);}}
+
+.bond{
+  position:absolute;height:2px;transform-origin:left center;
+  background:rgba(255,100,50,.4);border-radius:2px;
+}
+.bond-lfp{background:rgba(0,200,100,.4);}
+
+.chem-prop{display:flex;flex-direction:column;gap:.6rem;}
+.prop-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem;}
+.prop-label{font-size:.8rem;color:var(--muted);}
+.prop-bar-wrap{flex:1;height:6px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden;}
+.prop-bar{height:100%;border-radius:99px;transition:width 1.2s ease;}
+.prop-val{font-size:.78rem;font-weight:700;min-width:40px;text-align:right;}
+
+/* ═══ NAIL TEST ════════════════════════ */
+.nail-section{
+  background:var(--bg);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:5rem 1.5rem;
+}
+.nail-inner{max-width:920px;margin:0 auto;}
+
+.nail-controls{
+  display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;
+  margin-bottom:1.5rem;
+}
+.nail-btn{
+  padding:.7rem 2rem;border-radius:99px;border:2px solid transparent;
+  font-size:.95rem;font-weight:700;cursor:pointer;transition:all .25s;
+}
+#nail-run{
+  background:linear-gradient(135deg,#8b0000,#ff3b2a);
+  color:#fff;box-shadow:0 4px 20px rgba(255,59,42,.35);
+}
+#nail-run:hover{box-shadow:0 6px 30px rgba(255,59,42,.6);transform:translateY(-1px);}
+#nail-run.resetting{
+  background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);
+  color:var(--muted);box-shadow:none;
+}
+
+.nail-canvas-wrap{
+  border-radius:16px;overflow:hidden;
+  border:1px solid var(--border);
+  background:#04080f;
+  position:relative;
+}
+#nailCanvas{display:block;width:100%;height:auto;}
+
+.nail-status{
+  text-align:center;margin-top:1.2rem;min-height:2.5rem;
+  font-size:.95rem;color:var(--muted);line-height:1.6;
+  transition:opacity .4s;
+}
+.nail-status .hi{color:var(--text);font-weight:600;}
+.nail-status .danger{color:#ff6b55;}
+.nail-status .safe{color:#00e676;}
+
+/* ═══ THERMAL CANVAS ══════════════════ */
+#thermalCanvas{display:block;width:100%;height:auto;border-radius:16px;border:1px solid var(--border);}
+
+.thermal-controls{display:flex;gap:1rem;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap;}
+.th-btn{
+  padding:.6rem 1.6rem;border-radius:99px;border:2px solid;
+  font-size:.9rem;font-weight:600;cursor:pointer;transition:all .25s;background:none;
+}
+.th-btn-nmc{border-color:rgba(255,59,42,.5);color:#ff8c5a;}
+.th-btn-nmc:hover,.th-btn-nmc.active{background:rgba(255,59,42,.15);}
+.th-btn-blade{border-color:rgba(0,230,118,.4);color:#00e676;}
+.th-btn-blade:hover,.th-btn-blade.active{background:rgba(0,230,118,.1);}
+.th-btn-reset{border-color:var(--border);color:var(--muted);}
+.th-btn-reset:hover{background:rgba(255,255,255,.05);}
+
+/* ═══ BREAKTHROUGH METRICS ════════════ */
+.breakthrough-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:1.5rem;
+}
+.bt-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:18px;padding:1.8rem 1.5rem;
+  text-align:center;position:relative;overflow:hidden;
+  transition:transform .3s;
+}
+.bt-card:hover{transform:translateY(-5px);}
+.bt-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--blue),var(--green));
+}
+.bt-icon{font-size:2rem;margin-bottom:.8rem;display:block;}
+.bt-num{
+  font-size:2rem;font-weight:900;
+  background:linear-gradient(135deg,#00c3ff,#00e676);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.bt-label{font-size:.8rem;color:var(--muted);margin-top:.3rem;line-height:1.5;}
+
+/* ═══ WHY IT MATTERS  ═════════════════ */
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;}
+.why-card{
+  border-radius:18px;padding:1.8rem;
+  border:1px solid transparent;
+  transition:transform .3s;
+}
+.why-card:hover{transform:translateY(-5px);}
+.why-1{background:rgba(0,144,255,.06);border-color:rgba(0,144,255,.2);}
+.why-2{background:rgba(0,230,118,.05);border-color:rgba(0,230,118,.2);}
+.why-3{background:rgba(255,168,0,.05);border-color:rgba(255,168,0,.2);}
+.why-4{background:rgba(180,0,255,.05);border-color:rgba(180,0,255,.2);}
+.why-icon{font-size:2rem;margin-bottom:.8rem;}
+.why-title{font-size:1rem;font-weight:700;margin-bottom:.5rem;}
+.why-1 .why-title{color:#5ab8ff;}
+.why-2 .why-title{color:#00e676;}
+.why-3 .why-title{color:#ffa800;}
+.why-4 .why-title{color:#cc80ff;}
+.why-desc{font-size:.88rem;color:var(--muted);line-height:1.6;}
+.why-desc strong{color:var(--text);}
+
+/* ═══ TIMELINE ════════════════════════ */
+.timeline{max-width:700px;margin:0 auto;}
+.tl-item{
+  display:flex;gap:1.5rem;margin-bottom:2.5rem;
+  opacity:0;transform:translateX(-15px);
+  transition:opacity .6s ease,transform .6s ease;
+}
+.tl-item.visible{opacity:1;transform:none;}
+.tl-left{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:0;}
+.tl-dot{
+  width:46px;height:46px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;flex-shrink:0;
+  background:var(--bg3);border:2px solid var(--blue);
+  box-shadow:0 0 12px rgba(0,144,255,.3);
+}
+.tl-line{flex:1;width:2px;background:linear-gradient(180deg,rgba(0,144,255,.4),transparent);margin-top:4px;}
+.tl-item:last-child .tl-line{display:none;}
+.tl-body{padding-bottom:.5rem;}
+.tl-year{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--blue2);margin-bottom:.3rem;}
+.tl-title{font-size:1.05rem;font-weight:700;margin-bottom:.3rem;}
+.tl-desc{font-size:.88rem;color:var(--muted);line-height:1.6;}
+.tl-desc strong{color:var(--text);}
+
+/* ═══ VERSUS BAR ══════════════════════ */
+.vs-table{max-width:700px;margin:0 auto;}
+.vs-row{
+  display:grid;grid-template-columns:1fr 120px 1fr;
+  align-items:center;gap:.8rem;
+  margin-bottom:1.2rem;
+  opacity:0;transform:translateY(10px);
+  transition:opacity .5s ease,transform .5s ease;
+}
+.vs-row.visible{opacity:1;transform:none;}
+.vs-label{font-size:.85rem;font-weight:600;text-align:right;}
+.vs-blade{color:#00e676;}
+.vs-nmc{color:#ff8c5a;text-align:left;}
+.vs-mid{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:.4rem .6rem;
+  font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);text-align:center;
+}
+
+/* ═══ REVEAL ══════════════════════════ */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease;}
+.reveal.visible{opacity:1;transform:none;}
+
+/* ═══ FOOTER ══════════════════════════ */
+footer{text-align:center;padding:3rem 1.5rem;color:var(--muted);font-size:.82rem;border-top:1px solid var(--border);}
+
+/* ═══ STAGGER HELPERS ═════════════════ */
+.stagger-1{transition-delay:.05s;}
+.stagger-2{transition-delay:.12s;}
+.stagger-3{transition-delay:.19s;}
+.stagger-4{transition-delay:.26s;}
+
+/* ═══ EX30 CASE FILE ══════════════════ */
+.ex30-section{
+  background:linear-gradient(180deg,#0a0005 0%,#0d0008 100%);
+  border-top:1px solid rgba(255,60,0,.15);
+  border-bottom:1px solid rgba(255,60,0,.15);
+  padding:5.5rem 1.5rem;
+}
+.ex30-inner{max-width:1100px;margin:0 auto;}
+
+.case-file{
+  background:#0d0408;
+  border:1px solid rgba(255,60,0,.25);
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 0 60px rgba(200,0,0,.08);
+}
+.case-header{
+  background:rgba(150,0,0,.18);
+  border-bottom:1px solid rgba(255,60,0,.2);
+  padding:1.2rem 2rem;
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+}
+.case-stamp{
+  font-size:.68rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+  color:#ff4422;border:2px solid #ff4422;padding:.25rem .7rem;border-radius:4px;
+  transform:rotate(-2deg);flex-shrink:0;
+}
+.case-title-block h3{font-size:1.1rem;font-weight:800;color:#ff8877;}
+.case-title-block p{font-size:.78rem;color:var(--muted);}
+.case-status{
+  margin-left:auto;display:flex;align-items:center;gap:.5rem;
+  font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:#ff4422;
+}
+.case-status-dot{width:8px;height:8px;border-radius:50%;background:#ff4422;animation:pulse 1.5s ease-in-out infinite;}
+
+.case-body{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;}
+.case-stat{
+  padding:1.5rem;border-right:1px solid rgba(255,60,0,.12);
+  border-bottom:1px solid rgba(255,60,0,.12);
+}
+.case-stat:last-child{border-right:none;}
+.case-stat-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.4rem;}
+.case-stat-val{font-size:1.5rem;font-weight:800;color:#ff7766;}
+.case-stat-sub{font-size:.75rem;color:var(--muted);margin-top:.2rem;line-height:1.4;}
+
+.case-narrative{padding:1.5rem 2rem;border-top:1px solid rgba(255,60,0,.12);}
+.case-narrative h4{font-size:.85rem;font-weight:700;color:#ff8877;margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.08em;}
+
+.failure-chain{display:flex;flex-direction:column;gap:0;}
+.fc-step{
+  display:flex;align-items:flex-start;gap:1rem;
+  background:rgba(255,40,0,.07);
+  border:1px solid rgba(255,60,0,.18);
+  border-radius:10px;padding:.8rem 1rem;
+  font-size:.78rem;
+  position:relative;
+}
+.fc-step+.fc-step{margin-top:.4rem;}
+.fc-step+.fc-step::before{
+  content:'↓';
+  display:flex;justify-content:center;
+  color:rgba(255,100,0,.45);font-size:.85rem;
+  margin-bottom:.4rem;
+  pointer-events:none;
+}
+.fc-step-icon{font-size:1.4rem;flex-shrink:0;}
+.fc-step-body{flex:1;}
+.fc-step-name{font-weight:700;color:#ff8877;margin-bottom:.2rem;}
+.fc-step-temp{font-size:.72rem;color:var(--muted);}
+
+/* ═══ SEPARATOR SEQUENCE ══════════════ */
+.seq-section{
+  background:var(--bg);
+  padding:5.5rem 1.5rem;
+}
+.seq-inner{max-width:1000px;margin:0 auto;}
+
+.seq-steps{
+  display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap;
+  margin-bottom:2rem;
+}
+.seq-step-btn{
+  padding:.5rem .9rem;border-radius:8px;border:1px solid var(--border);
+  font-size:.78rem;font-weight:700;cursor:pointer;transition:all .2s;
+  background:var(--bg2);color:var(--muted);position:relative;
+}
+.seq-step-btn.active{
+  background:rgba(255,60,0,.15);border-color:rgba(255,100,0,.6);color:#ff8877;
+  box-shadow:0 0 12px rgba(255,60,0,.2);
+}
+.seq-step-btn:hover:not(.active){background:rgba(255,255,255,.05);color:var(--text);}
+.seq-step-btn .step-temp{
+  display:block;font-size:.62rem;font-weight:400;
+  color:var(--muted);margin-top:.1rem;
+}
+.seq-step-btn.active .step-temp{color:#ff8877;}
+
+.seq-canvas-wrap{
+  border-radius:16px;overflow:hidden;border:1px solid var(--border);
+  background:#040810;position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+#seqCanvas{display:block;width:100%;height:auto;}
+
+.seq-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:1.2rem;gap:1rem;flex-wrap:wrap;
+}
+.seq-nav-btn{
+  padding:.6rem 1.6rem;border-radius:99px;border:1px solid var(--border);
+  font-size:.9rem;font-weight:700;cursor:pointer;
+  background:var(--bg2);color:var(--text);transition:all .2s;
+}
+.seq-nav-btn:hover{background:rgba(255,255,255,.08);}
+.seq-nav-btn:disabled{opacity:.3;cursor:not-allowed;}
+
+.seq-play-btn{
+  padding:.6rem 2rem;border-radius:99px;border:none;
+  font-size:.9rem;font-weight:700;cursor:pointer;
+  background:linear-gradient(135deg,#8b0000,#ff3b2a);
+  color:#fff;box-shadow:0 4px 20px rgba(255,59,42,.3);
+  transition:all .2s;
+}
+.seq-play-btn:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(255,59,42,.5);}
+.seq-play-btn.playing{background:linear-gradient(135deg,#005522,#00aa55);}
+
+.seq-desc-wrap{
+  margin-top:1.5rem;
+  display:grid;grid-template-columns:1fr 1fr;gap:1rem;
+}
+@media(max-width:640px){.seq-desc-wrap{grid-template-columns:1fr;}}
+
+.seq-desc-card{
+  border-radius:14px;padding:1.2rem 1.5rem;
+  border:1px solid transparent;transition:all .3s;
+}
+.seq-desc-nmc{background:rgba(255,40,0,.06);border-color:rgba(255,60,0,.2);}
+.seq-desc-blade{background:rgba(0,180,100,.05);border-color:rgba(0,200,120,.2);}
+
+.seq-desc-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem;}
+.seq-desc-head h4{font-size:.85rem;font-weight:700;}
+.seq-desc-nmc .seq-desc-head h4{color:#ff8877;}
+.seq-desc-blade .seq-desc-head h4{color:#00e676;}
+.seq-temp-badge{
+  margin-left:auto;font-size:.72rem;font-weight:800;
+  padding:.2rem .6rem;border-radius:99px;
+}
+.seq-desc-nmc .seq-temp-badge{background:rgba(255,60,0,.2);color:#ff7766;}
+.seq-desc-blade .seq-temp-badge{background:rgba(0,200,120,.15);color:#00e676;}
+.seq-desc-text{font-size:.82rem;color:var(--muted);line-height:1.6;}
+.seq-desc-text strong{color:var(--text);}
+
+/* ═══ TEMP TIMELINE ═══════════════════ */
+.timeline-section{
+  background:var(--bg2);
+  border-top:1px solid var(--border);
+  padding:5.5rem 1.5rem;
+}
+.timeline-inner{max-width:900px;margin:0 auto;}
+#tempTimelineCanvas{display:block;width:100%;height:auto;border-radius:16px;border:1px solid var(--border);}
+
+.tl-event-list{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:.8rem;margin-top:1.5rem;
+}
+.tl-event{
+  padding:.9rem 1rem;border-radius:10px;
+  font-size:.78rem;cursor:pointer;border:1px solid transparent;
+  transition:all .2s;
+}
+.tl-event:hover{transform:translateY(-2px);}
+.tl-event-nmc{background:rgba(255,40,0,.07);border-color:rgba(255,60,0,.15);}
+.tl-event-blade{background:rgba(0,180,100,.05);border-color:rgba(0,200,120,.15);}
+.tl-event-temp{font-size:1.1rem;font-weight:800;}
+.tl-event-nmc .tl-event-temp{color:#ff7766;}
+.tl-event-blade .tl-event-temp{color:#00e676;}
+.tl-event-name{font-weight:600;color:var(--text);margin:.2rem 0;}
+.tl-event-desc{color:var(--muted);font-size:.72rem;line-height:1.4;}
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="orb ob1"></div><div class="orb ob2"></div><div class="orb ob3"></div>
+
+  <div class="hero-blade-wrap">
+    <svg class="blade-svg-hero" viewBox="0 0 700 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bladeGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#0a2040"/>
+          <stop offset="30%" stop-color="#0d2e54"/>
+          <stop offset="70%" stop-color="#0d2e54"/>
+          <stop offset="100%" stop-color="#0a2040"/>
+        </linearGradient>
+        <linearGradient id="bladeEdge" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1a5faa" stop-opacity="0.9"/>
+          <stop offset="50%" stop-color="#0055b3" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#1a5faa" stop-opacity="0.9"/>
+        </linearGradient>
+        <filter id="bladeGlow">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <linearGradient id="layerGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#00aaff" stop-opacity="0.15"/>
+          <stop offset="50%" stop-color="#0055ff" stop-opacity="0.05"/>
+          <stop offset="100%" stop-color="#00aaff" stop-opacity="0.15"/>
+        </linearGradient>
+      </defs>
+      <!-- main body -->
+      <rect x="10" y="15" width="660" height="70" rx="7" fill="url(#bladeGrad)" stroke="url(#bladeEdge)" stroke-width="2"/>
+      <!-- internal layer lines -->
+      <line x1="10" y1="27" x2="670" y2="27" stroke="#1a5faa" stroke-width=".8" stroke-dasharray="4,3" opacity=".4"/>
+      <line x1="10" y1="37" x2="670" y2="37" stroke="#1a5faa" stroke-width=".8" stroke-dasharray="4,3" opacity=".4"/>
+      <line x1="10" y1="50" x2="670" y2="50" stroke="#00aaff" stroke-width="1" opacity=".2"/>
+      <line x1="10" y1="63" x2="670" y2="63" stroke="#1a5faa" stroke-width=".8" stroke-dasharray="4,3" opacity=".4"/>
+      <line x1="10" y1="73" x2="670" y2="73" stroke="#1a5faa" stroke-width=".8" stroke-dasharray="4,3" opacity=".4"/>
+      <!-- end cap -->
+      <rect x="668" y="28" width="14" height="44" rx="3" fill="#1a5faa" stroke="#2a7fcc" stroke-width="1"/>
+      <!-- glow top/bottom edges -->
+      <line x1="10" y1="15" x2="670" y2="15" stroke="#00aaff" stroke-width="1.5" opacity=".7" filter="url(#bladeGlow)"/>
+      <line x1="10" y1="85" x2="670" y2="85" stroke="#00aaff" stroke-width="1.5" opacity=".7" filter="url(#bladeGlow)"/>
+      <!-- label -->
+      <text x="340" y="54" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="11" font-weight="700" fill="#5ab8ff" letter-spacing="4" opacity=".9">BLADE BATTERY  LFP  3.2V</text>
+      <!-- dimension arrows -->
+      <line x1="10" y1="6" x2="670" y2="6" stroke="#2a5a8a" stroke-width="1"/>
+      <line x1="10" y1="3" x2="10" y2="9" stroke="#2a5a8a" stroke-width="1"/>
+      <line x1="670" y1="3" x2="670" y2="9" stroke="#2a5a8a" stroke-width="1"/>
+      <text x="340" y="4" text-anchor="middle" font-family="monospace" font-size="9" fill="#5a7099">≈ 960 mm</text>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-tag"><div class="byd-dot"></div>BYD Long Blade 1.0 — 2020</div>
+    <h1 class="hero-title">The <span class="hl-blade">Blade Battery</span><br>That Rewrote the Rules</h1>
+    <p class="hero-sub">
+      BYD's radical cell-to-pack design <strong>eliminated entire layers of engineering</strong>, passed the nail penetration test, and proved that safety and energy density don't have to be enemies.
+    </p>
+    <a href="#nail" class="hero-cta">
+      Run the Nail Test
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3l5 5-5 5M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </a>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-num">960<span style="font-size:1rem">mm</span></div><div class="hstat-lbl">Cell Length</div></div>
+      <div class="hstat"><div class="hstat-num">50<span style="font-size:1rem">%</span></div><div class="hstat-lbl">More Space</div></div>
+      <div class="hstat"><div class="hstat-num">&lt;60<span style="font-size:1rem">°C</span></div><div class="hstat-lbl">Nail Test Temp</div></div>
+      <div class="hstat"><div class="hstat-num">3000<span style="font-size:1rem">+</span></div><div class="hstat-lbl">Charge Cycles</div></div>
+    </div>
+  </div>
+  <div class="scroll-hint"><span>Explore</span><div class="scroll-arr"></div></div>
+</section>
+
+<!-- ═══ CELL SIZE COMPARISON ═══════════════ -->
+<div class="sec">
+  <p class="sec-tag reveal">Size Matters</p>
+  <h2 class="sec-title reveal">Blade vs. 18650 vs. 21700</h2>
+  <p class="sec-desc reveal">Traditional EV batteries use thousands of <strong>small cylindrical cells</strong> (like AA batteries on steroids). BYD's Blade is a single giant flat cell — almost a metre long. Hover each to learn more.</p>
+
+  <div class="cell-compare reveal">
+    <div class="cell-item">
+      <div class="cell-tooltip">18650 Cell<br>18mm × 65mm<br>NMC/NCA chemistry<br>Used in: Tesla Model 3 (old), laptops</div>
+      <div class="cell-18650"><div class="cell-stripe"></div></div>
+      <div class="cell-name">18650</div>
+      <div class="cell-dim">18 × 65 mm</div>
+      <div class="cell-chem chem-nmc">NMC</div>
+    </div>
+    <div class="cell-item">
+      <div class="cell-tooltip">21700 Cell<br>21mm × 70mm<br>NMC chemistry<br>Used in: Tesla Model Y, Cybertruck</div>
+      <div class="cell-21700"><div class="cell-stripe"></div></div>
+      <div class="cell-name">21700</div>
+      <div class="cell-dim">21 × 70 mm</div>
+      <div class="cell-chem chem-nmc">NMC</div>
+    </div>
+    <div class="cell-item" style="flex-direction:row;align-items:center;gap:1rem;">
+      <div class="cell-tooltip" style="left:auto;right:0;transform:none;">BYD Blade Cell<br>960 × 90 × 13.5 mm<br>LFP chemistry<br>Used in: BYD Han, Atto 3, Tesla (LFP)</div>
+      <div>
+        <div class="cell-blade-wrap">
+          <div class="blade-inner-stripe"></div>
+          <div class="blade-inner-stripe2"></div>
+          <div class="blade-end-cap"></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:.6rem;">
+          <div>
+            <div class="cell-name">BYD Blade</div>
+            <div class="cell-dim">960 × 90 × 13.5 mm</div>
+          </div>
+          <div class="cell-chem chem-lfp">LFP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CTP SECTION ═══════════════════════════ -->
+<div class="sec-full">
+  <div class="sec-inner">
+    <p class="sec-tag reveal">Cell-to-Pack Revolution</p>
+    <h2 class="sec-title reveal">Cutting Out the Middleman</h2>
+    <p class="sec-desc reveal">Traditional packs bundle cells into <strong>modules</strong>, then stack modules into a pack. BYD removed the module layer entirely — the blade cells go <strong>straight into the pack</strong>, acting as structural members of the car floor.</p>
+
+    <div class="ctp-wrap reveal">
+      <div class="ctp-tabs">
+        <button class="ctp-tab active" onclick="setCTPMode('traditional')">📦 Traditional Module-Based</button>
+        <button class="ctp-tab" onclick="setCTPMode('blade')">⚡ BYD Blade CTP</button>
+      </div>
+      <canvas id="ctpCanvas"></canvas>
+      <div class="ctp-legend">
+        <div class="ctp-leg"><div class="ctp-dot" style="background:#888;"></div>Module housing / dead space</div>
+        <div class="ctp-leg"><div class="ctp-dot" style="background:#ff8c5a;"></div>Cylindrical cells (active)</div>
+        <div class="ctp-leg"><div class="ctp-dot" style="background:#1a5faa;"></div>Blade cells (active)</div>
+        <div class="ctp-leg"><div class="ctp-dot" style="background:#00e676;"></div>Usable energy space</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CHEMISTRY ════════════════════════════ -->
+<div class="sec">
+  <p class="sec-tag reveal">The Real Secret</p>
+  <h2 class="sec-title reveal">Why Chemistry Is Everything</h2>
+  <p class="sec-desc reveal">The Blade uses <strong>LFP (Lithium Iron Phosphate)</strong> chemistry. Its iron-oxygen bonds are dramatically stronger than the nickel/cobalt bonds in NMC cells — and that's what prevents thermal runaway.</p>
+
+  <div class="chem-grid reveal">
+    <div class="chem-card chem-nmc-card">
+      <div class="chem-head">
+        <span class="chem-icon">⚠️</span>
+        <h3>NMC / NCA (18650 / 21700)</h3>
+      </div>
+      <div class="molecule-wrap" id="nmcMolecule"></div>
+      <div class="chem-prop">
+        <div class="prop-row">
+          <span class="prop-label">Bond Strength</span>
+          <div class="prop-bar-wrap"><div class="prop-bar" style="width:38%;background:linear-gradient(90deg,#ff4400,#ff8c00);" data-w="38"></div></div>
+          <span class="prop-val" style="color:#ff8c5a;">Low</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Thermal Stability</span>
+          <div class="prop-bar-wrap"><div class="prop-bar" style="width:25%;background:linear-gradient(90deg,#ff4400,#ff6600);" data-w="25"></div></div>
+          <span class="prop-val" style="color:#ff8c5a;">Low</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Runaway Risk</span>
+          <div class="prop-bar-wrap"><div class="prop-bar" style="width:88%;background:linear-gradient(90deg,#cc0000,#ff3300);" data-w="88"></div></div>
+          <span class="prop-val" style="color:#ff3300;">High</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Energy Density</span>
+          <div class="prop-bar-wrap"><div class="prop-bar" style="width:80%;background:linear-gradient(90deg,#ffaa00,#ffdd00);" data-w="80"></div></div>
+          <span class="prop-val" style="color:#ffaa00;">High</span>
+        </div>
+      </div>
+      <p style="font-size:.78rem;color:var(--muted);margin-top:1rem;line-height:1.6;">At high temps, Ni/Co-O bonds break, <strong style="color:#ff8c5a;">releasing oxygen</strong> which fuels combustion. One cell failing can cascade to neighbors — thermal runaway.</p>
+    </div>
+
+    <div class="chem-card chem-lfp-card">
+      <div class="chem-head">
+        <span class="chem-icon">✅</span>
+        <h3>LFP — BYD Blade Battery</h3>
+      </div>
+      <div class="molecule-wrap" id="lfpMolecule"></div>
+      <div class="chem-prop">
+        <div class="prop-row">
+          <span class="prop-label">Bond Strength</span>
+          <div class="prop-bar-wrap"><div class="prop-bar" style="width:92%;background:linear-gradient(90deg,#00aa44,#00e676);" data-w="92"></div></div>
+          <span class="prop-val" style="color:#00e676;">Very High</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Thermal Stability</span>
+          <div class="prop-bar-wrap"><div class="prop-bar" style="width:95%;background:linear-gradient(90deg,#00aa44,#00ff88);" data-w="95"></div></div>
+          <span class="prop-val" style="color:#00e676;">Excellent</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Runaway Risk</span>
+          <div class="prop-bar-wrap"><div class="prop-bar" style="width:8%;background:linear-gradient(90deg,#005520,#00aa44);" data-w="8"></div></div>
+          <span class="prop-val" style="color:#00e676;">Minimal</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Energy Density</span>
+          <div class="prop-bar-wrap"><div class="prop-bar" style="width:60%;background:linear-gradient(90deg,#005599,#0090ff);" data-w="60"></div></div>
+          <span class="prop-val" style="color:#5ab8ff;">Good</span>
+        </div>
+      </div>
+      <p style="font-size:.78rem;color:var(--muted);margin-top:1rem;line-height:1.6;">Fe-O (iron-oxygen) bonds are much harder to break. Even at extreme temperatures, <strong style="color:#00e676;">no oxygen is released</strong> — no fuel for a fire. The reaction is self-limiting.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NAIL TEST ═══════════════════════════ -->
+<section class="nail-section" id="nail">
+  <div class="nail-inner">
+    <p class="sec-tag reveal">The Ultimate Safety Test</p>
+    <h2 class="sec-title reveal">Nail Penetration Test</h2>
+    <p class="sec-desc reveal">In this industry-standard test, a steel nail is driven through the battery cell to simulate internal short circuits. <strong>Most batteries catch fire or explode. The Blade doesn't.</strong> Run the simulation to see why.</p>
+
+    <div class="nail-controls reveal">
+      <button class="nail-btn" id="nail-run" onclick="runNailTest()">🔩 Drive the Nail</button>
+    </div>
+
+    <div class="nail-canvas-wrap reveal">
+      <canvas id="nailCanvas"></canvas>
+    </div>
+
+    <p class="nail-status" id="nailStatus">Click <strong>"Drive the Nail"</strong> to simulate a nail penetration event on both battery types simultaneously.</p>
+  </div>
+</section>
+
+<!-- ═══ THERMAL ════════════════════════════ -->
+<div class="sec-full">
+  <div class="sec-inner">
+    <p class="sec-tag reveal">Thermal Runaway Prevention</p>
+    <h2 class="sec-title reveal">Heat Can't Spread — Here's Why</h2>
+    <p class="sec-desc reveal">The Blade's <strong>thin flat shape</strong> gives it a huge surface-area-to-volume ratio. Heat dissipates across the large face before it can build up — like a thin pizza crust cooling faster than a deep-dish.</p>
+
+    <div class="thermal-controls reveal">
+      <button class="th-btn th-btn-nmc" id="th-nmc" onclick="startThermal('nmc')">🔥 Trigger NMC Cascade</button>
+      <button class="th-btn th-btn-blade" id="th-blade" onclick="startThermal('blade')">⚡ Trigger Blade Event</button>
+      <button class="th-btn th-btn-reset" onclick="resetThermal()">↺ Reset</button>
+    </div>
+
+    <canvas id="thermalCanvas" class="reveal"></canvas>
+    <p class="nail-status reveal" id="thermalStatus">Select a battery type above to simulate a thermal event in one cell and watch how heat spreads through the pack.</p>
+  </div>
+</div>
+
+<!-- ═══ VS TABLE ═══════════════════════════ -->
+<div class="sec">
+  <p class="sec-tag reveal">Head to Head</p>
+  <h2 class="sec-title reveal">Blade vs. Cylindrical Cells</h2>
+  <p class="sec-desc reveal">A direct comparison on the metrics that matter most for EV safety and ownership.</p>
+
+  <div class="vs-table">
+    <div class="vs-row reveal stagger-1">
+      <div class="vs-label vs-blade">No fire / no explosion</div>
+      <div class="vs-mid">Nail Test</div>
+      <div class="vs-nmc">Fire + explosion risk</div>
+    </div>
+    <div class="vs-row reveal stagger-2">
+      <div class="vs-label vs-blade">&lt; 60 °C surface temp</div>
+      <div class="vs-mid">Max Nail Temp</div>
+      <div class="vs-nmc">500–600 °C+</div>
+    </div>
+    <div class="vs-row reveal stagger-3">
+      <div class="vs-label vs-blade">3,000+ cycles</div>
+      <div class="vs-mid">Cycle Life</div>
+      <div class="vs-nmc">500–1,500 cycles</div>
+    </div>
+    <div class="vs-row reveal stagger-4">
+      <div class="vs-label vs-blade">No cobalt / nickel</div>
+      <div class="vs-mid">Raw Materials</div>
+      <div class="vs-nmc">Cobalt + Nickel</div>
+    </div>
+    <div class="vs-row reveal stagger-1">
+      <div class="vs-label vs-blade">50% more energy per pack</div>
+      <div class="vs-mid">Pack Efficiency</div>
+      <div class="vs-nmc">Module overhead ~30%</div>
+    </div>
+    <div class="vs-row reveal stagger-2">
+      <div class="vs-label vs-blade">Structural floor member</div>
+      <div class="vs-mid">Pack Role</div>
+      <div class="vs-nmc">Passive (just energy)</div>
+    </div>
+    <div class="vs-row reveal stagger-3">
+      <div class="vs-label vs-blade">Lower (no Co/Ni premium)</div>
+      <div class="vs-mid">Cell Cost</div>
+      <div class="vs-nmc">Higher</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BREAKTHROUGH METRICS ═══════════════ -->
+<div class="sec-full">
+  <div class="sec-inner">
+    <p class="sec-tag reveal">By The Numbers</p>
+    <h2 class="sec-title reveal">Why It's Called a Breakthrough</h2>
+    <div class="breakthrough-grid">
+      <div class="bt-card reveal stagger-1">
+        <span class="bt-icon">📏</span>
+        <div class="bt-num" data-count="50">0</div><span class="bt-label">% increase in volumetric energy density vs. traditional LFP packs</span>
+      </div>
+      <div class="bt-card reveal stagger-2">
+        <span class="bt-icon">🌡️</span>
+        <div class="bt-num" data-count="60" data-prefix="<" data-suffix="°C">0</div><span class="bt-label">surface temperature during nail test (vs. 500°C+ for NMC)</span>
+      </div>
+      <div class="bt-card reveal stagger-3">
+        <span class="bt-icon">🔄</span>
+        <div class="bt-num" data-count="3000" data-suffix="+">0</div><span class="bt-label">charge-discharge cycles with &lt;20% capacity loss</span>
+      </div>
+      <div class="bt-card reveal stagger-4">
+        <span class="bt-icon">⚖️</span>
+        <div class="bt-num" data-count="30" data-suffix="%">0</div><span class="bt-label">lighter than equivalent NMC packs — less module structure needed</span>
+      </div>
+      <div class="bt-card reveal stagger-1">
+        <span class="bt-icon">🏗️</span>
+        <div class="bt-num" data-count="0" data-text="Zero">0</div><span class="bt-label">modules — cells go straight into the structural pack (CTP)</span>
+      </div>
+      <div class="bt-card reveal stagger-2">
+        <span class="bt-icon">💰</span>
+        <div class="bt-num" data-count="30" data-suffix="%">0</div><span class="bt-label">lower cell cost vs. NMC — no cobalt or nickel required</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ WHY BREAKTHROUGH ═══════════════════ -->
+<div class="sec">
+  <p class="sec-tag reveal">The Big Picture</p>
+  <h2 class="sec-title reveal">Why Engineers Call It a Breakthrough</h2>
+  <p class="sec-desc reveal">It didn't just improve one thing. The Blade solved <em>four separate hard problems</em> with one architectural decision.</p>
+  <div class="why-grid">
+    <div class="why-card why-1 reveal stagger-1">
+      <div class="why-icon">🏛️</div>
+      <div class="why-title">Structure = Battery</div>
+      <p class="why-desc">The blades are rigid enough to be <strong>structural members of the car floor</strong>. Traditional packs sit inside a separate structure — BYD's pack IS the structure. This saves massive weight.</p>
+    </div>
+    <div class="why-card why-2 reveal stagger-2">
+      <div class="why-icon">🧊</div>
+      <div class="why-title">Geometry Kills Heat</div>
+      <p class="why-desc">A thin blade has <strong>7× more cooling surface area per unit volume</strong> than a cylinder. Heat has nowhere to build up. The shape itself is the thermal management system.</p>
+    </div>
+    <div class="why-card why-3 reveal stagger-3">
+      <div class="why-icon">⚗️</div>
+      <div class="why-title">Chemistry + Shape = Synergy</div>
+      <p class="why-desc">LFP chemistry was already safe but energy-dense. The blade shape <strong>unlocked that density in pack-level efficiency</strong> — the two innovations multiply each other.</p>
+    </div>
+    <div class="why-card why-4 reveal stagger-4">
+      <div class="why-icon">🌍</div>
+      <div class="why-title">No Conflict Minerals</div>
+      <p class="why-desc">LFP uses iron and phosphate — <strong>no cobalt, no nickel</strong>. This eliminates ethical sourcing issues, reduces cost volatility, and cuts the supply chain in half.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TIMELINE ═══════════════════════════ -->
+<div class="sec-full">
+  <div class="sec-inner">
+    <p class="sec-tag reveal">History</p>
+    <h2 class="sec-title reveal">The Road to the Blade</h2>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-left"><div class="tl-dot">🔬</div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-year">1991</div><div class="tl-title">Li-ion Goes Commercial</div><p class="tl-desc">Sony releases the first commercial lithium-ion battery. <strong>18650 cylindrical format</strong> becomes the industry standard for decades.</p></div></div>
+      <div class="tl-item"><div class="tl-left"><div class="tl-dot">🚗</div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-year">2008</div><div class="tl-title">EVs Adopt 18650</div><p class="tl-desc">Tesla Roadster packs <strong>6,831 laptop-style 18650 cells</strong> into its floor — a packaging nightmare but it worked. This approach became the template.</p></div></div>
+      <div class="tl-item"><div class="tl-left"><div class="tl-dot">⚠️</div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-year">2013–2016</div><div class="tl-title">Thermal Runaway Incidents</div><p class="tl-desc">Multiple EV fires worldwide. The industry realizes that <strong>small cylindrical NMC cells carry a cascading thermal runaway risk</strong> — one cell can trigger its neighbors.</p></div></div>
+      <div class="tl-item"><div class="tl-left"><div class="tl-dot">💡</div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-year">2017</div><div class="tl-title">BYD Begins Blade R&D</div><p class="tl-desc">BYD engineers begin working on a radical idea: <strong>make the cell itself the structural and thermal management element</strong>, eliminating modules entirely.</p></div></div>
+      <div class="tl-item"><div class="tl-left"><div class="tl-dot">🎯</div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-year">March 2020</div><div class="tl-title">Blade Battery Unveiled</div><p class="tl-desc">BYD publicly demonstrates the Blade battery <strong>passing the nail penetration test with no fire, no explosion, and surface temperature below 60°C</strong>. The industry is stunned.</p></div></div>
+      <div class="tl-item"><div class="tl-left"><div class="tl-dot">🚀</div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-year">June 2020</div><div class="tl-title">BYD Han Launch</div><p class="tl-desc">The BYD Han EV launches with the Blade Battery — <strong>605 km range</strong>, sub-4-second 0–100 km/h, and a pack that sits as the car's structural floor. EV architecture is never the same.</p></div></div>
+      <div class="tl-item"><div class="tl-left"><div class="tl-dot">🌏</div></div><div class="tl-body"><div class="tl-year">2022–Present</div><div class="tl-title">Industry Copies the Blueprint</div><p class="tl-desc">CATL, Tesla, and others release their own CTP / Cell-to-Chassis designs. <strong>BYD's Blade concept proved the template</strong> for the next generation of EV battery architecture.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     EX30 / SUNWODA CASE FILE
+═══════════════════════════════════════════════════ -->
+<section class="ex30-section">
+  <div class="ex30-inner">
+    <p class="sec-tag reveal" style="color:#ff6655;">Real-World Incident</p>
+    <h2 class="sec-title reveal">The Volvo EX30 / Sunwoda Recall</h2>
+    <p class="sec-desc reveal">In early 2026 Volvo recalled <strong>40,323 EX30s</strong> worldwide after discovering a manufacturing defect in the Sunwoda NMC cells could cause uncontrolled thermal runaway — even while parked. This is exactly the failure mode BYD's Blade was designed to be immune to.</p>
+
+    <div class="case-file reveal">
+      <div class="case-header">
+        <div class="case-stamp">Recall Active</div>
+        <div class="case-title-block">
+          <h3>NHTSA Recall 26V001 — Volvo EX30 (2025 MY)</h3>
+          <p>Battery: Sunwoda 69 kWh NMC Prismatic · Supplier: Shandong Geely Sunwoda JV · Pack assembly: VREMT (Geely)</p>
+        </div>
+        <div class="case-status"><div class="case-status-dot"></div>Fire Risk</div>
+      </div>
+
+      <div class="case-body">
+        <div class="case-stat">
+          <div class="case-stat-label">Vehicles Recalled Globally</div>
+          <div class="case-stat-val">40,323</div>
+          <div class="case-stat-sub">Single-Motor Extended Range &amp; Twin-Motor Performance only (69 kWh NMC). Base 49 kWh LFP not affected.</div>
+        </div>
+        <div class="case-stat">
+          <div class="case-stat-label">Estimated Recall Cost</div>
+          <div class="case-stat-val">&gt;$195M</div>
+          <div class="case-stat-sub">Full high-voltage battery pack module replacement per vehicle. Reuters analysis — Volvo disputed the exact figure.</div>
+        </div>
+        <div class="case-stat">
+          <div class="case-stat-label">Sunwoda Settlement</div>
+          <div class="case-stat-val">¥500–800M</div>
+          <div class="case-stat-sub">RMB (~$68–110M USD) profit reduction after Geely's CNY 2.31B lawsuit settled Feb 2026.</div>
+        </div>
+        <div class="case-stat">
+          <div class="case-stat-label">Interim Owner Instruction</div>
+          <div class="case-stat-val">≤70%</div>
+          <div class="case-stat-sub">Charge limit ordered. Park outdoors, away from structures — even while not charging. High SOC accelerates dendrite growth.</div>
+        </div>
+        <div class="case-stat">
+          <div class="case-stat-label">Thailand Fires (May 2026)</div>
+          <div class="case-stat-val">2 Fires</div>
+          <div class="case-stat-sub">Post-recall, during home charging. Thai authorities demanded recall of all 1,668 EX30 units in country. Repairs began May 23, 2026.</div>
+        </div>
+        <div class="case-stat">
+          <div class="case-stat-label">Root Cause</div>
+          <div class="case-stat-val" style="font-size:1rem;">Mfg Defect</div>
+          <div class="case-stat-sub">Process deviation during cell production → uneven electrode coating → lithium plating → dendrite growth → separator penetration → ISC.</div>
+        </div>
+      </div>
+
+      <div class="case-narrative">
+        <h4>Failure Chain — How One Manufacturing Defect Became a Fire Risk</h4>
+        <div class="failure-chain">
+          <div class="fc-step"><div class="fc-step-icon">🏭</div><div class="fc-step-body"><div class="fc-step-name">Process Deviation</div><div class="fc-step-temp">Factory defect in electrode coating uniformity</div></div></div>
+          <div class="fc-step"><div class="fc-step-icon">⚡</div><div class="fc-step-body"><div class="fc-step-name">Li Plating</div><div class="fc-step-temp">Li⁰ deposits on anode instead of intercalating into graphite</div></div></div>
+          <div class="fc-step"><div class="fc-step-icon">🌵</div><div class="fc-step-body"><div class="fc-step-name">Dendrite Growth</div><div class="fc-step-temp">Metallic needles grow across electrolyte gap toward separator</div></div></div>
+          <div class="fc-step"><div class="fc-step-icon">💥</div><div class="fc-step-body"><div class="fc-step-name">Separator Pierced</div><div class="fc-step-temp">Dendrite bridges anode → cathode · Internal short circuit (ISC) formed</div></div></div>
+          <div class="fc-step"><div class="fc-step-icon">🌡️</div><div class="fc-step-body"><div class="fc-step-name">SEI Breakdown</div><div class="fc-step-temp">~90 °C · anode passivation layer decomposes exothermically</div></div></div>
+          <div class="fc-step"><div class="fc-step-icon">💧</div><div class="fc-step-body"><div class="fc-step-name">Separator Meltdown</div><div class="fc-step-temp">~130–180 °C · polyolefin membrane softens then melts completely</div></div></div>
+          <div class="fc-step"><div class="fc-step-icon">🧨</div><div class="fc-step-body"><div class="fc-step-name">O₂ Release</div><div class="fc-step-temp">~200 °C · NMC cathode releases lattice oxygen — self-fuelling combustion</div></div></div>
+          <div class="fc-step"><div class="fc-step-icon">🔥</div><div class="fc-step-body"><div class="fc-step-name">Thermal Runaway</div><div class="fc-step-temp">500–600 °C+ · electrolyte ignites · adjacent cells cascade · fire risk</div></div></div>
+        </div>
+        <p style="font-size:.8rem;color:var(--muted);margin-top:1rem;line-height:1.6;">⚠ The ISC can occur while the vehicle is <strong style="color:var(--text);">parked and unplugged</strong>. Once dendrites bridge the separator, the short exists permanently inside the cell regardless of external power — which is why owners were told to park outdoors at all times.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     SEPARATOR FAILURE SEQUENCE — INTERACTIVE
+═══════════════════════════════════════════════════ -->
+<section class="seq-section" id="separator">
+  <div class="seq-inner">
+    <p class="sec-tag reveal" style="color:#ff8877;">Step-by-Step · Inside the Cell</p>
+    <h2 class="sec-title reveal">When the Separator Fails</h2>
+    <p class="sec-desc reveal">
+      The separator is a <strong>15–25 µm polymer membrane</strong> — thinner than a human hair — that is the last physical barrier between anode and cathode. Step through the failure sequence to see what happens inside each battery type when it's destroyed.
+    </p>
+
+    <div class="seq-steps reveal">
+      <button class="seq-step-btn active" onclick="goToStep(1)" id="sbtn-1">
+        1 · Healthy Cell<span class="step-temp">~25 °C</span>
+      </button>
+      <button class="seq-step-btn" onclick="goToStep(2)" id="sbtn-2">
+        2 · Li Plating<span class="step-temp">~30 °C</span>
+      </button>
+      <button class="seq-step-btn" onclick="goToStep(3)" id="sbtn-3">
+        3 · Dendrite Growth<span class="step-temp">~38 °C</span>
+      </button>
+      <button class="seq-step-btn" onclick="goToStep(4)" id="sbtn-4">
+        4 · Sep. Pierced<span class="step-temp">90–120 °C</span>
+      </button>
+      <button class="seq-step-btn" onclick="goToStep(5)" id="sbtn-5">
+        5 · Sep. Melts<span class="step-temp">130–180 °C</span>
+      </button>
+      <button class="seq-step-btn" onclick="goToStep(6)" id="sbtn-6">
+        6 · O₂ Release<span class="step-temp">200 °C+</span>
+      </button>
+      <button class="seq-step-btn" onclick="goToStep(7)" id="sbtn-7">
+        7 · Runaway 🔥<span class="step-temp">500–600 °C</span>
+      </button>
+    </div>
+
+    <div class="seq-canvas-wrap reveal">
+      <canvas id="seqCanvas"></canvas>
+    </div>
+
+    <div class="seq-nav reveal">
+      <button class="seq-nav-btn" id="seq-prev" onclick="stepDir(-1)">← Previous</button>
+      <button class="seq-play-btn" id="seq-play" onclick="toggleSeqPlay()">▶ Auto-Play</button>
+      <button class="seq-nav-btn" id="seq-next" onclick="stepDir(1)">Next →</button>
+    </div>
+
+    <div class="seq-desc-wrap reveal" id="seq-desc-wrap">
+      <div class="seq-desc-card seq-desc-nmc">
+        <div class="seq-desc-head">
+          <span style="font-size:1.2rem;">⚠️</span>
+          <h4>NMC Cell (EX30 / Sunwoda)</h4>
+          <span class="seq-temp-badge" id="nmc-temp-badge">25 °C</span>
+        </div>
+        <p class="seq-desc-text" id="nmc-step-desc">The cell is healthy. Lithium ions cleanly intercalate into the graphite anode. The separator membrane is intact and performing its job as an ion-permeable, electron-blocking barrier.</p>
+      </div>
+      <div class="seq-desc-card seq-desc-blade">
+        <div class="seq-desc-head">
+          <span style="font-size:1.2rem;">✅</span>
+          <h4>BYD Blade LFP</h4>
+          <span class="seq-temp-badge" id="blade-temp-badge">25 °C</span>
+        </div>
+        <p class="seq-desc-text" id="blade-step-desc">The cell is healthy. LFP's olivine crystal structure provides exceptionally stable intercalation sites. The strong Fe-O bonds require far more energy to disrupt than NMC's Ni/Co-O bonds.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     TEMPERATURE TIMELINE CHART
+═══════════════════════════════════════════════════ -->
+<section class="timeline-section">
+  <div class="timeline-inner">
+    <p class="sec-tag reveal">Temperature vs. Time</p>
+    <h2 class="sec-title reveal">The Divergence Moment</h2>
+    <p class="sec-desc reveal">Once internal short circuit (ISC) forms from a dendrite piercing the separator, the two chemistries take <strong>completely different paths</strong>. Click any event marker to jump to that step.</p>
+
+    <canvas id="tempTimelineCanvas" class="reveal"></canvas>
+
+    <div class="tl-event-list reveal">
+      <div class="tl-event tl-event-nmc" onclick="goToStep(4)">
+        <div class="tl-event-temp">~90°C</div>
+        <div class="tl-event-name">SEI Layer Breakdown</div>
+        <div class="tl-event-desc">NMC anode's passivation layer decomposes — first exothermic burst</div>
+      </div>
+      <div class="tl-event tl-event-nmc" onclick="goToStep(5)">
+        <div class="tl-event-temp">~130–180°C</div>
+        <div class="tl-event-name">Separator Melts</div>
+        <div class="tl-event-desc">Polyolefin membrane softens then melts — total loss of anode/cathode separation</div>
+      </div>
+      <div class="tl-event tl-event-nmc" onclick="goToStep(6)">
+        <div class="tl-event-temp">~200°C</div>
+        <div class="tl-event-name">NMC O₂ Release</div>
+        <div class="tl-event-desc">Lattice oxygen escapes NMC cathode — self-fuelling combustion begins</div>
+      </div>
+      <div class="tl-event tl-event-nmc" onclick="goToStep(7)">
+        <div class="tl-event-temp">500–600°C</div>
+        <div class="tl-event-name">Full Thermal Runaway</div>
+        <div class="tl-event-desc">Uncontrolled cascade — electrolyte ignites, adjacent cells triggered</div>
+      </div>
+      <div class="tl-event tl-event-blade" onclick="goToStep(4)">
+        <div class="tl-event-temp">~45°C</div>
+        <div class="tl-event-name">ISC in Blade Cell</div>
+        <div class="tl-event-desc">Same dendrite event — but heat spreads across blade's large surface area and dissipates</div>
+      </div>
+      <div class="tl-event tl-event-blade" onclick="goToStep(7)">
+        <div class="tl-event-temp">&lt;60°C</div>
+        <div class="tl-event-name">Self-Limiting — Safe</div>
+        <div class="tl-event-desc">LFP olivine structure holds. No O₂ release. Temperature peaks then drops. No fire.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Blade Battery interactive explainer — built with ♥ for curious minds</p>
+  <p style="margin-top:.4rem;font-size:.75rem;">EX30 recall data: NHTSA Recall 26V001, Volvo Cars official communications, Reuters (Feb 2026). Technical chemistry data based on peer-reviewed LFP/NMC thermal abuse studies. BYD data: official BYD specifications and published nail penetration test results.</p>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//   UTILITIES
+// ═══════════════════════════════════════════════════════
+const dpr = window.devicePixelRatio || 1;
+
+function setupCanvas(canvas, containerW, containerH) {
+  canvas.width  = containerW * dpr;
+  canvas.height = containerH * dpr;
+  canvas.style.width  = containerW + 'px';
+  canvas.style.height = containerH + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return ctx;
+}
+
+// ═══════════════════════════════════════════════════════
+//   SCROLL REVEAL
+// ═══════════════════════════════════════════════════════
+function initReveal() {
+  const els = document.querySelectorAll('.reveal, .tl-item, .vs-row');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  els.forEach(el => obs.observe(el));
+}
+
+// ═══════════════════════════════════════════════════════
+//   ANIMATED COUNTERS
+// ═══════════════════════════════════════════════════════
+function initCounters() {
+  const cards = document.querySelectorAll('.bt-num');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      obs.unobserve(e.target);
+      const el = e.target;
+      const target = parseInt(el.dataset.count);
+      const prefix = el.dataset.prefix || '';
+      const suffix = el.dataset.suffix || '';
+      const text   = el.dataset.text || '';
+      if (text) { el.textContent = text; return; }
+      let start = 0;
+      const dur = 1400;
+      const t0 = performance.now();
+      function tick(now) {
+        const p = Math.min((now - t0) / dur, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        const v = Math.round(ease * target);
+        el.textContent = prefix + v + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }, { threshold: 0.5 });
+  cards.forEach(c => obs.observe(c));
+}
+
+// ═══════════════════════════════════════════════════════
+//   CTP CANVAS
+// ═══════════════════════════════════════════════════════
+const ctpCanvas = document.getElementById('ctpCanvas');
+let ctpMode = 'traditional';
+let ctpCtx, ctpW, ctpH;
+let ctpAnimProgress = 0;
+let ctpAnimId = null;
+let ctpAnimDir = 1;
+
+function resizeCTP() {
+  const container = ctpCanvas.parentElement;
+  ctpW = container.clientWidth;
+  ctpH = Math.round(ctpW * 0.38);
+  ctpCtx = setupCanvas(ctpCanvas, ctpW, ctpH);
+  drawCTP(ctpAnimProgress);
+}
+
+function setCTPMode(mode) {
+  ctpMode = mode;
+  document.querySelectorAll('.ctp-tab').forEach((t,i) => {
+    t.classList.toggle('active', (i===0 && mode==='traditional') || (i===1 && mode==='blade'));
+  });
+  ctpAnimProgress = 0;
+  if (ctpAnimId) cancelAnimationFrame(ctpAnimId);
+  animateCTP(performance.now());
+}
+
+function animateCTP(ts) {
+  ctpAnimProgress = Math.min(ctpAnimProgress + 0.025, 1);
+  drawCTP(ctpAnimProgress);
+  if (ctpAnimProgress < 1) ctpAnimId = requestAnimationFrame(animateCTP);
+}
+
+function drawCTP(p) {
+  const ctx = ctpCtx;
+  ctx.clearRect(0, 0, ctpW, ctpH);
+  ctx.fillStyle = '#04080f';
+  ctx.fillRect(0, 0, ctpW, ctpH);
+
+  const pad = 20;
+  const innerW = ctpW - pad * 2;
+  const innerH = ctpH - pad * 2;
+
+  if (ctpMode === 'traditional') drawTraditional(ctx, pad, pad, innerW, innerH, p);
+  else drawBladeCTP(ctx, pad, pad, innerW, innerH, p);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+}
+
+function drawTraditional(ctx, px, py, W, H, p) {
+  // Pack outer
+  roundRect(ctx, px, py, W, H, 10);
+  ctx.fillStyle = '#0d1a2e';
+  ctx.fill();
+  ctx.strokeStyle = '#2a4a7a';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Label
+  ctx.fillStyle = '#5ab8ff';
+  ctx.font = `bold ${Math.max(10,W*0.016)}px Segoe UI,sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText('TRADITIONAL MODULE-BASED PACK', px + W/2, py + 14);
+
+  const mPad = 8;
+  const numModules = 3;
+  const moduleW = (W - mPad * 2 - (numModules-1) * mPad) / numModules;
+  const moduleH = H - 30;
+  const moduleY = py + 22;
+
+  for (let m = 0; m < numModules; m++) {
+    const mx = px + mPad + m * (moduleW + mPad);
+    // module housing (dead space)
+    roundRect(ctx, mx, moduleY, moduleW * p, moduleH, 6);
+    ctx.fillStyle = 'rgba(80,80,100,0.5)';
+    ctx.fill();
+    ctx.strokeStyle = '#4a5a7a';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    if (p < 0.05) continue;
+    // cylindrical cells inside module
+    const cellR = 9;
+    const cellDiam = cellR * 2 + 3;
+    const cellsPerRow = Math.floor((moduleW - 14) / cellDiam);
+    const rows = Math.floor((moduleH - 14) / (cellDiam * 2.5));
+    const cellStartX = mx + (moduleW - cellsPerRow * cellDiam) / 2 + cellR;
+    const cellStartY = moduleY + 14 + cellR;
+
+    let cellCount = 0;
+    const totalCells = cellsPerRow * rows;
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cellsPerRow; col++) {
+        cellCount++;
+        if (cellCount / totalCells > p) continue;
+        const cx = cellStartX + col * cellDiam;
+        const cy = cellStartY + row * (cellDiam + 2);
+        ctx.beginPath();
+        ctx.arc(cx, cy, cellR, 0, Math.PI*2);
+        const g = ctx.createRadialGradient(cx-2,cy-2,0,cx,cy,cellR);
+        g.addColorStop(0,'#ff9966'); g.addColorStop(1,'#994400');
+        ctx.fillStyle = g;
+        ctx.fill();
+        ctx.strokeStyle = '#cc6600';
+        ctx.lineWidth = .5;
+        ctx.stroke();
+      }
+    }
+
+    if (p > 0.5) {
+      ctx.fillStyle = 'rgba(80,80,100,0.4)';
+      ctx.font = `${Math.max(7,W*0.01)}px Segoe UI,sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.fillText(`Module ${m+1}`, mx + moduleW/2, moduleY + moduleH - 5);
+    }
+  }
+
+  // space utilization
+  if (p > 0.7) {
+    const utilP = 0.42 + (p - 0.7) * (0.58 / 0.3) * 0.1;
+    const utilW = Math.min(utilP, 0.45) * W;
+    drawUtilBar(ctx, px, py + H + 8, W, 12, utilW, '#ff8c5a', `${Math.round(utilP*100)}% usable`, '#5a3020');
+  }
+}
+
+function drawBladeCTP(ctx, px, py, W, H, p) {
+  roundRect(ctx, px, py, W, H, 10);
+  ctx.fillStyle = '#040d1a';
+  ctx.fill();
+  ctx.strokeStyle = '#1a4a8a';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.fillStyle = '#00c3ff';
+  ctx.font = `bold ${Math.max(10,W*0.016)}px Segoe UI,sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText('BYD BLADE CTP (CELL-TO-PACK) — NO MODULES', px + W/2, py + 14);
+
+  const bPad = 10;
+  const bladeAreaY = py + 22;
+  const bladeAreaH = H - 30;
+  const bladeH = 18;
+  const bladeGap = 5;
+  const numBlades = Math.floor((bladeAreaH) / (bladeH + bladeGap));
+
+  for (let i = 0; i < numBlades; i++) {
+    if (i / numBlades > p) continue;
+    const by = bladeAreaY + i * (bladeH + bladeGap);
+    const bw = (W - bPad * 2) * p;
+    roundRect(ctx, px + bPad, by, bw, bladeH, 3);
+    const g = ctx.createLinearGradient(px+bPad, by, px+bPad, by+bladeH);
+    g.addColorStop(0,'#1a4a8a'); g.addColorStop(.5,'#0d3060'); g.addColorStop(1,'#1a4a8a');
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.strokeStyle = '#2a6aaa';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // glow edge
+    ctx.strokeStyle = 'rgba(0,195,255,0.4)';
+    ctx.lineWidth = .8;
+    ctx.beginPath(); ctx.moveTo(px+bPad+3,by+1); ctx.lineTo(px+bPad+bw-3,by+1); ctx.stroke();
+
+    if (bw > 80) {
+      ctx.fillStyle = 'rgba(90,184,255,0.6)';
+      ctx.font = `${Math.max(6,bladeH*0.5)}px monospace`;
+      ctx.textAlign = 'left';
+      ctx.fillText('LFP BLADE', px+bPad+8, by+bladeH*0.67);
+    }
+  }
+
+  if (p > 0.7) {
+    const utilP = 0.6 + (p - 0.7) * (0.57 / 0.3) * 0.1;
+    const utilW = Math.min(utilP, 0.72) * W;
+    drawUtilBar(ctx, px, py + H + 8, W, 12, utilW, '#00e676', `${Math.round(utilP*100)}% usable`, '#003a20');
+  }
+}
+
+function drawUtilBar(ctx, x, y, W, H, fillW, color, label, bgColor) {
+  roundRect(ctx, x, y, W, H, H/2);
+  ctx.fillStyle = bgColor;
+  ctx.fill();
+  roundRect(ctx, x, y, fillW, H, H/2);
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = `${Math.max(8,H*0.75)}px Segoe UI,sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText(`Pack efficiency: ${label}`, x + W/2, y + H * 0.8);
+}
+
+// ═══════════════════════════════════════════════════════
+//   NAIL TEST
+// ═══════════════════════════════════════════════════════
+const nailCanvas = document.getElementById('nailCanvas');
+let nailCtx, NW, NH;
+let nailPhase = 'ready'; // ready | driving | burning | done
+let nailProg  = 0;       // 0..1 how deep the nail has gone
+let nmcTemp   = 0;       // 0..1
+let bladeTemp = 0;       // 0..1
+let fireParticles = [];
+let sparks = [];
+let nailRAF = null;
+let lastNailTS = null;
+let shakeAmt = 0;
+
+function resizeNail() {
+  const container = nailCanvas.parentElement;
+  NW = container.clientWidth;
+  NH = Math.round(NW * 0.52);
+  nailCtx = setupCanvas(nailCanvas, NW, NH);
+  drawNailFrame();
+}
+
+function runNailTest() {
+  const btn = document.getElementById('nail-run');
+  if (nailPhase !== 'ready') {
+    resetNail(); return;
+  }
+  nailPhase = 'driving';
+  nailProg  = 0;
+  nmcTemp   = 0;
+  bladeTemp = 0;
+  fireParticles = [];
+  sparks = [];
+  shakeAmt = 0;
+  btn.textContent = '↺ Reset';
+  btn.classList.add('resetting');
+  lastNailTS = null;
+  nailRAF = requestAnimationFrame(nailLoop);
+}
+
+function resetNail() {
+  nailPhase = 'ready';
+  nailProg  = 0;
+  nmcTemp   = 0;
+  bladeTemp = 0;
+  fireParticles = [];
+  sparks = [];
+  shakeAmt = 0;
+  const btn = document.getElementById('nail-run');
+  btn.textContent = '🔩 Drive the Nail';
+  btn.classList.remove('resetting');
+  setNailStatus('Click <strong>"Drive the Nail"</strong> to simulate a nail penetration event on both battery types simultaneously.');
+  if (nailRAF) cancelAnimationFrame(nailRAF);
+  drawNailFrame();
+}
+
+function nailLoop(ts) {
+  if (!lastNailTS) lastNailTS = ts;
+  const dt = Math.min(ts - lastNailTS, 50);
+  lastNailTS = ts;
+
+  const speed = nailPhase === 'driving' ? 0.006 : 0;
+
+  if (nailPhase === 'driving') {
+    nailProg = Math.min(nailProg + speed * (dt/16), 1);
+
+    const pen = Math.max(0, (nailProg - 0.25) / 0.75);
+    nmcTemp   = Math.min(1, pen * pen * 1.6);
+    bladeTemp = Math.min(0.09, pen * 0.12);
+
+    // spawn fire when NMC is hot enough
+    if (nmcTemp > 0.2) spawnFire(dt);
+    if (nmcTemp > 0.5) spawnSparks(dt);
+
+    if (nmcTemp > 0.6) shakeAmt = Math.min(shakeAmt + 0.5, 6);
+
+    if (nailProg >= 1) {
+      nailPhase = 'done';
+      updateNailDoneStatus();
+    }
+  } else {
+    // continue fire after done
+    if (nmcTemp > 0) nmcTemp = Math.min(nmcTemp + 0.003, 1);
+    if (nailPhase === 'done') spawnFire(dt);
+    shakeAmt *= 0.95;
+  }
+
+  // update particles
+  fireParticles = fireParticles.filter(p => {
+    p.life -= dt / 16;
+    p.x += p.vx + (Math.random()-.5) * .5;
+    p.y += p.vy;
+    p.vy -= 0.08;
+    p.size *= 0.985;
+    return p.life > 0 && p.size > 0.5;
+  });
+  sparks = sparks.filter(s => {
+    s.life -= dt/16;
+    s.x += s.vx; s.y += s.vy;
+    s.vy += 0.1;
+    return s.life > 0;
+  });
+
+  drawNailFrame();
+
+  if (nailPhase !== 'ready') nailRAF = requestAnimationFrame(nailLoop);
+}
+
+function spawnFire(dt) {
+  const pos = getNMCNailTip();
+  const count = Math.ceil(nmcTemp * 4 * (dt/16));
+  for (let i = 0; i < count; i++) {
+    fireParticles.push({
+      x: pos.x + (Math.random()-.5)*30,
+      y: pos.y - (Math.random()*10),
+      vx: (Math.random()-.5)*2.5,
+      vy: -(1.5 + Math.random()*3),
+      life: 25 + Math.random()*30,
+      size: 4 + Math.random()*10,
+    });
+  }
+}
+function spawnSparks(dt) {
+  const pos = getNMCNailTip();
+  const count = Math.ceil((nmcTemp - 0.5) * 3 * (dt/16));
+  for (let i = 0; i < count; i++) {
+    const a = Math.random() * Math.PI * 2;
+    const sp = 2 + Math.random()*5;
+    sparks.push({
+      x: pos.x, y: pos.y,
+      vx: Math.cos(a)*sp, vy: Math.sin(a)*sp - 2,
+      life: 8 + Math.random()*12,
+    });
+  }
+}
+
+function getNMCNailTip() {
+  const { nmcBatt, nailW } = getNailLayout();
+  const nailX = nmcBatt.x + nmcBatt.w/2 - nailW/2;
+  const tipY  = nmcBatt.y + nmcBatt.h * nailProg;
+  return { x: nailX + nailW/2, y: tipY };
+}
+
+function getNailLayout() {
+  const half = NW / 2;
+  const padX = half * 0.12;
+  const battY = NH * 0.22;
+  const battH = NH * 0.52;
+  const nailW = Math.max(6, NW * 0.01);
+
+  const nmcBatt = { x: padX, y: battY, w: half - padX * 1.5, h: battH };
+  const bladeBatt = { x: half + padX * 0.5, y: battY + battH * 0.3, w: half - padX * 1.5, h: battH * 0.38 };
+
+  return { nmcBatt, bladeBatt, nailW, half, battY, battH };
+}
+
+function drawNailFrame() {
+  const ctx = nailCtx;
+  ctx.clearRect(0, 0, NW, NH);
+
+  ctx.fillStyle = '#04080f';
+  ctx.fillRect(0, 0, NW, NH);
+
+  // subtle grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.02)';
+  ctx.lineWidth = 1;
+  for (let x=0;x<NW;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,NH);ctx.stroke();}
+  for (let y=0;y<NH;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(NW,y);ctx.stroke();}
+
+  const { nmcBatt, bladeBatt, nailW, half } = getNailLayout();
+
+  // center divider
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(half, 0); ctx.lineTo(half, NH); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // section headers
+  ctx.textAlign = 'center';
+  ctx.font = `bold ${Math.max(10,NW*0.016)}px 'Segoe UI',sans-serif`;
+  ctx.fillStyle = '#ff8c5a';
+  ctx.fillText('NMC / 18650 Cylindrical Cell', half/2, NH*0.05);
+  ctx.fillStyle = '#00e676';
+  ctx.fillText('BYD Blade Battery (LFP)', half + half/2, NH*0.05);
+
+  ctx.font = `${Math.max(8,NW*0.012)}px 'Segoe UI',sans-serif`;
+  ctx.fillStyle = '#5a7099';
+  ctx.fillText('NMC Chemistry', half/2, NH*0.09);
+  ctx.fillText('LFP Chemistry', half+half/2, NH*0.09);
+
+  // shake offset for NMC
+  const sx = shakeAmt > 0.5 ? (Math.random()-.5)*shakeAmt*2 : 0;
+  const sy = shakeAmt > 0.5 ? (Math.random()-.5)*shakeAmt : 0;
+
+  ctx.save();
+  ctx.translate(sx, sy);
+
+  // ── DRAW NMC BATTERY ──
+  drawNMCBattery(ctx, nmcBatt);
+
+  // ── NMC NAIL ──
+  const nailAbove = nmcBatt.y * 0.9;
+  const nmcNailX = nmcBatt.x + nmcBatt.w/2 - nailW/2;
+  const nmcNailTopY = nailAbove * (1 - nailProg);
+  const nmcNailBotY = nmcBatt.y + nmcBatt.h * Math.min(nailProg, 1.05);
+  drawNail(ctx, nmcNailX, nmcNailTopY, nailW, nmcNailBotY - nmcNailTopY, nmcTemp);
+
+  // ── FIRE PARTICLES ──
+  drawFireParticles(ctx);
+  drawSparks(ctx);
+
+  // ── NMC TEMPERATURE GAUGE ──
+  drawTempGauge(ctx, nmcBatt.x - 22, nmcBatt.y, 14, nmcBatt.h, nmcTemp, 600, true);
+
+  ctx.restore();
+
+  // ── DRAW BLADE BATTERY ──
+  drawBladeBattery(ctx, bladeBatt);
+
+  // ── BLADE NAIL ──
+  const bladeNailX = bladeBatt.x + bladeBatt.w/2 - nailW/2;
+  const bladeNailTopY = NH * 0.05;
+  const bladeNailH = bladeBatt.y + bladeBatt.h * Math.min(nailProg, 1.1) - bladeNailTopY;
+  drawNail(ctx, bladeNailX, bladeNailTopY, nailW, bladeNailH, bladeTemp);
+
+  // ── BLADE TEMPERATURE GAUGE ──
+  drawTempGauge(ctx, bladeBatt.x + bladeBatt.w + 8, bladeBatt.y, 14, bladeBatt.h, bladeTemp, 60, false);
+
+  // ── STATUS OVERLAYS ──
+  if (nailPhase === 'done') {
+    drawResultOverlay(ctx, nmcBatt, false);
+    drawResultOverlay(ctx, bladeBatt, true);
+  }
+
+  // ── PROGRESS INDICATOR ──
+  if (nailPhase !== 'ready') {
+    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    ctx.fillRect(NW*0.1, NH - 16, NW*0.8, 8);
+    const barC = nailProg < 0.5 ? '#ffaa00' : '#ff4400';
+    ctx.fillStyle = barC;
+    ctx.fillRect(NW*0.1, NH - 16, NW*0.8*nailProg, 8);
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = `${Math.max(7,NW*0.011)}px monospace`;
+    ctx.textAlign = 'center';
+    ctx.fillText(`Nail penetration: ${Math.round(nailProg*100)}%`, NW/2, NH - 20);
+  }
+}
+
+function drawNMCBattery(ctx, b) {
+  ctx.save();
+  // heat glow
+  if (nmcTemp > 0) {
+    const g = ctx.createRadialGradient(b.x+b.w/2, b.y+b.h/2, 0, b.x+b.w/2, b.y+b.h/2, b.w*0.7);
+    const r = Math.round(nmcTemp * 255);
+    const g2 = Math.round((1-nmcTemp)*100);
+    g.addColorStop(0, `rgba(${r},${g2},0,${nmcTemp*0.7})`);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.rect(b.x-20,b.y-20,b.w+40,b.h+40); ctx.fill();
+  }
+
+  // body
+  roundRect(ctx, b.x, b.y, b.w, b.h, 8);
+  const bodyG = ctx.createLinearGradient(b.x,b.y,b.x+b.w,b.y);
+  bodyG.addColorStop(0,'#1a1a1a'); bodyG.addColorStop(.5,'#2a2a2a'); bodyG.addColorStop(1,'#1a1a1a');
+  ctx.fillStyle = bodyG;
+  ctx.fill();
+  ctx.strokeStyle = nmcTemp > 0.3 ? `rgba(255,${Math.round((1-nmcTemp)*100)},0,0.8)` : '#555';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // jellyroll pattern
+  const cx = b.x + b.w/2, cy = b.y + b.h/2;
+  const maxR = Math.min(b.w, b.h) * 0.42;
+  for (let r = 4; r < maxR; r += 7) {
+    const hot = nmcTemp > 0.1;
+    ctx.strokeStyle = hot
+      ? `rgba(${Math.round(nmcTemp*255)},${Math.round((1-nmcTemp)*80)},0,${0.15+nmcTemp*0.3})`
+      : 'rgba(100,100,120,0.3)';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
+  }
+
+  // label
+  ctx.fillStyle = nmcTemp > 0.3 ? '#ff6644' : '#888';
+  ctx.font = `bold ${Math.max(8,b.w*0.07)}px 'Segoe UI',sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText('18650', cx, b.y + b.h + 16);
+
+  ctx.restore();
+}
+
+function drawBladeBattery(ctx, b) {
+  ctx.save();
+  // safe glow
+  if (nailProg > 0.3) {
+    ctx.shadowColor = '#00e676';
+    ctx.shadowBlur = 10;
+  }
+
+  roundRect(ctx, b.x, b.y, b.w, b.h, 5);
+  const bodyG = ctx.createLinearGradient(b.x,b.y,b.x,b.y+b.h);
+  bodyG.addColorStop(0,'#0a2040'); bodyG.addColorStop(.5,'#0d2e54'); bodyG.addColorStop(1,'#0a2040');
+  ctx.fillStyle = bodyG;
+  ctx.fill();
+  ctx.strokeStyle = nailProg > 0.5 ? 'rgba(0,230,118,0.7)' : '#2a5590';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // internal layer lines
+  const layerCount = 6;
+  const layerH = b.h / (layerCount + 1);
+  for (let i = 1; i <= layerCount; i++) {
+    const ly = b.y + i * layerH;
+    ctx.strokeStyle = 'rgba(0,170,255,0.2)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.moveTo(b.x+4, ly); ctx.lineTo(b.x+b.w-4, ly); ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  // heat dot at nail penetration (tiny)
+  if (nailProg > 0.5 && bladeTemp > 0) {
+    const nx = b.x + b.w/2;
+    const ny = b.y + b.h * 0.5;
+    const g = ctx.createRadialGradient(nx, ny, 0, nx, ny, 20);
+    g.addColorStop(0, `rgba(255,200,0,${bladeTemp*0.8})`);
+    g.addColorStop(1, 'rgba(255,200,0,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(nx,ny,20,0,Math.PI*2); ctx.fill();
+  }
+
+  ctx.fillStyle = '#3a8aaa';
+  ctx.font = `bold ${Math.max(8,b.w*0.04)}px 'Segoe UI',sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText('BLADE (LFP)', b.x + b.w/2, b.y + b.h + 14);
+
+  ctx.restore();
+}
+
+function drawNail(ctx, x, y, w, h, temp) {
+  ctx.save();
+  // glow based on temp
+  if (temp > 0.1) {
+    ctx.shadowColor = `rgba(${Math.round(temp*255)},${Math.round((1-temp)*80)},0,0.9)`;
+    ctx.shadowBlur = 10 + temp * 15;
+  }
+  const g = ctx.createLinearGradient(x,0,x+w,0);
+  g.addColorStop(0,'#555'); g.addColorStop(.4,'#ccc'); g.addColorStop(.6,'#ccc'); g.addColorStop(1,'#555');
+  ctx.fillStyle = g;
+  // shaft
+  ctx.fillRect(x, y, w, h - w);
+  // tip (triangle)
+  ctx.beginPath();
+  ctx.moveTo(x, y+h-w);
+  ctx.lineTo(x+w/2, y+h);
+  ctx.lineTo(x+w, y+h-w);
+  ctx.closePath();
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.restore();
+}
+
+function drawFireParticles(ctx) {
+  ctx.save();
+  for (const p of fireParticles) {
+    const t = p.life / (p.size < 3 ? 20 : 50);
+    const r = t > 0.7 ? 255 : Math.round(255*(t/0.7));
+    const g = t > 0.5 ? Math.round(255*((t-0.5)/0.5)) : 0;
+    ctx.globalAlpha = Math.min(t * 1.5, 0.85);
+    ctx.fillStyle = `rgb(${r},${g},0)`;
+    ctx.shadowColor = '#ff8800';
+    ctx.shadowBlur = p.size * 2;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  ctx.shadowBlur = 0;
+  ctx.restore();
+}
+
+function drawSparks(ctx) {
+  ctx.save();
+  for (const s of sparks) {
+    ctx.globalAlpha = s.life / 15;
+    ctx.fillStyle = '#ffffaa';
+    ctx.beginPath(); ctx.arc(s.x, s.y, 1.5, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+function drawTempGauge(ctx, x, y, w, h, val, maxT, isDanger) {
+  ctx.save();
+  // background
+  roundRect(ctx, x, y, w, h, 4);
+  ctx.fillStyle = 'rgba(255,255,255,0.05)';
+  ctx.fill();
+  // fill
+  const fillH = h * val;
+  const fillY = y + h - fillH;
+  const color = isDanger
+    ? `rgb(${Math.round(100+val*155)},${Math.round((1-val)*100)},0)`
+    : '#00e676';
+  roundRect(ctx, x, fillY, w, fillH, 4);
+  ctx.fillStyle = color;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 6;
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  // temp label
+  const tempVal = Math.round(val * maxT);
+  ctx.fillStyle = isDanger ? (val > 0.3 ? '#ff8866' : '#aaa') : '#00e676';
+  ctx.font = `bold ${Math.max(7,w*0.7)}px monospace`;
+  ctx.textAlign = 'center';
+  ctx.fillText(`${tempVal}°`, x + w/2, fillY > y+4 ? fillY - 4 : y - 4);
+  // label
+  ctx.fillStyle = '#5a7099';
+  ctx.font = `${Math.max(5,w*0.5)}px Segoe UI,sans-serif`;
+  ctx.fillText('°C', x+w/2, y+h+12);
+  ctx.restore();
+}
+
+function drawResultOverlay(ctx, b, isSafe) {
+  ctx.save();
+  ctx.globalAlpha = 0.85;
+  roundRect(ctx, b.x, b.y - 28, b.w, 26, 6);
+  ctx.fillStyle = isSafe ? 'rgba(0,60,30,0.95)' : 'rgba(80,0,0,0.95)';
+  ctx.fill();
+  ctx.strokeStyle = isSafe ? '#00e676' : '#ff4400';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = isSafe ? '#00e676' : '#ff6644';
+  ctx.font = `bold ${Math.max(9, b.w*0.055)}px 'Segoe UI',sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText(isSafe ? '✅ SAFE — No Fire' : '🔥 THERMAL RUNAWAY', b.x + b.w/2, b.y - 11);
+  ctx.restore();
+}
+
+function updateNailDoneStatus() {
+  setNailStatus(
+    '<span class="danger">🔥 NMC cell: THERMAL RUNAWAY triggered — surface temp 500–600°C, fire and possible explosion.</span><br>' +
+    '<span class="safe">✅ Blade cell: Temperature barely rises above 60°C. LFP chemistry prevents oxygen release — no fire, no explosion. Just a hole.</span>'
+  );
+}
+function setNailStatus(html) {
+  document.getElementById('nailStatus').innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════
+//   THERMAL CANVAS
+// ═══════════════════════════════════════════════════════
+const thermalCanvas = document.getElementById('thermalCanvas');
+let thCtx, TW, TH;
+let thMode = null;    // null | 'nmc' | 'blade'
+let thGrid = null;    // 2D array of heat values
+let thTime = 0;
+let thRAF  = null;
+let thLastTS = null;
+const TH_COLS = 20, TH_ROWS = 6;
+let thCellW, thCellH;
+
+function resizeThermal() {
+  const container = thermalCanvas.parentElement.parentElement;
+  TW = Math.min(container.clientWidth - 40, 900);
+  TH = Math.round(TW * 0.28);
+  thCtx = setupCanvas(thermalCanvas, TW, TH);
+  thCellW = TW / TH_COLS;
+  thCellH = TH / TH_ROWS;
+  if (thGrid) drawThermal();
+}
+
+function initThermalGrid() {
+  thGrid = Array.from({length:TH_ROWS}, () => new Float32Array(TH_COLS));
+}
+
+function startThermal(mode) {
+  if (thRAF) cancelAnimationFrame(thRAF);
+  thMode = mode;
+  thTime = 0;
+  initThermalGrid();
+  // trigger cell at center
+  const trigR = Math.floor(TH_ROWS/2);
+  const trigC = Math.floor(TH_COLS/2);
+  thGrid[trigR][trigC] = 1.0;
+  thLastTS = null;
+  document.querySelectorAll('.th-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(mode==='nmc'?'th-nmc':'th-blade').classList.add('active');
+  thermalRAF(performance.now());
+  document.getElementById('thermalStatus').innerHTML =
+    mode === 'nmc'
+      ? '🔥 <strong>NMC pack:</strong> Heat spreads rapidly to neighboring cells, triggering cascading thermal runaway across the entire pack.'
+      : '✅ <strong>Blade pack:</strong> Heat from the triggered cell dissipates along the thin blade surface — it cannot cascade to neighbors.';
+}
+
+function resetThermal() {
+  if (thRAF) cancelAnimationFrame(thRAF);
+  thMode = null;
+  thGrid = null;
+  thCtx.clearRect(0,0,TW,TH);
+  document.querySelectorAll('.th-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('thermalStatus').textContent = 'Select a battery type above to simulate a thermal event in one cell and watch how heat spreads through the pack.';
+  drawThermalIdle();
+}
+
+function thermalRAF(ts) {
+  if (!thLastTS) thLastTS = ts;
+  const dt = Math.min(ts - thLastTS, 50);
+  thLastTS = ts;
+  thTime += dt;
+  updateThermalGrid(dt);
+  drawThermal();
+  if (thTime < 8000) thRAF = requestAnimationFrame(thermalRAF);
+}
+
+function updateThermalGrid(dt) {
+  const next = Array.from({length:TH_ROWS}, () => new Float32Array(TH_COLS));
+  // diffusion rate differs by mode
+  const diff = thMode === 'nmc' ? 0.14 * (dt/16) : 0.018 * (dt/16);
+  const decay = thMode === 'nmc' ? 0.998 : 0.985;
+
+  for (let r=0;r<TH_ROWS;r++) {
+    for (let c=0;c<TH_COLS;c++) {
+      let v = thGrid[r][c];
+      // spread to neighbors
+      const neighbors = [];
+      if (r>0) neighbors.push(thGrid[r-1][c]);
+      if (r<TH_ROWS-1) neighbors.push(thGrid[r+1][c]);
+      if (c>0) neighbors.push(thGrid[r][c-1]);
+      if (c<TH_COLS-1) neighbors.push(thGrid[r][c+1]);
+      const avg = neighbors.reduce((a,b)=>a+b,0) / neighbors.length;
+      v = v * decay + (avg - v) * diff;
+      // NMC: cascade — if a cell reaches threshold, it ignites fully
+      if (thMode === 'nmc' && v > 0.35 && v < 0.98) {
+        v = Math.min(v + 0.04 * (dt/16), 1);
+      }
+      next[r][c] = Math.max(0, v);
+    }
+  }
+  thGrid = next;
+}
+
+function drawThermal() {
+  const ctx = thCtx;
+  ctx.clearRect(0,0,TW,TH);
+  ctx.fillStyle = '#04080f';
+  ctx.fillRect(0,0,TW,TH);
+
+  if (!thGrid) { drawThermalIdle(); return; }
+
+  for (let r=0;r<TH_ROWS;r++) {
+    for (let c=0;c<TH_COLS;c++) {
+      const v = thGrid[r][c];
+      const x = c * thCellW, y = r * thCellH;
+
+      // cell background
+      ctx.fillStyle = '#081428';
+      ctx.fillRect(x+1, y+1, thCellW-2, thCellH-2);
+
+      // heat color
+      if (v > 0.01) {
+        let hex;
+        if (thMode === 'nmc') {
+          // blue→yellow→orange→red
+          if (v < 0.33) hex = heatColor(v/0.33, [0,50,150],[255,200,0]);
+          else if (v < 0.66) hex = heatColor((v-0.33)/0.33, [255,200,0],[255,80,0]);
+          else hex = heatColor((v-0.66)/0.34, [255,80,0],[255,0,0]);
+        } else {
+          // blade: mostly stays green/teal
+          hex = heatColor(v, [0,80,150],[255,200,0]);
+        }
+        ctx.fillStyle = hex;
+        ctx.globalAlpha = 0.2 + v * 0.75;
+        ctx.fillRect(x+2, y+2, thCellW-4, thCellH-4);
+        ctx.globalAlpha = 1;
+      }
+
+      // cell border
+      ctx.strokeStyle = v > 0.1
+        ? (thMode==='nmc' ? `rgba(255,${Math.round((1-v)*200)},0,0.4)` : 'rgba(0,200,120,0.3)')
+        : 'rgba(30,60,100,0.5)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x+1, y+1, thCellW-2, thCellH-2);
+
+      // on-fire indicator
+      if (thMode === 'nmc' && v > 0.7) {
+        ctx.font = `${Math.min(thCellH*0.6,16)}px serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = 'rgba(255,200,0,0.8)';
+        ctx.fillText('🔥', x+thCellW/2, y+thCellH/2);
+      }
+    }
+  }
+
+  // label
+  ctx.textAlign = 'left';
+  ctx.font = `bold ${Math.max(9,TW*0.014)}px 'Segoe UI',sans-serif`;
+  ctx.fillStyle = thMode === 'nmc' ? '#ff8c5a' : '#00e676';
+  ctx.textBaseline = 'top';
+  ctx.fillText(
+    thMode === 'nmc' ? 'NMC Pack — Cascading Thermal Runaway' : 'Blade Pack — Contained Heat Event',
+    8, 6
+  );
+}
+
+function drawThermalIdle() {
+  const ctx = thCtx;
+  ctx.clearRect(0,0,TW,TH);
+  ctx.fillStyle = '#04080f';
+  ctx.fillRect(0,0,TW,TH);
+  for (let r=0;r<TH_ROWS;r++) {
+    for (let c=0;c<TH_COLS;c++) {
+      ctx.fillStyle = '#081428';
+      ctx.fillRect(c*thCellW+1, r*thCellH+1, thCellW-2, thCellH-2);
+      ctx.strokeStyle = 'rgba(30,60,100,0.5)';
+      ctx.lineWidth=1;
+      ctx.strokeRect(c*thCellW+1, r*thCellH+1, thCellW-2, thCellH-2);
+    }
+  }
+  ctx.fillStyle = '#3a5070';
+  ctx.font = `${Math.max(10,TW*0.018)}px 'Segoe UI',sans-serif`;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('Click a button above to simulate a thermal event', TW/2, TH/2);
+}
+
+function heatColor(t, c1, c2) {
+  const r = Math.round(c1[0] + (c2[0]-c1[0])*t);
+  const g = Math.round(c1[1] + (c2[1]-c1[1])*t);
+  const b = Math.round(c1[2] + (c2[2]-c1[2])*t);
+  return `rgb(${r},${g},${b})`;
+}
+
+// ═══════════════════════════════════════════════════════
+//   MOLECULE VISUALIZATIONS (CSS-based, drawn via DOM)
+// ═══════════════════════════════════════════════════════
+function buildMolecules() {
+  buildNMC();
+  buildLFP();
+}
+
+function buildNMC() {
+  const el = document.getElementById('nmcMolecule');
+  const atoms = [
+    {t:'atom-li',label:'Li',x:50,y:50},
+    {t:'atom-ni',label:'Ni',x:25,y:30},
+    {t:'atom-co',label:'Co',x:75,y:30},
+    {t:'atom-mn',label:'Mn',x:25,y:70},
+    {t:'atom-o', label:'O²⁻',x:75,y:70},
+    {t:'atom-o', label:'O²⁻',x:50,y:85},
+  ];
+  atoms.forEach(a => {
+    const d = document.createElement('div');
+    d.className = `atom ${a.t}`;
+    d.style.left = `${a.x}%`; d.style.top = `${a.y}%`;
+    d.style.transform = 'translate(-50%,-50%)';
+    d.textContent = a.label;
+    el.appendChild(d);
+  });
+  // "weak bond" label
+  const l = document.createElement('div');
+  l.style.cssText = 'position:absolute;bottom:0;width:100%;text-align:center;font-size:.68rem;color:rgba(255,100,50,.7);';
+  l.textContent = '⚠ Weak Ni/Co-O bonds — release O² under heat';
+  el.appendChild(l);
+}
+
+function buildLFP() {
+  const el = document.getElementById('lfpMolecule');
+  const atoms = [
+    {t:'atom-li',label:'Li',x:50,y:50},
+    {t:'atom-fe',label:'Fe',x:25,y:35},
+    {t:'atom-p', label:'P',x:75,y:35},
+    {t:'atom-lfp-o',label:'O²⁻',x:25,y:68},
+    {t:'atom-lfp-o',label:'O²⁻',x:75,y:68},
+    {t:'atom-lfp-o',label:'O²⁻',x:50,y:85},
+  ];
+  atoms.forEach(a => {
+    const d = document.createElement('div');
+    d.className = `atom ${a.t}`;
+    d.style.left = `${a.x}%`; d.style.top = `${a.y}%`;
+    d.style.transform = 'translate(-50%,-50%)';
+    d.textContent = a.label;
+    el.appendChild(d);
+  });
+  const l = document.createElement('div');
+  l.style.cssText = 'position:absolute;bottom:0;width:100%;text-align:center;font-size:.68rem;color:rgba(0,200,100,.7);';
+  l.textContent = '✓ Strong Fe-O bonds — stable at high temperature';
+  el.appendChild(l);
+}
+
+// ═══════════════════════════════════════════════════════
+//   SEPARATOR SEQUENCE CANVAS
+// ═══════════════════════════════════════════════════════
+const seqCanvas = document.getElementById('seqCanvas');
+let seqCtx, SQW, SQH;
+let seqStep = 1;           // 1..7
+let seqPlaying = false;
+let seqPlayTimer = null;
+let seqAnimId = null;
+let seqAnimProg = 0;       // 0..1 transition progress
+let seqLastTS = null;
+let seqFireParts = [];
+let seqBladeParts = [];
+
+// ── Step data ──────────────────────────────────────────
+const SEQ_DATA = [
+  {
+    step:1, label:'Healthy Cell',
+    nmcTemp:'25 °C', bladeTemp:'25 °C',
+    nmcDesc:'The cell is healthy. Lithium ions <strong>cleanly intercalate</strong> into the graphite anode. The separator membrane is intact — it blocks electrons while letting ions pass.',
+    bladeDesc:'BYD Blade cell is healthy. LFP\'s olivine crystal structure provides exceptionally stable intercalation sites. The thick electrode stack and structural compression aid uniform lithium distribution.',
+  },
+  {
+    step:2, label:'Li Plating',
+    nmcTemp:'~30 °C', bladeTemp:'25 °C',
+    nmcDesc:'<strong>Manufacturing defect</strong> (uneven electrode coating from Sunwoda\'s process deviation) means some Li⁺ ions can\'t insert into graphite cleanly. They deposit as <strong>metallic Li⁰</strong> on the anode surface — grey/silver blobs that don\'t belong there.',
+    bladeDesc:'BYD\'s tighter manufacturing tolerances and cell-to-pack compression keep lithium intercalation uniform. Even if a small amount of lithium plating occurs, the LFP chemistry\'s lower operating voltage slows the plating kinetics significantly.',
+  },
+  {
+    step:3, label:'Dendrite Growth',
+    nmcTemp:'~38 °C', bladeTemp:'~27 °C',
+    nmcDesc:'Metallic lithium deposits grow into <strong>needle-like dendrites</strong> with each charge cycle. The structures are electrically conductive and grow toward the separator — the last physical barrier between anode and cathode.',
+    bladeDesc:'LFP\'s olivine phosphate structure is more forgiving of imperfect lithium distribution. Any dendrite formation is slower and less severe. The blade\'s thin geometry also means any heat from abnormal sites dissipates rapidly across its large surface.',
+  },
+  {
+    step:4, label:'Separator Pierced',
+    nmcTemp:'90–120 °C', bladeTemp:'~45 °C',
+    nmcDesc:'A dendrite <strong>physically pierces the 15–25 µm separator membrane</strong>. An internal short circuit (ISC) forms — a direct electrical bridge between anode and cathode. Rapid Joule heating begins. The SEI layer on the anode starts decomposing exothermically at ~90°C.',
+    bladeDesc:'The same ISC event can occur in LFP, but the response is fundamentally different. Heat generated by the short circuit <strong>spreads across the blade\'s 960mm length</strong> and large face area — dissipating before it can trigger a cascade. Temperature peaks around 45°C.',
+  },
+  {
+    step:5, label:'Separator Melts',
+    nmcTemp:'130–180 °C', bladeTemp:'~55 °C',
+    nmcDesc:'The polyolefin separator <strong>softens at ~130°C and melts at ~180°C</strong>. Total separation function is lost — anode and cathode are now in direct electrical and physical contact across a growing area. Heat production accelerates exponentially.',
+    bladeDesc:'In the Blade, even if the separator is damaged, the heat budget is far lower. The thin-blade geometry\'s surface-area-to-volume ratio is <strong>7× higher than a cylindrical cell</strong> — heat cannot accumulate. The event remains localised.',
+  },
+  {
+    step:6, label:'NMC O₂ Release',
+    nmcTemp:'200°C+', bladeTemp:'~58 °C',
+    nmcDesc:'This is the critical NMC-specific danger: above ~150–200°C, the NMC cathode\'s layered oxide structure becomes unstable and <strong>releases lattice oxygen</strong>. This provides self-sustaining fuel AND oxidant for combustion. The fire no longer needs air from outside.',
+    bladeDesc:'<strong>LFP\'s olivine crystal structure (LiFePO₄) is stable up to ~500°C</strong> before decomposition — and even then, it does not release oxygen. Without free oxygen, the combustion loop that makes NMC fires so devastating simply cannot start. The Blade cell is self-limiting.',
+  },
+  {
+    step:7, label:'Outcome',
+    nmcTemp:'500–600 °C', bladeTemp:'&lt;60 °C',
+    nmcDesc:'🔥 <strong>Full thermal runaway.</strong> Organic electrolyte ignites from the released oxygen. Peak temperatures exceed 500°C — sometimes approaching 800°C in pack-level events. Heat propagates to adjacent cells. This is the EX30 failure mode.',
+    bladeDesc:'✅ <strong>Self-limiting. Safe.</strong> The BYD Blade cell\'s surface temperature peaks below 60°C — confirmed in BYD\'s nail penetration tests. No smoke, no fire, no explosion. Adjacent cells are unaffected. The pack survives intact.',
+  },
+];
+
+function goToStep(n) {
+  seqStep = Math.max(1, Math.min(7, n));
+  seqAnimProg = 0;
+  seqFireParts = [];
+  seqBladeParts = [];
+  updateSeqUI();
+  if (!seqAnimId) { seqLastTS = null; seqAnimId = requestAnimationFrame(seqAnimLoop); }
+}
+function stepDir(d) { goToStep(seqStep + d); }
+
+function toggleSeqPlay() {
+  seqPlaying = !seqPlaying;
+  const btn = document.getElementById('seq-play');
+  btn.textContent = seqPlaying ? '⏸ Pause' : '▶ Auto-Play';
+  btn.classList.toggle('playing', seqPlaying);
+  if (seqPlaying) autoAdvance();
+  else { clearTimeout(seqPlayTimer); }
+}
+
+function autoAdvance() {
+  if (!seqPlaying) return;
+  const nextStep = seqStep < 7 ? seqStep + 1 : 1;
+  goToStep(nextStep);
+  seqPlayTimer = setTimeout(autoAdvance, 2800);
+}
+
+function updateSeqUI() {
+  const d = SEQ_DATA[seqStep - 1];
+  for (let i = 1; i <= 7; i++) {
+    document.getElementById(`sbtn-${i}`)?.classList.toggle('active', i === seqStep);
+  }
+  document.getElementById('nmc-step-desc').innerHTML  = d.nmcDesc;
+  document.getElementById('blade-step-desc').innerHTML = d.bladeDesc;
+  document.getElementById('nmc-temp-badge').textContent   = d.nmcTemp;
+  document.getElementById('blade-temp-badge').textContent = d.bladeTemp;
+  document.getElementById('seq-prev').disabled = seqStep === 1;
+  document.getElementById('seq-next').disabled = seqStep === 7;
+}
+
+function seqAnimLoop(ts) {
+  if (!seqLastTS) seqLastTS = ts;
+  const dt = Math.min(ts - seqLastTS, 50);
+  seqLastTS = ts;
+
+  seqAnimProg = Math.min(seqAnimProg + dt / 600, 1);
+
+  // spawn particles for hot steps
+  if (seqStep >= 4) spawnSeqFire(dt);
+  if (seqStep >= 3) spawnBladeSafe(dt);
+
+  seqFireParts = seqFireParts.filter(p => {
+    p.life -= dt/16; p.x += p.vx + (Math.random()-.5)*.3;
+    p.y += p.vy; p.vy -= 0.07; p.size *= 0.984; return p.life > 0 && p.size > .5;
+  });
+  seqBladeParts = seqBladeParts.filter(p => {
+    p.life -= dt/16; p.x += p.vx; p.y += p.vy; p.size *= 0.97; return p.life > 0;
+  });
+
+  drawSeqFrame();
+  seqAnimId = requestAnimationFrame(seqAnimLoop);
+}
+
+function spawnSeqFire(dt) {
+  const { nmcZone } = seqLayout();
+  const intensity = (seqStep - 3) / 4;  // 0..1
+  if (intensity <= 0) return;
+  const count = Math.ceil(intensity * 3 * (dt/16));
+  const sx = nmcZone.sepX, sy = nmcZone.sepY;
+  for (let i = 0; i < count; i++) {
+    seqFireParts.push({
+      x: sx + (Math.random()-.5) * nmcZone.w * 0.4,
+      y: sy + (Math.random()-.5) * nmcZone.h * 0.2,
+      vx:(Math.random()-.5)*1.5, vy:-(1+Math.random()*2.5),
+      life: 20 + Math.random()*25, size: 3 + Math.random()*7,
+    });
+  }
+}
+
+function spawnBladeSafe(dt) {
+  const { bladeZone } = seqLayout();
+  if (seqStep < 4) return;
+  const count = Math.ceil(.5 * (dt/16));
+  for (let i = 0; i < count; i++) {
+    const a = Math.random() * Math.PI * 2;
+    seqBladeParts.push({
+      x: bladeZone.cx + (Math.random()-.5)*bladeZone.w*.3,
+      y: bladeZone.cy, vx:Math.cos(a)*1.5, vy:Math.sin(a)*.5-1,
+      life: 15+Math.random()*20, size: 2+Math.random()*3,
+    });
+  }
+}
+
+function seqLayout() {
+  const half = SQW / 2;
+  const pad  = SQW * 0.04;
+  const battH = SQH * 0.55;
+  const battY = SQH * 0.22;
+
+  // NMC zone (left)
+  const nmcX = pad;
+  const nmcW = half - pad * 1.5;
+  // Layer proportions inside NMC:
+  // cathode collector | cathode | separator | anode | anode collector
+  const layH = battH;
+  const layY = battY;
+  const cathodeH  = layH * 0.28;
+  const sepH      = layH * 0.06;
+  const anodeH    = layH * 0.28;
+  const collH     = layH * 0.09;
+  const nmcSepY   = layY + collH + cathodeH;
+  const nmcAnodeY = nmcSepY + sepH;
+  const nmcCatY   = layY + collH;
+
+  const nmcZone = {
+    x: nmcX, y: battY, w: nmcW, h: battH,
+    sepY: nmcSepY + sepH/2,
+    sepX: nmcX + nmcW/2,
+    anodeY: nmcAnodeY, cathodeY: nmcCatY,
+    collH, cathodeH, sepH, anodeH,
+  };
+
+  // Blade zone (right) — very thin tall rectangle
+  const bladeX = half + pad * 0.5;
+  const bladeW = half - pad * 1.5;
+  const bladeH_draw = SQH * 0.22;
+  const bladeY_draw = battY + battH * 0.38;
+  const bladeZone = {
+    x: bladeX, y: bladeY_draw, w: bladeW, h: bladeH_draw,
+    cx: bladeX + bladeW/2, cy: bladeY_draw + bladeH_draw/2,
+  };
+
+  return { nmcZone, bladeZone, half, battY, battH };
+}
+
+function resizeSeq() {
+  const container = seqCanvas.parentElement;
+  SQW = container.clientWidth;
+  SQH = Math.round(SQW * 0.56);
+  seqCtx = setupCanvas(seqCanvas, SQW, SQH);
+  drawSeqFrame();
+}
+
+function drawSeqFrame() {
+  const ctx = seqCtx;
+  ctx.clearRect(0, 0, SQW, SQH);
+  ctx.fillStyle = '#040810';
+  ctx.fillRect(0, 0, SQW, SQH);
+
+  // grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.018)';
+  ctx.lineWidth = 1;
+  for (let x=0;x<SQW;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,SQH);ctx.stroke();}
+  for (let y=0;y<SQH;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(SQW,y);ctx.stroke();}
+
+  const { nmcZone, bladeZone, half } = seqLayout();
+
+  // divider
+  ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(half,0);ctx.lineTo(half,SQH);ctx.stroke();
+  ctx.setLineDash([]);
+
+  // section headers
+  ctx.textAlign='center';
+  ctx.font=`bold ${Math.max(10,SQW*0.016)}px 'Segoe UI',sans-serif`;
+  ctx.fillStyle='#ff8877'; ctx.fillText('NMC Cell  ·  Sunwoda / EX30', half/2, SQH*0.05);
+  ctx.fillStyle='#00e676'; ctx.fillText('BYD Blade LFP', half+half/2, SQH*0.05);
+  ctx.font=`${Math.max(8,SQW*0.011)}px 'Segoe UI',sans-serif`;
+  ctx.fillStyle='#5a7099';
+  ctx.fillText('69 kWh · NMC Prismatic', half/2, SQH*0.09);
+  ctx.fillText('Blade CTP · LFP', half+half/2, SQH*0.09);
+
+  // step badge
+  ctx.textAlign='center';
+  ctx.font=`bold ${Math.max(10,SQW*0.013)}px 'Segoe UI',sans-serif`;
+  ctx.fillStyle='rgba(255,140,100,0.8)';
+  ctx.fillText(`STEP ${seqStep}: ${SEQ_DATA[seqStep-1].label.toUpperCase()}`, SQW/2, SQH*0.14);
+
+  drawNMCLayers(ctx, nmcZone);
+  drawBladeLayers(ctx, bladeZone);
+
+  // particles
+  drawSeqFireParticles(ctx);
+  drawBladeSafeParticles(ctx);
+
+  // temp indicators
+  drawSeqTempBadge(ctx, nmcZone.x + nmcZone.w + 8, nmcZone.y, nmcZone.h, seqStep, 'nmc');
+  drawSeqTempBadge(ctx, bladeZone.x + bladeZone.w + 8, bladeZone.y - 4, bladeZone.h + 8, seqStep, 'blade');
+
+  // zoom callout arrows pointing to separator
+  if (seqStep >= 3) {
+    drawSepCallout(ctx, nmcZone);
+  }
+}
+
+function drawNMCLayers(ctx, z) {
+  const p   = seqAnimProg;
+  const s   = seqStep;
+  const x   = z.x, w = z.w;
+  const cly = z.y;
+  const ccy = cly + z.collH;
+  const sy  = ccy + z.cathodeH;
+  const ay  = sy + z.sepH;
+  const acy = ay + z.anodeH;
+  const ely = acy + z.collH;
+
+  ctx.save();
+
+  // cathode current collector (Al)
+  ctx.fillStyle='#2a2a1a';
+  ctx.fillRect(x, cly, w, z.collH);
+  ctx.strokeStyle='#5a5a20';ctx.lineWidth=.8;ctx.strokeRect(x,cly,w,z.collH);
+
+  // cathode material (NMC)
+  const cathodeHeat = s >= 6 ? (0.3 + (s-6)*0.7) : 0;
+  const catG = ctx.createLinearGradient(x,ccy,x,ccy+z.cathodeH);
+  catG.addColorStop(0,`rgba(${80+Math.round(cathodeHeat*175)},${Math.round(40*(1-cathodeHeat))},0,1)`);
+  catG.addColorStop(1,`rgba(${50+Math.round(cathodeHeat*100)},${Math.round(20*(1-cathodeHeat))},0,1)`);
+  ctx.fillStyle = catG;
+  ctx.fillRect(x, ccy, w, z.cathodeH);
+  ctx.strokeStyle=s>=6?'rgba(255,80,0,.5)':'#5a3020';ctx.lineWidth=.8;ctx.strokeRect(x,ccy,w,z.cathodeH);
+  // NMC crystal dots
+  for(let xi=x+12;xi<x+w-8;xi+=16) for(let yi=ccy+8;yi<ccy+z.cathodeH-6;yi+=14) {
+    ctx.beginPath();ctx.arc(xi,yi,3,0,Math.PI*2);
+    ctx.fillStyle=s>=6?`rgba(255,120,0,${0.4+cathodeHeat*.5})`:'rgba(180,80,0,0.25)';ctx.fill();
+  }
+  // NMC O2 release particles
+  if (s >= 6 && p > 0.3) {
+    const release = (p-0.3)/0.7;
+    for(let xi=x+20;xi<x+w-10;xi+=22) {
+      const oy = ccy + z.cathodeH * (1 - relapse(xi,x,w) * relapse) - z.cathodeH * relapse * 0.3;
+      ctx.beginPath();ctx.arc(xi, ccy + z.cathodeH - z.cathodeH*relase*.5, 4,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,80,0,${relase*.6})`;ctx.fill();
+    }
+    // O2 bubble animation using seqAnimProg
+    const bubCount = Math.floor(relapse * 8);
+    ctx.fillStyle='rgba(255,100,0,0.5)';ctx.font=`${Math.max(7,w*0.04)}px sans-serif`;ctx.textAlign='center';
+    for(let i=0;i<bubCount;i++){
+      const bx=x+20+i*(w-40)/Math.max(1,bubCount-1);
+      const by=ccy+z.cathodeH - relapse*(i%2===0?25:15)*p;
+      ctx.fillText('O₂', bx, by);
+    }
+    function relapse(xi,x0,w0){ return ((xi-x0)/w0); }
+    function relase(){ return (p-0.3)/0.7; }
+  }
+
+  // cathode label
+  ctx.fillStyle=s>=6?'#ff8866':'rgba(200,120,50,0.7)';
+  ctx.font=`bold ${Math.max(7,w*0.035)}px 'Segoe UI',sans-serif`;ctx.textAlign='center';
+  ctx.fillText(s>=6?'CATHODE — O₂ RELEASING':'CATHODE (NMC)', x+w/2, ccy+z.cathodeH/2+4);
+
+  // ── SEPARATOR ──
+  const sepIntact = s <= 3;
+  const sepCracked = s === 4;
+  const sepMelted = s >= 5;
+
+  if (sepIntact) {
+    // intact separator — dashed white line
+    ctx.strokeStyle='rgba(180,200,255,0.9)';ctx.lineWidth=Math.max(2,z.sepH*0.6);
+    ctx.setLineDash([6,4]);
+    ctx.beginPath();ctx.moveTo(x+4,sy+z.sepH/2);ctx.lineTo(x+w-4,sy+z.sepH/2);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='rgba(180,200,255,0.55)';
+    ctx.font=`bold ${Math.max(6,w*0.03)}px monospace`;ctx.textAlign='center';
+    ctx.fillText('SEPARATOR  ←  intact', x+w/2, sy+z.sepH/2+4);
+  } else if (sepCracked) {
+    // separator with dendrite hole — draw with crack
+    ctx.strokeStyle='rgba(180,200,255,0.6)';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);
+    const mx = x+w/2;
+    ctx.beginPath();ctx.moveTo(x+4,sy+z.sepH/2);ctx.lineTo(mx-15,sy+z.sepH/2);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(mx+15,sy+z.sepH/2);ctx.lineTo(x+w-4,sy+z.sepH/2);ctx.stroke();
+    ctx.setLineDash([]);
+    // crack burst
+    ctx.strokeStyle='rgba(255,150,0,0.9)';ctx.lineWidth=1.5;
+    const cpy = sy+z.sepH/2;
+    for(let a=0;a<Math.PI*2;a+=Math.PI/4) {
+      ctx.beginPath();ctx.moveTo(mx,cpy);ctx.lineTo(mx+Math.cos(a)*10,cpy+Math.sin(a)*8);ctx.stroke();
+    }
+    ctx.fillStyle='rgba(255,150,0,0.6)';ctx.font=`bold ${Math.max(6,w*0.035)}px monospace`;ctx.textAlign='center';
+    ctx.fillText('⚡ SEPARATOR PIERCED', x+w/2, sy-4);
+    // glow at hole
+    const rg = ctx.createRadialGradient(mx,cpy,0,mx,cpy,18*p);
+    rg.addColorStop(0,'rgba(255,200,0,0.6)');rg.addColorStop(1,'rgba(255,100,0,0)');
+    ctx.fillStyle=rg;ctx.beginPath();ctx.arc(mx,cpy,18*p,0,Math.PI*2);ctx.fill();
+  } else {
+    // separator melted — just a glowing gap
+    const mg = ctx.createLinearGradient(x,sy,x,sy+z.sepH);
+    mg.addColorStop(0,'rgba(255,60,0,0.3)');mg.addColorStop(1,'rgba(255,0,0,0.1)');
+    ctx.fillStyle=mg;ctx.fillRect(x,sy,w,z.sepH);
+    ctx.fillStyle='rgba(255,80,0,0.7)';ctx.font=`bold ${Math.max(6,w*0.03)}px monospace`;ctx.textAlign='center';
+    ctx.fillText(s>=6?'SEPARATOR — DESTROYED':'SEPARATOR — MELTING', x+w/2, sy+z.sepH/2+3);
+  }
+
+  // ── ANODE ──
+  const anodeHeat = s >= 4 ? Math.min(1,(s-3)/4) : 0;
+  const anodeG = ctx.createLinearGradient(x,ay,x,ay+z.anodeH);
+  anodeG.addColorStop(0,`rgba(${Math.round(20+anodeHeat*80)},${Math.round(30+anodeHeat*20)},${Math.round(40*(1-anodeHeat*.8))},1)`);
+  anodeG.addColorStop(1,`rgba(${Math.round(10+anodeHeat*60)},${Math.round(15*(1-anodeHeat))},${Math.round(25*(1-anodeHeat))},1)`);
+  ctx.fillStyle=anodeG;ctx.fillRect(x,ay,w,z.anodeH);
+  ctx.strokeStyle=s>=4?`rgba(255,${Math.round((1-anodeHeat)*100)},0,.6)`:'rgba(50,80,120,.5)';
+  ctx.lineWidth=1;ctx.strokeRect(x,ay,w,z.anodeH);
+
+  // graphite layer lines in anode
+  for(let yi=ay+8;yi<ay+z.anodeH-4;yi+=10){
+    ctx.strokeStyle=s>=4?`rgba(255,${Math.round(150*(1-anodeHeat))},0,0.15)`:'rgba(60,100,160,0.2)';
+    ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x+6,yi);ctx.lineTo(x+w-6,yi);ctx.stroke();
+  }
+  ctx.fillStyle=s>=4?'#ff8866':'rgba(80,120,200,0.7)';
+  ctx.font=`bold ${Math.max(7,w*0.035)}px 'Segoe UI',sans-serif`;ctx.textAlign='center';
+  ctx.fillText(s>=4?'ANODE — OVERHEATING':'ANODE (Graphite)', x+w/2, ay+z.anodeH/2+4);
+
+  // ── DENDRITES ──
+  if (s >= 2) drawDendrites(ctx, x, w, ay, z.anodeH, z.sepH, sy, s, p);
+
+  // anode current collector (Cu)
+  ctx.fillStyle='#2a1a00';ctx.fillRect(x,acy,w,z.collH);
+  ctx.strokeStyle='#5a3800';ctx.lineWidth=.8;ctx.strokeRect(x,acy,w,z.collH);
+
+  // electrolyte fill label bottom
+  ctx.fillStyle='rgba(100,150,200,0.4)';
+  ctx.font=`${Math.max(7,w*0.028)}px 'Segoe UI',sans-serif`;ctx.textAlign='center';
+  ctx.fillText('Organic Electrolyte', x+w/2, ely+12);
+  if(s>=6){
+    ctx.fillStyle='rgba(255,100,0,0.8)';
+    ctx.font=`bold ${Math.max(7,w*0.03)}px 'Segoe UI',sans-serif`;
+    ctx.fillText('🔥 IGNITED', x+w/2, ely+28);
+  }
+
+  ctx.restore();
+}
+
+function drawDendrites(ctx, x, w, ay, anodeH, sepH, sy, s, p) {
+  ctx.save();
+  const numDend = Math.min(s <= 2 ? 2 : s <= 3 ? 5 : 8, 8);
+  const dendriteProg = s === 2 ? p * 0.35 : s === 3 ? 0.35 + p * 0.45 : s === 4 ? 0.8 + p * 0.2 : 1.0;
+
+  // seed positions spread across anode width
+  const seeds = [.15,.28,.42,.55,.67,.79,.88,.32].slice(0, numDend);
+
+  seeds.forEach((frac, i) => {
+    const dx = x + w * frac;
+    const baseY = ay + 6;
+    const maxReach = anodeH * .85 + sepH;
+    const reach = maxReach * dendriteProg;
+    const color = s >= 4 && i === Math.floor(numDend/2)
+      ? 'rgba(255,180,0,0.9)'  // the one that pierced
+      : 'rgba(200,220,255,0.55)';
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth   = s >= 4 && i === Math.floor(numDend/2) ? 2 : 1;
+    ctx.shadowColor = color; ctx.shadowBlur = s >= 4 ? 6 : 0;
+    drawDendriteSegment(ctx, dx, baseY, reach, i);
+    ctx.shadowBlur = 0;
+  });
+  ctx.restore();
+}
+
+function drawDendriteSegment(ctx, x, y, len, seed) {
+  if (len <= 2) return;
+  const jitter = (seed % 3 - 1) * 4;
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(x + jitter, y + len * 0.5);
+  ctx.lineTo(x + jitter * 0.5, y + len);
+  ctx.stroke();
+  // small branches
+  if (len > 12) {
+    ctx.beginPath();
+    ctx.moveTo(x + jitter * 0.5, y + len * 0.6);
+    ctx.lineTo(x + jitter * 0.5 + 6, y + len * 0.8);
+    ctx.stroke();
+  }
+}
+
+function drawBladeLayers(ctx, z) {
+  const { x, y, w, h, cx, cy } = z;
+  const s = seqStep;
+  ctx.save();
+
+  // outer casing
+  const heatLevel = s >= 4 ? Math.min(1,(s-3)*0.12) : 0;
+  roundRect(ctx, x, y, w, h, 5);
+  const bg = ctx.createLinearGradient(x,y,x,y+h);
+  bg.addColorStop(0,`rgba(${Math.round(8+heatLevel*30)},${Math.round(20+heatLevel*10)},${Math.round(40-heatLevel*20)},1)`);
+  bg.addColorStop(1,`rgba(${Math.round(5+heatLevel*20)},${Math.round(12+heatLevel*6)},${Math.round(25-heatLevel*12)},1)`);
+  ctx.fillStyle=bg; ctx.fill();
+  ctx.strokeStyle=s>=4?'rgba(0,220,100,0.6)':'#1a5faa'; ctx.lineWidth=2; ctx.stroke();
+  if (s >= 4) { ctx.shadowColor='#00e676'; ctx.shadowBlur=12; ctx.stroke(); ctx.shadowBlur=0; }
+
+  // internal flat layers (many thin stripes)
+  const numL = 8;
+  for(let i=0;i<numL;i++){
+    const ly = y + (i+0.5)*(h/numL);
+    ctx.strokeStyle='rgba(0,170,255,0.18)'; ctx.lineWidth=0.8;
+    ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.moveTo(x+6,ly);ctx.lineTo(x+w-6,ly);ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  // tiny heat spot at center when ISC occurs (step 4+)
+  if (s >= 4) {
+    const spotR = Math.min(h*0.4, w*0.08) * Math.min(seqAnimProg, 1);
+    const sg = ctx.createRadialGradient(cx,cy,0,cx,cy,spotR);
+    const alpha = Math.min(seqAnimProg*1.5, 0.6);
+    sg.addColorStop(0,`rgba(255,200,0,${alpha})`);
+    sg.addColorStop(0.5,`rgba(255,80,0,${alpha*0.5})`);
+    sg.addColorStop(1,'rgba(255,0,0,0)');
+    ctx.fillStyle=sg;ctx.beginPath();ctx.arc(cx,cy,spotR,0,Math.PI*2);ctx.fill();
+    // heat spreading along length
+    const spreadW = w * 0.35 * Math.min(seqAnimProg*1.2, 1);
+    const sg2 = ctx.createLinearGradient(cx-spreadW,cy,cx+spreadW,cy);
+    sg2.addColorStop(0,'rgba(255,100,0,0)');
+    sg2.addColorStop(0.4,`rgba(255,120,0,${alpha*0.25})`);
+    sg2.addColorStop(0.6,`rgba(255,120,0,${alpha*0.25})`);
+    sg2.addColorStop(1,'rgba(255,100,0,0)');
+    ctx.fillStyle=sg2;ctx.fillRect(cx-spreadW,y+2,spreadW*2,h-4);
+  }
+
+  // outcome badge
+  if (s === 7) {
+    const bgc = 'rgba(0,60,30,0.95)';
+    roundRect(ctx, x, y-28, w, 24, 5);
+    ctx.fillStyle=bgc; ctx.fill();
+    ctx.strokeStyle='#00e676';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.fillStyle='#00e676';ctx.font=`bold ${Math.max(8,w*0.045)}px 'Segoe UI',sans-serif`;
+    ctx.textAlign='center';ctx.fillText('✅ SAFE — No Fire  <60°C', cx, y-12);
+  }
+
+  // label
+  ctx.fillStyle=s>=4?'#00e676':'#3a8aaa';
+  ctx.font=`bold ${Math.max(7,w*0.04)}px 'Segoe UI',sans-serif`;ctx.textAlign='center';
+  ctx.fillText('BYD Blade (LFP)', cx, y+h+15);
+  if(s>=4){
+    ctx.fillStyle='rgba(0,200,120,0.55)';
+    ctx.font=`${Math.max(6,w*0.033)}px 'Segoe UI',sans-serif`;
+    ctx.fillText('heat spreading → safe', cx, y+h+28);
+  }
+
+  ctx.restore();
+}
+
+function drawSeqFireParticles(ctx) {
+  ctx.save();
+  for(const p of seqFireParts){
+    const t = p.life / 45;
+    const r = t>.7?255:Math.round(255*(t/.7)), g=t>.5?Math.round(255*((t-.5)/.5)):0;
+    ctx.globalAlpha=Math.min(t*1.5,0.85);
+    ctx.fillStyle=`rgb(${r},${g},0)`;
+    ctx.shadowColor='#ff8800';ctx.shadowBlur=p.size*2;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
+  }
+  ctx.globalAlpha=1;ctx.shadowBlur=0;ctx.restore();
+}
+
+function drawBladeSafeParticles(ctx) {
+  ctx.save();
+  for(const p of seqBladeParts){
+    ctx.globalAlpha=p.life/25;
+    ctx.fillStyle='#00e676';
+    ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
+  }
+  ctx.globalAlpha=1;ctx.restore();
+}
+
+function drawSepCallout(ctx, z) {
+  if (seqStep < 3) return;
+  const mx = z.x + z.w/2;
+  const sy = z.y + z.collH + z.cathodeH;
+  ctx.save();
+  ctx.strokeStyle='rgba(255,200,0,0.5)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+  ctx.beginPath();ctx.moveTo(mx, sy);ctx.lineTo(mx + z.w*0.55, sy - SQH*0.07);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='rgba(255,200,80,0.85)';
+  ctx.font=`${Math.max(7,SQW*0.011)}px 'Segoe UI',sans-serif`;
+  ctx.textAlign='left';
+  ctx.fillText('← Separator', mx + z.w*0.56, sy - SQH*0.07);
+  ctx.restore();
+}
+
+function drawSeqTempBadge(ctx, x, y, h, step, type) {
+  ctx.save();
+  const temps_nmc  = [25,30,38,115,160,220,570];
+  const temps_blade= [25,25,27, 45, 55, 58, 58];
+  const temps = type==='nmc' ? temps_nmc : temps_blade;
+  const maxT  = type==='nmc' ? 600 : 80;
+  const tVal  = temps[step-1];
+  const frac  = tVal / maxT;
+  const barH  = h;
+  const fillH = barH * Math.min(frac, 1);
+  const fillY = y + barH - fillH;
+  const color = type==='nmc'
+    ? `rgb(${Math.round(100+frac*155)},${Math.round((1-frac)*80)},0)`
+    : '#00e676';
+
+  // track
+  roundRect(ctx,x,y,12,barH,3);
+  ctx.fillStyle='rgba(255,255,255,0.04)';ctx.fill();
+  // fill
+  if(fillH>0){
+    roundRect(ctx,x,fillY,12,fillH,3);
+    ctx.fillStyle=color;ctx.shadowColor=color;ctx.shadowBlur=6;ctx.fill();ctx.shadowBlur=0;
+  }
+  // temp value
+  ctx.fillStyle=color;
+  ctx.font=`bold ${Math.max(6,SQW*0.011)}px monospace`;
+  ctx.textAlign='center';
+  ctx.fillText(`${tVal}°`, x+6, fillY > y+4 ? fillY-4 : y-4);
+  ctx.fillStyle='#5a7099';
+  ctx.font=`${Math.max(5,SQW*0.009)}px monospace`;
+  ctx.fillText('°C', x+6, y+barH+12);
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════
+//   TEMPERATURE TIMELINE CHART
+// ═══════════════════════════════════════════════════════
+const tempTLCanvas = document.getElementById('tempTimelineCanvas');
+let tlCtx, TLW, TLH;
+let tlAnimId = null;
+let tlAnimProg = 0;
+let tlLastTS = null;
+
+const NMC_CURVE = [
+  {t:0,  temp:25},
+  {t:5,  temp:28},
+  {t:10, temp:35},
+  {t:15, temp:90},   // ISC / SEI breakdown
+  {t:18, temp:150},  // separator softening
+  {t:20, temp:200},  // O2 release
+  {t:22, temp:340},
+  {t:25, temp:570},  // full runaway
+  {t:30, temp:600},
+];
+const BLADE_CURVE = [
+  {t:0,  temp:25},
+  {t:5,  temp:27},
+  {t:10, temp:30},
+  {t:15, temp:45},   // ISC contained
+  {t:18, temp:55},
+  {t:20, temp:58},   // peak
+  {t:25, temp:50},   // cooling
+  {t:30, temp:38},
+  {t:35, temp:30},
+];
+
+const TL_EVENTS_NMC = [
+  {t:15, temp:90,   label:'SEI Breakdown', step:4},
+  {t:18, temp:150,  label:'Sep. Melts',    step:5},
+  {t:20, temp:200,  label:'O₂ Release',    step:6},
+  {t:25, temp:570,  label:'Runaway 🔥',    step:7},
+];
+const TL_EVENTS_BLADE = [
+  {t:15, temp:45,   label:'ISC (contained)', step:4},
+  {t:20, temp:58,   label:'Peak — Safe ✅',  step:7},
+];
+
+function resizeTempTL() {
+  const container = tempTLCanvas.parentElement.parentElement;
+  TLW = Math.min(container.clientWidth - 40, 900);
+  TLH = Math.round(TLW * 0.42);
+  tlCtx = setupCanvas(tempTLCanvas, TLW, TLH);
+  tlAnimProg = 0; tlLastTS = null;
+  if(tlAnimId) cancelAnimationFrame(tlAnimId);
+  tlAnimId = requestAnimationFrame(tlLoop);
+}
+
+function tlLoop(ts) {
+  if(!tlLastTS) tlLastTS = ts;
+  const dt = Math.min(ts-tlLastTS, 50); tlLastTS=ts;
+  tlAnimProg = Math.min(tlAnimProg + dt/2500, 1);
+  drawTempTimeline(tlAnimProg);
+  if(tlAnimProg < 1) tlAnimId = requestAnimationFrame(tlLoop);
+}
+
+function tlCurveToCanvas(t, temp, maxT, maxTemp, padL, padR, padT, padB) {
+  const x = padL + (t / maxT) * (TLW - padL - padR);
+  const y = padT + (1 - temp / maxTemp) * (TLH - padT - padB);
+  return {x, y};
+}
+
+function drawTempTimeline(prog) {
+  const ctx = tlCtx;
+  ctx.clearRect(0,0,TLW,TLH);
+  ctx.fillStyle='#04080f'; ctx.fillRect(0,0,TLW,TLH);
+
+  const padL=60, padR=24, padT=30, padB=50;
+  const maxT=35, maxTemp=650;
+  const cw = TLW-padL-padR, ch = TLH-padT-padB;
+
+  // grid + axes
+  ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=1;
+  for(let t=0;t<=maxT;t+=5){
+    const {x}=tlCurveToCanvas(t,0,maxT,maxTemp,padL,padR,padT,padB);
+    ctx.beginPath();ctx.moveTo(x,padT);ctx.lineTo(x,TLH-padB);ctx.stroke();
+    ctx.fillStyle='#5a7099';ctx.font=`${Math.max(8,TLW*0.012)}px monospace`;
+    ctx.textAlign='center';ctx.fillText(`${t}s`,x,TLH-padB+16);
+  }
+  const tempTicks=[0,100,200,300,400,500,600];
+  tempTicks.forEach(t=>{
+    const {y}=tlCurveToCanvas(0,t,maxT,maxTemp,padL,padR,padT,padB);
+    ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(TLW-padR,y);ctx.stroke();
+    ctx.fillStyle='#5a7099';ctx.font=`${Math.max(8,TLW*0.012)}px monospace`;
+    ctx.textAlign='right';ctx.fillText(`${t}°C`,padL-6,y+4);
+  });
+
+  // axis labels
+  ctx.fillStyle='#6a8aaa';
+  ctx.font=`${Math.max(8,TLW*0.012)}px 'Segoe UI',sans-serif`;
+  ctx.textAlign='center';ctx.fillText('Time after Internal Short Circuit (seconds)',TLW/2,TLH-8);
+  ctx.save();ctx.translate(14,TLH/2);ctx.rotate(-Math.PI/2);
+  ctx.fillText('Temperature (°C)',0,0);ctx.restore();
+
+  // danger zones
+  ctx.fillStyle='rgba(255,60,0,0.05)';
+  const {y:y90}=tlCurveToCanvas(0,90,maxT,maxTemp,padL,padR,padT,padB);
+  const {y:y600}=tlCurveToCanvas(0,600,maxT,maxTemp,padL,padR,padT,padB);
+  ctx.fillRect(padL,y600,cw,y90-y600);
+  ctx.fillStyle='rgba(255,140,0,0.04)';
+  const {y:y130}=tlCurveToCanvas(0,130,maxT,maxTemp,padL,padR,padT,padB);
+  ctx.fillRect(padL,y130,cw,y90-y130);
+
+  // zone labels
+  ctx.fillStyle='rgba(255,80,0,0.4)';
+  ctx.font=`${Math.max(7,TLW*0.011)}px 'Segoe UI',sans-serif`;ctx.textAlign='left';
+  ctx.fillText('Danger zone (>90°C SEI breakdown)',padL+6,y90-5);
+  ctx.fillStyle='rgba(255,180,0,0.4)';
+  ctx.fillText('Critical (>130°C separator softening)',padL+6,y130-5);
+
+  // safe zone line
+  const {y:y60}=tlCurveToCanvas(0,60,maxT,maxTemp,padL,padR,padT,padB);
+  ctx.strokeStyle='rgba(0,230,118,0.3)';ctx.lineWidth=1;ctx.setLineDash([6,4]);
+  ctx.beginPath();ctx.moveTo(padL,y60);ctx.lineTo(TLW-padR,y60);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='rgba(0,230,118,0.5)';ctx.textAlign='right';
+  ctx.fillText('Blade max ~60°C',TLW-padR-4,y60-4);
+
+  // NMC curve
+  drawCurve(ctx,NMC_CURVE,maxT,maxTemp,padL,padR,padT,padB,prog,'#ff5533','rgba(255,85,51,0.15)');
+
+  // Blade curve
+  drawCurve(ctx,BLADE_CURVE,maxT,maxTemp,padL,padR,padT,padB,prog,'#00e676','rgba(0,230,118,0.1)');
+
+  // event markers
+  const eventProg = prog;
+  TL_EVENTS_NMC.forEach(e=>{
+    const ep = e.t/maxT;
+    if(ep > eventProg) return;
+    const {x,y}=tlCurveToCanvas(e.t,e.temp,maxT,maxTemp,padL,padR,padT,padB);
+    ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);
+    ctx.fillStyle='#ff5533';ctx.shadowColor='#ff5533';ctx.shadowBlur=10;ctx.fill();ctx.shadowBlur=0;
+    ctx.fillStyle='rgba(255,140,100,0.9)';
+    ctx.font=`bold ${Math.max(8,TLW*0.012)}px 'Segoe UI',sans-serif`;
+    ctx.textAlign='center';ctx.fillText(e.label,x,y-10);
+  });
+  TL_EVENTS_BLADE.forEach(e=>{
+    const ep = e.t/maxT;
+    if(ep > eventProg) return;
+    const {x,y}=tlCurveToCanvas(e.t,e.temp,maxT,maxTemp,padL,padR,padT,padB);
+    ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);
+    ctx.fillStyle='#00e676';ctx.shadowColor='#00e676';ctx.shadowBlur=10;ctx.fill();ctx.shadowBlur=0;
+    ctx.fillStyle='rgba(100,255,180,0.9)';
+    ctx.font=`bold ${Math.max(8,TLW*0.012)}px 'Segoe UI',sans-serif`;
+    ctx.textAlign='center';ctx.fillText(e.label,x,y+16);
+  });
+
+  // legend
+  ctx.font=`bold ${Math.max(9,TLW*0.013)}px 'Segoe UI',sans-serif`;
+  const lx=padL+14, ly=padT+16;
+  ctx.fillStyle='#ff5533';ctx.textAlign='left';ctx.fillText('── NMC (Sunwoda EX30)',lx,ly);
+  ctx.fillStyle='#00e676';ctx.fillText('── BYD Blade LFP',lx,ly+16);
+}
+
+function drawCurve(ctx, data, maxT, maxTemp, padL, padR, padT, padB, prog, color, fill) {
+  const points = data.map(d => ({
+    ...tlCurveToCanvas(d.t, d.temp, maxT, maxTemp, padL, padR, padT, padB),
+    t: d.t/maxT,
+  })).filter(p => p.t <= prog);
+  if(points.length < 2) return;
+
+  // fill
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, TLH-padB);
+  points.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.lineTo(points[points.length-1].x, TLH-padB);
+  ctx.closePath();
+  ctx.fillStyle=fill; ctx.fill();
+
+  // line
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+  for(let i=1;i<points.length;i++) {
+    const prev=points[i-1], curr=points[i];
+    const cpx=(prev.x+curr.x)/2;
+    ctx.bezierCurveTo(cpx,prev.y,cpx,curr.y,curr.x,curr.y);
+  }
+  ctx.strokeStyle=color; ctx.lineWidth=2.5;
+  ctx.shadowColor=color; ctx.shadowBlur=6;
+  ctx.stroke(); ctx.shadowBlur=0;
+
+  // dot at current end
+  const last=points[points.length-1];
+  ctx.beginPath();ctx.arc(last.x,last.y,4,0,Math.PI*2);
+  ctx.fillStyle=color;ctx.fill();
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════
+//   RESIZE HANDLER
+// ═══════════════════════════════════════════════════════
+function onResize() {
+  resizeCTP();
+  resizeNail();
+  resizeThermal();
+  resizeSeq();
+  resizeTempTL();
+}
+
+// ═══════════════════════════════════════════════════════
+//   BOOT
+// ═══════════════════════════════════════════════════════
+window.addEventListener('resize', onResize);
+
+onResize();
+initReveal();
+initCounters();
+buildMolecules();
+drawThermalIdle();
+drawCTP(0);
+setTimeout(() => animateCTP(performance.now()), 600);
+updateSeqUI();
+
+// Intersection observer to auto-start temp timeline when visible
+const tlObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      tlAnimProg=0; tlLastTS=null;
+      if(tlAnimId) cancelAnimationFrame(tlAnimId);
+      tlAnimId = requestAnimationFrame(tlLoop);
+      tlObs.unobserve(e.target);
+    }
+  });
+}, {threshold:0.2});
+if(tempTLCanvas) tlObs.observe(tempTLCanvas);
+</script>
+</body>
+</html>
