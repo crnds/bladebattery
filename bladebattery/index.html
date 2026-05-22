@@ -333,7 +333,9 @@ h1.hero-title{
 .blade-lbl{color:#006a30;}
 .thermal-col canvas{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--border);}
 .thermal-col-st{font-size:.82rem;color:var(--muted);line-height:1.5;text-align:center;min-height:2rem;}
-.thermal-reset-row{display:flex;justify-content:center;margin-top:.5rem;}
+.thermal-controls{display:flex;gap:1rem;justify-content:center;margin-bottom:1.5rem;}
+.th-btn-trigger{border-color:rgba(180,60,0,.5);color:#b83000;font-size:1rem;padding:.7rem 2rem;}
+.th-btn-trigger:hover,.th-btn-trigger.active{background:rgba(180,60,0,.08);}
 .th-btn{padding:.55rem 1.3rem;border-radius:99px;border:2px solid;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .25s;background:none;}
 .th-btn-nmc{border-color:rgba(200,40,10,.5);color:#cc2200;}
 .th-btn-nmc:hover,.th-btn-nmc.active{background:rgba(200,40,10,.1);}
@@ -861,26 +863,25 @@ footer{text-align:center;padding:3rem 1.5rem;color:var(--muted);font-size:.82rem
     <h2 class="sec-title reveal">Heat Can't Spread — Here's Why</h2>
     <p class="sec-desc reveal">The Blade's <strong>thin flat shape</strong> gives it a huge surface-area-to-volume ratio. Heat dissipates across the large face before it can build up — like a thin pizza crust cooling faster than a deep-dish.</p>
 
+    <div class="thermal-controls reveal">
+      <button class="th-btn th-btn-trigger" id="th-trigger" onclick="nmcSim.start();bladeSim.start();this.classList.add('active')">🔥 Trigger Both</button>
+      <button class="th-btn th-btn-reset" onclick="nmcSim.reset();bladeSim.reset();document.getElementById('th-trigger').classList.remove('active')">↺ Reset</button>
+    </div>
     <div class="thermal-compare reveal">
       <div class="thermal-col">
         <div class="thermal-col-hd nmc-hd">
           <span class="thermal-col-lbl nmc-lbl">🔥 NMC Pack</span>
-          <button class="th-btn th-btn-nmc" id="th-nmc" onclick="nmcSim.start()">Trigger Cascade</button>
         </div>
         <canvas id="thermalNmcCanvas"></canvas>
-        <p class="thermal-col-st" id="thermalNmcStatus">Click "Trigger Cascade" to simulate a thermal event.</p>
+        <p class="thermal-col-st" id="thermalNmcStatus">Press "Trigger Both" to simulate a thermal event.</p>
       </div>
       <div class="thermal-col">
         <div class="thermal-col-hd blade-hd">
           <span class="thermal-col-lbl blade-lbl">⚡ Blade Pack</span>
-          <button class="th-btn th-btn-blade" id="th-blade" onclick="bladeSim.start()">Trigger Event</button>
         </div>
         <canvas id="thermalBladeCanvas"></canvas>
-        <p class="thermal-col-st" id="thermalBladeStatus">Click "Trigger Event" to simulate a thermal event.</p>
+        <p class="thermal-col-st" id="thermalBladeStatus">Press "Trigger Both" to simulate a thermal event.</p>
       </div>
-    </div>
-    <div class="thermal-reset-row reveal">
-      <button class="th-btn th-btn-reset" onclick="nmcSim.reset();bladeSim.reset()">↺ Reset Both</button>
     </div>
   </div>
 </div>
@@ -1912,7 +1913,7 @@ function setNailStatus(html) {
 // ═══════════════════════════════════════════════════════
 //   THERMAL CANVAS
 // ═══════════════════════════════════════════════════════
-function makeThermalSim(canvasId, mode, btnId, statusId) {
+function makeThermalSim(canvasId, mode, statusId) {
   const canvas = document.getElementById(canvasId);
   let ctx, W, H, grid, time, raf, lastTS, cellW, cellH;
   const COLS = 20, ROWS = 6;
@@ -1932,7 +1933,6 @@ function makeThermalSim(canvasId, mode, btnId, statusId) {
     grid = Array.from({length:ROWS}, () => new Float32Array(COLS));
     grid[Math.floor(ROWS/2)][Math.floor(COLS/2)] = 1.0;
     lastTS = null;
-    document.getElementById(btnId).classList.add('active');
     document.getElementById(statusId).innerHTML = mode === 'nmc'
       ? '🔥 <strong>NMC pack:</strong> Heat spreads rapidly — cascading thermal runaway across the entire pack.'
       : '✅ <strong>Blade pack:</strong> Heat dissipates along the thin blade surface — cannot cascade to neighbors.';
@@ -1942,10 +1942,7 @@ function makeThermalSim(canvasId, mode, btnId, statusId) {
   function reset() {
     if (raf) cancelAnimationFrame(raf);
     grid = null;
-    document.getElementById(btnId).classList.remove('active');
-    document.getElementById(statusId).textContent = mode === 'nmc'
-      ? 'Click "Trigger Cascade" to simulate a thermal event.'
-      : 'Click "Trigger Event" to simulate a thermal event.';
+    document.getElementById(statusId).textContent = 'Press "Trigger Both" to simulate a thermal event.';
     if (ctx) { ctx.clearRect(0,0,W,H); drawIdle(); }
   }
 
@@ -2033,8 +2030,8 @@ function makeThermalSim(canvasId, mode, btnId, statusId) {
   return { resize, start, reset };
 }
 
-const nmcSim = makeThermalSim('thermalNmcCanvas', 'nmc', 'th-nmc', 'thermalNmcStatus');
-const bladeSim = makeThermalSim('thermalBladeCanvas', 'blade', 'th-blade', 'thermalBladeStatus');
+const nmcSim = makeThermalSim('thermalNmcCanvas', 'nmc', 'thermalNmcStatus');
+const bladeSim = makeThermalSim('thermalBladeCanvas', 'blade', 'thermalBladeStatus');
 
 function heatColor(t, c1, c2) {
   const r = Math.round(c1[0] + (c2[0]-c1[0])*t);
