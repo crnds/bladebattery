@@ -1463,9 +1463,8 @@ const nailCanvas = document.getElementById('nailCanvas');
 let nailCtx, NW, NH;
 let nailPhase = 'ready'; // ready | driving | burning | done
 let nailProg  = 0;       // 0..1 how deep the nail has gone
-let nmcTemp      = 0;  // 0..1
-let tesla4680Temp= 0;  // 0..1
-let bladeTemp    = 0;  // 0..1
+let nmcTemp   = 0;       // 0..1
+let bladeTemp = 0;       // 0..1
 let fireParticles = [];
 let sparks = [];
 let nailRAF = null;
@@ -1475,7 +1474,7 @@ let shakeAmt = 0;
 function resizeNail() {
   const container = nailCanvas.parentElement;
   NW = container.clientWidth;
-  NH = Math.round(NW * 0.60);
+  NH = Math.round(NW * 0.52);
   nailCtx = setupCanvas(nailCanvas, NW, NH);
   drawNailFrame();
 }
@@ -1488,7 +1487,6 @@ function runNailTest() {
   nailPhase = 'driving';
   nailProg  = 0;
   nmcTemp   = 0;
-  tesla4680Temp = 0;
   bladeTemp = 0;
   fireParticles = [];
   sparks = [];
@@ -1503,7 +1501,6 @@ function resetNail() {
   nailPhase = 'ready';
   nailProg  = 0;
   nmcTemp   = 0;
-  tesla4680Temp = 0;
   bladeTemp = 0;
   fireParticles = [];
   sparks = [];
@@ -1527,15 +1524,12 @@ function nailLoop(ts) {
     nailProg = Math.min(nailProg + speed * (dt/16), 1);
 
     const pen = Math.max(0, (nailProg - 0.25) / 0.75);
-    nmcTemp       = Math.min(1, pen * pen * 1.6);
-    tesla4680Temp = Math.min(1, pen * pen * 1.9);
-    bladeTemp     = Math.min(0.09, pen * 0.12);
+    nmcTemp   = Math.min(1, pen * pen * 1.6);
+    bladeTemp = Math.min(0.09, pen * 0.12);
 
     // spawn fire when NMC is hot enough
     if (nmcTemp > 0.2) spawnFire(dt);
     if (nmcTemp > 0.5) spawnSparks(dt);
-    if (tesla4680Temp > 0.2) spawn4680Fire(dt);
-    if (tesla4680Temp > 0.5) spawn4680Sparks(dt);
 
     if (nmcTemp > 0.6) shakeAmt = Math.min(shakeAmt + 0.5, 6);
 
@@ -1546,8 +1540,7 @@ function nailLoop(ts) {
   } else {
     // continue fire after done
     if (nmcTemp > 0) nmcTemp = Math.min(nmcTemp + 0.003, 1);
-    if (tesla4680Temp > 0) tesla4680Temp = Math.min(tesla4680Temp + 0.003, 1);
-    if (nailPhase === 'done') { spawnFire(dt); spawn4680Fire(dt); }
+    if (nailPhase === 'done') spawnFire(dt);
     shakeAmt *= 0.95;
   }
 
@@ -1600,37 +1593,8 @@ function spawnSparks(dt) {
   }
 }
 
-let nmcNailTip2D    = {x:0, y:0};
-let tesla4680NailTip2D = {x:0, y:0};
+let nmcNailTip2D = {x:0, y:0};
 function getNMCNailTip() { return nmcNailTip2D; }
-
-function spawn4680Fire(dt) {
-  const pos = tesla4680NailTip2D;
-  const count = Math.ceil(tesla4680Temp * 5 * (dt/16));
-  for (let i = 0; i < count; i++) {
-    fireParticles.push({
-      x: pos.x + (Math.random()-.5)*44,
-      y: pos.y - (Math.random()*12),
-      vx: (Math.random()-.5)*3,
-      vy: -(1.8 + Math.random()*3.5),
-      life: 28 + Math.random()*35,
-      size: 5 + Math.random()*13,
-    });
-  }
-}
-function spawn4680Sparks(dt) {
-  const pos = tesla4680NailTip2D;
-  const count = Math.ceil((tesla4680Temp - 0.5) * 4 * (dt/16));
-  for (let i = 0; i < count; i++) {
-    const a = Math.random() * Math.PI * 2;
-    const sp = 2.5 + Math.random()*6;
-    sparks.push({
-      x: pos.x, y: pos.y,
-      vx: Math.cos(a)*sp, vy: Math.sin(a)*sp - 2.5,
-      life: 8 + Math.random()*14,
-    });
-  }
-}
 
 // ═══════════════════════════════════════════════════════
 //   3-D NAIL RENDERER  (perspective projection, no deps)
@@ -1750,172 +1714,101 @@ function drawNailFrame(){
   for(let x=0;x<NW;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,NH);ctx.stroke();}
   for(let y=0;y<NH;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(NW,y);ctx.stroke();}
 
-  // dividers
+  const half=NW/2;
   ctx.strokeStyle='rgba(0,20,80,0.1)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
-  ctx.beginPath();ctx.moveTo(NW/3,0);ctx.lineTo(NW/3,NH);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(2*NW/3,0);ctx.lineTo(2*NW/3,NH);ctx.stroke();
-  ctx.setLineDash([]);
+  ctx.beginPath();ctx.moveTo(half,0);ctx.lineTo(half,NH);ctx.stroke();ctx.setLineDash([]);
 
-  // ── consistent scale: 1 unit = 10 mm ────────────────────
-  const sc = NH * 0.055;
-  const floorY = NH * 0.80;
+  ctx.textAlign='center';
+  ctx.font=`bold ${Math.max(10,NW*0.016)}px 'Segoe UI',sans-serif`;
+  ctx.fillStyle='#cc3300';ctx.fillText('NMC / 18650 Cylindrical',half/2,NH*0.05);
+  ctx.fillStyle='#006a30';ctx.fillText('BYD Blade Battery (LFP)',half+half/2,NH*0.05);
+  ctx.font=`${Math.max(8,NW*0.011)}px 'Segoe UI',sans-serif`;
+  ctx.fillStyle='#475a88';
+  ctx.fillText('NMC Chemistry',half/2,NH*0.09);
+  ctx.fillText('LFP Chemistry',half+half/2,NH*0.09);
 
-  // column centres
-  const ox18 = NW / 6;
-  const ox46 = NW / 2;
-  const oxBl = 5 * NW / 6;
-
-  // 18650: r=0.9u, h=6.5u
-  const NR18=0.9, NH18=6.5;
-  const oy18 = floorY - NH18 * sc * 0.5 * 0.93;
-
-  // 4680: r=2.3u, h=8.0u
-  const NR46=2.3, NH46=8.0;
-  const oy46 = floorY - NH46 * sc * 0.5 * 0.93;
-
-  // Blade: w=8u(80mm cross-section), h=1.35u, d=6u
-  const BW=8, BHT=1.35, BD=6;
-  const oyBl = floorY - BHT * sc * 0.5 * 0.93;
-
-  // shake applies only to NMC columns
+  // ── NMC 3-D ─────────────────────────────────────────────
+  const nmcSc=NH*0.19, nmcOx=half*0.5, nmcOy=NH*0.56;
+  const NR=0.7, NHC=2.4;
   const sx=shakeAmt>0.5?(Math.random()-.5)*shakeAmt*2:0;
   const sy=shakeAmt>0.5?(Math.random()-.5)*shakeAmt*0.8:0;
 
-  // column labels
-  const lblY = NH * 0.055;
-  ctx.textAlign='center';
-  ctx.font=`bold ${Math.max(9,NW*0.015)}px 'Segoe UI',sans-serif`;
-  ctx.fillStyle='#cc3300'; ctx.fillText('18650 NMC',ox18,lblY);
-  ctx.fillStyle='#b87000'; ctx.fillText('4680 NMC',ox46,lblY);
-  ctx.fillStyle='#006a30'; ctx.fillText('BYD Blade LFP',oxBl,lblY);
-  ctx.font=`${Math.max(7,NW*0.010)}px 'Segoe UI',sans-serif`;
-  ctx.fillStyle='#475a88';
-  ctx.fillText('18mm × 65mm',ox18,NH*0.092);
-  ctx.fillText('46mm × 80mm',ox46,NH*0.092);
-  ctx.fillText('960mm × 90mm × 13.5mm (section)',oxBl,NH*0.092);
-
-  // ── 18650 NMC ──────────────────────────────────────────
   if(nmcTemp>0.08){
-    const gc=n3p(0,0,0,sc,ox18+sx,oy18+sy);
-    const gr=ctx.createRadialGradient(gc[0],gc[1],0,gc[0],gc[1],sc*NR18*3.5);
+    const gc=n3p(0,0,0,nmcSc,nmcOx+sx,nmcOy+sy);
+    const gr=ctx.createRadialGradient(gc[0],gc[1],0,gc[0],gc[1],nmcSc*1.4);
     gr.addColorStop(0,`rgba(255,${Math.round(110*(1-nmcTemp))},0,${nmcTemp*0.28})`);
     gr.addColorStop(1,'rgba(255,80,0,0)');
-    ctx.fillStyle=gr;ctx.beginPath();ctx.arc(gc[0],gc[1],sc*NR18*3.5,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=gr;ctx.beginPath();ctx.arc(gc[0],gc[1],nmcSc*1.4,0,Math.PI*2);ctx.fill();
   }
-  n3Cyl(ctx,0,0,0,NR18,NH18,32,nmcTemp,sc,ox18+sx,oy18+sy);
+  n3Cyl(ctx,0,0,0,NR,NHC,32,nmcTemp,nmcSc,nmcOx+sx,nmcOy+sy);
 
-  const nmcNailR=0.08, nmcShaftTop=-(NH18/2+1.3);
-  const nmcTipY=-(NH18/2)+NH18*nailProg;
-  n3Nail(ctx,0,nmcTipY,0,nmcNailR,nmcShaftTop,nmcTemp,sc,ox18+sx,oy18+sy);
+  const nmcNailR=0.085, nmcShaftTop=-(NHC/2+1.45);
+  const nmcTipY=-(NHC/2)+NHC*nailProg;
+  n3Nail(ctx,0,nmcTipY,0,nmcNailR,nmcShaftTop,nmcTemp,nmcSc,nmcOx+sx,nmcOy+sy);
 
-  const tp18=n3p(0,nmcTipY,0,sc,ox18+sx,oy18+sy);
-  nmcNailTip2D={x:tp18[0],y:tp18[1]};
-
-  const nmcGaugeX=Math.max(4,ox18-sc*NR18-22);
-  drawTempGauge(ctx,nmcGaugeX,oy18-NH18*sc*0.5,14,NH18*sc,nmcTemp,600,true);
-  n3Axes(ctx,NW*0.04,NH*0.88,sc*0.48);
-
-  // ── 4680 NMC ───────────────────────────────────────────
-  const t46sx=shakeAmt>0.5?(Math.random()-.5)*shakeAmt*1.6:0;
-  const t46sy=shakeAmt>0.5?(Math.random()-.5)*shakeAmt*0.7:0;
-  if(tesla4680Temp>0.08){
-    const gc=n3p(0,0,0,sc,ox46+t46sx,oy46+t46sy);
-    const gr=ctx.createRadialGradient(gc[0],gc[1],0,gc[0],gc[1],sc*NR46*2.8);
-    gr.addColorStop(0,`rgba(255,${Math.round(110*(1-tesla4680Temp))},0,${tesla4680Temp*0.32})`);
-    gr.addColorStop(1,'rgba(255,60,0,0)');
-    ctx.fillStyle=gr;ctx.beginPath();ctx.arc(gc[0],gc[1],sc*NR46*2.8,0,Math.PI*2);ctx.fill();
-  }
-  n3Cyl(ctx,0,0,0,NR46,NH46,40,tesla4680Temp,sc,ox46+t46sx,oy46+t46sy);
-
-  const t46NailR=0.095, t46ShaftTop=-(NH46/2+1.3);
-  const t46TipY=-(NH46/2)+NH46*nailProg;
-  n3Nail(ctx,0,t46TipY,0,t46NailR,t46ShaftTop,tesla4680Temp,sc,ox46+t46sx,oy46+t46sy);
-
-  const tp46=n3p(0,t46TipY,0,sc,ox46+t46sx,oy46+t46sy);
-  tesla4680NailTip2D={x:tp46[0],y:tp46[1]};
-
+  const tp=n3p(0,nmcTipY,0,nmcSc,nmcOx+sx,nmcOy+sy);
+  nmcNailTip2D={x:tp[0],y:tp[1]};
   drawFireParticles(ctx);
   drawSparks(ctx);
 
-  const t46GaugeX=Math.max(NW/3+4,ox46-sc*NR46-22);
-  drawTempGauge(ctx,t46GaugeX,oy46-NH46*sc*0.5,14,NH46*sc,tesla4680Temp,800,true);
-  n3Axes(ctx,NW/2-NW*0.12,NH*0.88,sc*0.48);
+  drawTempGauge(ctx,Math.max(4,nmcOx-nmcSc*NR-28),nmcOy-NH*0.24,14,NH*0.46,nmcTemp,600,true);
+  n3Axes(ctx,half*0.13,NH*0.9,nmcSc*0.55);
 
-  // ── Blade LFP ──────────────────────────────────────────
+  // ── BLADE 3-D ────────────────────────────────────────────
+  const bladeSc=Math.min(NW*0.098,NH*0.2);
+  const bladeOx=half+half*0.5, bladeOy=NH*0.52;
+  const BW=3.8, BHT=0.22, BD=0.85;
+
   if(nailProg>0.25){
-    const bc=n3p(0,0,0,sc,oxBl,oyBl);
-    const bg=ctx.createRadialGradient(bc[0],bc[1],0,bc[0],bc[1],sc*BW*0.5);
+    const bc=n3p(0,0,0,bladeSc,bladeOx,bladeOy);
+    const bg=ctx.createRadialGradient(bc[0],bc[1],0,bc[0],bc[1],bladeSc*BW*0.55);
     bg.addColorStop(0,`rgba(0,200,100,${Math.min(bladeTemp*0.6,0.18)})`);
     bg.addColorStop(1,'rgba(0,200,100,0)');
-    ctx.fillStyle=bg;ctx.beginPath();ctx.arc(bc[0],bc[1],sc*BW*0.5,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=bg;ctx.beginPath();ctx.arc(bc[0],bc[1],bladeSc*BW*0.55,0,Math.PI*2);ctx.fill();
   }
 
   n3Box(ctx,0,0,0,BW,BHT,BD,[
     nailProg>0.5?'#1e5a30':'#1a3a5a',
     '#0f2030','#1e4570','#0d2840','#162e4a','#1c3e62'
-  ],sc,oxBl,oyBl);
+  ],bladeSc,bladeOx,bladeOy);
 
-  // electrode layer lines on front face
+  // electrode layer lines on the front face
   ctx.save();ctx.strokeStyle='rgba(40,120,220,0.3)';ctx.setLineDash([3,2]);ctx.lineWidth=0.8;
   for(let li=1;li<6;li++){
     const ly=-BHT/2+BHT*(li/6);
-    const[l0x,l0y]=n3p(-BW/2+0.1,ly,-BD/2+0.01,sc,oxBl,oyBl);
-    const[l1x,l1y]=n3p( BW/2-0.1,ly,-BD/2+0.01,sc,oxBl,oyBl);
+    const[l0x,l0y]=n3p(-BW/2+0.1,ly,-BD/2+0.01,bladeSc,bladeOx,bladeOy);
+    const[l1x,l1y]=n3p( BW/2-0.1,ly,-BD/2+0.01,bladeSc,bladeOx,bladeOy);
     ctx.beginPath();ctx.moveTo(l0x,l0y);ctx.lineTo(l1x,l1y);ctx.stroke();
   }
   ctx.setLineDash([]);ctx.restore();
 
-  // truncation markers on Blade left/right edges
-  ctx.save();
-  ctx.strokeStyle='rgba(0,20,80,0.3)';ctx.lineWidth=1;ctx.setLineDash([2,3]);
-  const[blL,blLy]=n3p(-BW/2,0,-BD/2,sc,oxBl,oyBl);
-  const[blR,blRy]=n3p( BW/2,0,-BD/2,sc,oxBl,oyBl);
-  [[blL,blLy],[blR,blRy]].forEach(([cx,cy])=>{
-    ctx.beginPath();ctx.moveTo(cx,cy-12);ctx.lineTo(cx,cy+12);ctx.stroke();
-  });
-  ctx.setLineDash([]);
-  ctx.font=`${Math.max(6,NW*0.009)}px 'Segoe UI',sans-serif`;
-  ctx.fillStyle='rgba(0,20,80,0.5)';ctx.textAlign='center';
-  const[blMx,blMy]=n3p(0,-BHT/2-0.3,-BD/2,sc,oxBl,oyBl);
-  ctx.fillText('← 960mm total →',blMx,blMy);
-  ctx.restore();
-
-  const bladeNailR=0.052, bladeShaftTop=-(BHT/2+2.0);
+  const bladeNailR=0.055, bladeShaftTop=-(BHT/2+2.3);
   const bladeTipY=-(BHT/2)+BHT*Math.min(nailProg,1.1);
-  n3Nail(ctx,0,bladeTipY,0,bladeNailR,bladeShaftTop,bladeTemp,sc,oxBl,oyBl);
+  n3Nail(ctx,0,bladeTipY,0,bladeNailR,bladeShaftTop,bladeTemp,bladeSc,bladeOx,bladeOy);
 
-  const brx=n3p(BW/2,0,-BD/2,sc,oxBl,oyBl);
-  drawTempGauge(ctx,Math.min(brx[0]+8,NW-24),oyBl-BHT*sc*0.5,14,BHT*sc*3,bladeTemp,60,false);
-  n3Axes(ctx,NW*0.96-NW*0.04,NH*0.88,sc*0.48);
+  const brx=n3p(BW/2,0,-BD/2,bladeSc,bladeOx,bladeOy);
+  drawTempGauge(ctx,Math.min(brx[0]+10,NW-26),bladeOy-NH*0.16,14,NH*0.32,bladeTemp,60,false);
+  n3Axes(ctx,half+half*0.12,NH*0.9,bladeSc*0.55);
 
   // result overlays
   if(nailPhase==='done'){
-    const y18Bot=n3p(0,NH18/2,0,sc,ox18,oy18)[1]+10;
+    const nmcBotY=n3p(0,NHC/2,0,nmcSc,nmcOx,nmcOy)[1]+10;
     ctx.save();ctx.globalAlpha=0.92;
-    roundRect(ctx,ox18-75,y18Bot,150,24,6);
+    roundRect(ctx,nmcOx-82,nmcBotY,164,24,6);
     ctx.fillStyle='rgba(80,0,0,0.92)';ctx.fill();
     ctx.strokeStyle='#ff4400';ctx.lineWidth=1.5;ctx.stroke();
     ctx.globalAlpha=1;ctx.fillStyle='#ff6644';
-    ctx.font=`bold ${Math.max(8,NW*0.012)}px 'Segoe UI',sans-serif`;
-    ctx.textAlign='center';ctx.fillText('🔥 THERMAL RUNAWAY',ox18,y18Bot+16);ctx.restore();
+    ctx.font=`bold ${Math.max(9,NW*0.014)}px 'Segoe UI',sans-serif`;
+    ctx.textAlign='center';ctx.fillText('🔥 THERMAL RUNAWAY',nmcOx,nmcBotY+16);ctx.restore();
 
-    const y46Bot=n3p(0,NH46/2,0,sc,ox46,oy46)[1]+10;
+    const bladeBotY=n3p(0,BHT/2,0,bladeSc,bladeOx,bladeOy)[1]+18;
     ctx.save();ctx.globalAlpha=0.92;
-    roundRect(ctx,ox46-75,y46Bot,150,24,6);
-    ctx.fillStyle='rgba(80,0,0,0.92)';ctx.fill();
-    ctx.strokeStyle='#ff4400';ctx.lineWidth=1.5;ctx.stroke();
-    ctx.globalAlpha=1;ctx.fillStyle='#ff8844';
-    ctx.font=`bold ${Math.max(8,NW*0.012)}px 'Segoe UI',sans-serif`;
-    ctx.textAlign='center';ctx.fillText('🔥 THERMAL RUNAWAY',ox46,y46Bot+16);ctx.restore();
-
-    const yBlBot=n3p(0,BHT/2,0,sc,oxBl,oyBl)[1]+18;
-    ctx.save();ctx.globalAlpha=0.92;
-    roundRect(ctx,oxBl-75,yBlBot,150,24,6);
+    roundRect(ctx,bladeOx-82,bladeBotY,164,24,6);
     ctx.fillStyle='rgba(0,60,30,0.92)';ctx.fill();
     ctx.strokeStyle='#00e676';ctx.lineWidth=1.5;ctx.stroke();
     ctx.globalAlpha=1;ctx.fillStyle='#00e676';
-    ctx.font=`bold ${Math.max(8,NW*0.012)}px 'Segoe UI',sans-serif`;
-    ctx.textAlign='center';ctx.fillText('✅ SAFE — No Fire',oxBl,yBlBot+16);ctx.restore();
+    ctx.font=`bold ${Math.max(9,NW*0.014)}px 'Segoe UI',sans-serif`;
+    ctx.textAlign='center';ctx.fillText('✅ SAFE — No Fire',bladeOx,bladeBotY+16);ctx.restore();
   }
 
   if(nailPhase!=='ready'){
@@ -2009,9 +1902,8 @@ function drawResultOverlay(ctx, b, isSafe) {
 
 function updateNailDoneStatus() {
   setNailStatus(
-    '<span class="danger">🔥 18650 NMC: THERMAL RUNAWAY — surface temp 500–600°C, fire and possible explosion.</span><br>' +
-    '<span class="danger">🔥 4680 NMC: THERMAL RUNAWAY — larger cell volume means more stored energy and a more severe event (est. 700–800°C).</span><br>' +
-    '<span class="safe">✅ Blade LFP: Temperature barely rises above 60°C. LFP chemistry prevents oxygen release — no fire, no explosion. Just a hole.</span>'
+    '<span class="danger">🔥 NMC cell: THERMAL RUNAWAY triggered — surface temp 500–600°C, fire and possible explosion.</span><br>' +
+    '<span class="safe">✅ Blade cell: Temperature barely rises above 60°C. LFP chemistry prevents oxygen release — no fire, no explosion. Just a hole.</span>'
   );
 }
 function setNailStatus(html) {
