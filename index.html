@@ -1593,234 +1593,233 @@ function spawnSparks(dt) {
   }
 }
 
-function getNMCNailTip() {
-  const { nmcBatt, nailW } = getNailLayout();
-  const nailX = nmcBatt.x + nmcBatt.w/2 - nailW/2;
-  const tipY  = nmcBatt.y + nmcBatt.h * nailProg;
-  return { x: nailX + nailW/2, y: tipY };
+let nmcNailTip2D = {x:0, y:0};
+function getNMCNailTip() { return nmcNailTip2D; }
+
+// ═══════════════════════════════════════════════════════
+//   3-D NAIL RENDERER  (perspective projection, no deps)
+// ═══════════════════════════════════════════════════════
+// Camera: azimuth 31°, elevation 22°, perspective d=5.5
+const N3_RY=0.55, N3_RX=0.38, N3_D=5.5;
+
+function n3p(x,y,z,sc,ox,oy){
+  const cy=Math.cos(N3_RY),sy=Math.sin(N3_RY);
+  const rx=x*cy+z*sy, rz1=-x*sy+z*cy;
+  const cx=Math.cos(N3_RX),sx=Math.sin(N3_RX);
+  const ry=y*cx-rz1*sx, rz2=y*sx+rz1*cx;
+  const s=N3_D/(N3_D+rz2)*sc;
+  return[rx*s+ox, ry*s+oy, rz2];
 }
 
-function getNailLayout() {
-  const half = NW / 2;
-  const padX = half * 0.12;
-  const battY = NH * 0.22;
-  const battH = NH * 0.52;
-  const nailW = Math.max(6, NW * 0.01);
-
-  const nmcBatt = { x: padX, y: battY, w: half - padX * 1.5, h: battH };
-  const bladeBatt = { x: half + padX * 0.5, y: battY + battH * 0.3, w: half - padX * 1.5, h: battH * 0.38 };
-
-  return { nmcBatt, bladeBatt, nailW, half, battY, battH };
+function n3Face(ctx,pts,fill,stroke){
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0],pts[0][1]);
+  for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0],pts[i][1]);
+  ctx.closePath();
+  if(fill){ctx.fillStyle=fill;ctx.fill();}
+  if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=0.7;ctx.stroke();}
 }
 
-function drawNailFrame() {
-  const ctx = nailCtx;
-  ctx.clearRect(0, 0, NW, NH);
+// 6-face box. cols=[top,bottom,front,back,left,right]
+function n3Box(ctx,cx,cy,cz,w,h,d,cols,sc,ox,oy){
+  const[hw,hh,hd]=[w/2,h/2,d/2];
+  const V=(dx,dy,dz)=>n3p(cx+dx,cy+dy,cz+dz,sc,ox,oy);
+  const F=[
+    {v:[V(-hw,-hh,-hd),V( hw,-hh,-hd),V( hw,-hh, hd),V(-hw,-hh, hd)],c:cols[0]},
+    {v:[V(-hw, hh,-hd),V( hw, hh,-hd),V( hw, hh, hd),V(-hw, hh, hd)],c:cols[1]},
+    {v:[V(-hw,-hh,-hd),V( hw,-hh,-hd),V( hw, hh,-hd),V(-hw, hh,-hd)],c:cols[2]},
+    {v:[V(-hw,-hh, hd),V( hw,-hh, hd),V( hw, hh, hd),V(-hw, hh, hd)],c:cols[3]},
+    {v:[V(-hw,-hh,-hd),V(-hw,-hh, hd),V(-hw, hh, hd),V(-hw, hh,-hd)],c:cols[4]},
+    {v:[V( hw,-hh,-hd),V( hw,-hh, hd),V( hw, hh, hd),V( hw, hh,-hd)],c:cols[5]},
+  ];
+  F.forEach(f=>f.z=f.v.reduce((s,p)=>s+p[2],0)/4);
+  F.sort((a,b)=>b.z-a.z);
+  F.forEach(f=>n3Face(ctx,f.v,f.c,'rgba(0,0,0,0.16)'));
+}
 
-  ctx.fillStyle = '#f4f7ff';
-  ctx.fillRect(0, 0, NW, NH);
+// Cylinder with jellyroll rings on the top cap
+function n3Cyl(ctx,cx,cy,cz,r,h,segs,temp,sc,ox,oy){
+  const F=[];
+  for(let i=0;i<segs;i++){
+    const a0=(i/segs)*Math.PI*2, a1=((i+1)/segs)*Math.PI*2;
+    const[x0,z0,x1,z1]=[Math.cos(a0)*r,Math.sin(a0)*r,Math.cos(a1)*r,Math.sin(a1)*r];
+    const v=[n3p(cx+x0,cy-h/2,cz+z0,sc,ox,oy),n3p(cx+x1,cy-h/2,cz+z1,sc,ox,oy),
+             n3p(cx+x1,cy+h/2,cz+z1,sc,ox,oy),n3p(cx+x0,cy+h/2,cz+z0,sc,ox,oy)];
+    const avgZ=(v[0][2]+v[1][2]+v[2][2]+v[3][2])/4;
+    const bright=Math.max(0.18,Math.cos((a0+a1)/2)*0.55+0.45);
+    F.push({v,avgZ,bright,side:true});
+  }
+  const capPts=(bot)=>{
+    const pts=[];
+    for(let i=0;i<segs;i++){const a=(i/segs)*Math.PI*2;pts.push(n3p(cx+Math.cos(a)*r,cy+(bot?1:-1)*h/2,cz+Math.sin(a)*r,sc,ox,oy));}
+    return pts;
+  };
+  const topV=capPts(false), botV=capPts(true);
+  F.push({v:topV,avgZ:topV.reduce((s,p)=>s+p[2],0)/segs,top:true});
+  F.push({v:botV,avgZ:botV.reduce((s,p)=>s+p[2],0)/segs,bot:true});
+  F.sort((a,b)=>b.avgZ-a.avgZ);
+  F.forEach(f=>{
+    let fill;
+    if(f.top){
+      fill=temp>0.12?`rgb(${Math.round(80+temp*175)},${Math.round(55*(1-temp))},${Math.round(35*(1-temp))})`:
+                    '#5a5a5a';
+    }else if(f.bot){
+      fill='#1c1c1c';
+    }else{
+      const br=f.bright;
+      fill=`rgb(${Math.round((35+temp*210)*br)},${Math.round(38*(1-temp)*br)},${Math.round(38*(1-temp)*br)})`;
+    }
+    n3Face(ctx,f.v,fill,'rgba(0,0,0,0.12)');
+    if(f.top){
+      const tcx=f.v.reduce((s,p)=>s+p[0],0)/f.v.length;
+      const tcy=f.v.reduce((s,p)=>s+p[1],0)/f.v.length;
+      const apr=Math.hypot(f.v[0][0]-tcx,f.v[0][1]-tcy);
+      ctx.save();
+      ctx.strokeStyle=temp>0.1?`rgba(255,${Math.round(80*(1-temp))},0,0.5)`:'rgba(100,100,120,0.35)';
+      ctx.lineWidth=0.9;
+      for(let jr=apr*0.18;jr<apr*0.93;jr+=apr*0.18){ctx.beginPath();ctx.arc(tcx,tcy,jr,0,Math.PI*2);ctx.stroke();}
+      ctx.restore();
+    }
+  });
+}
 
-  // subtle grid
-  ctx.strokeStyle = 'rgba(0,20,80,0.04)';
-  ctx.lineWidth = 1;
-  for (let x=0;x<NW;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,NH);ctx.stroke();}
-  for (let y=0;y<NH;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(NW,y);ctx.stroke();}
+// Steel nail: shaft box + pointed tip box
+function n3Nail(ctx,cx,tipY,cz,r,shaftTopY,temp,sc,ox,oy){
+  const shaftH=tipY-r*3-shaftTopY;
+  const s1=temp>0.1?`rgb(${Math.round(155+temp*100)},${Math.round(130*(1-temp))},${Math.round(100*(1-temp))})`:'#aaa';
+  const s2=temp>0.1?`rgb(${Math.round(205+temp*50)},${Math.round(180*(1-temp))},${Math.round(140*(1-temp))})`:'#ddd';
+  const tc=temp>0.1?`rgb(${Math.round(200+temp*55)},${Math.round(75*(1-temp))},0)`:'#888';
+  if(shaftH>0) n3Box(ctx,cx,shaftTopY+shaftH/2,cz,r*2,shaftH,r*2,[s2,s1,s1,s1,s1,s2],sc,ox,oy);
+  const tipH=r*3, tipCY=tipY-tipH/2;
+  if(tipCY>shaftTopY-r) n3Box(ctx,cx,tipCY,cz,r*1.3,tipH,r*1.3,[tc,tc,tc,tc,tc,tc],sc,ox,oy);
+}
 
-  const { nmcBatt, bladeBatt, nailW, half } = getNailLayout();
+// XYZ axis indicator at screen point (ox,oy)
+function n3Axes(ctx,ox,oy,sc){
+  const len=0.7,fs=Math.max(8,sc*0.11);
+  [[len,0,0,'#cc2200','X'],[0,-len,0,'#006a30','Y'],[0,0,len,'#0055b3','Z']].forEach(([lx,ly,lz,col,lbl])=>{
+    const[ax,ay]=n3p(0,0,0,sc,ox,oy),[bx,by]=n3p(lx,ly,lz,sc,ox,oy);
+    ctx.beginPath();ctx.strokeStyle=col;ctx.lineWidth=2;ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();
+    ctx.fillStyle=col;ctx.font=`bold ${fs}px monospace`;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(lbl,bx+(bx-ax)*0.45,by+(by-ay)*0.45);
+  });
+}
 
-  // center divider
-  ctx.strokeStyle = 'rgba(0,20,80,0.1)';
-  ctx.lineWidth = 1;
-  ctx.setLineDash([4,4]);
-  ctx.beginPath(); ctx.moveTo(half, 0); ctx.lineTo(half, NH); ctx.stroke();
-  ctx.setLineDash([]);
+function drawNailFrame(){
+  const ctx=nailCtx;
+  ctx.clearRect(0,0,NW,NH);
+  ctx.fillStyle='#f4f7ff';ctx.fillRect(0,0,NW,NH);
 
-  // section headers
-  ctx.textAlign = 'center';
-  ctx.font = `bold ${Math.max(10,NW*0.016)}px 'Segoe UI',sans-serif`;
-  ctx.fillStyle = '#cc3300';
-  ctx.fillText('NMC / 18650 Cylindrical Cell', half/2, NH*0.05);
-  ctx.fillStyle = '#006a30';
-  ctx.fillText('BYD Blade Battery (LFP)', half + half/2, NH*0.05);
+  ctx.strokeStyle='rgba(0,20,80,0.04)';ctx.lineWidth=1;
+  for(let x=0;x<NW;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,NH);ctx.stroke();}
+  for(let y=0;y<NH;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(NW,y);ctx.stroke();}
 
-  ctx.font = `${Math.max(8,NW*0.012)}px 'Segoe UI',sans-serif`;
-  ctx.fillStyle = '#475a88';
-  ctx.fillText('NMC Chemistry', half/2, NH*0.09);
-  ctx.fillText('LFP Chemistry', half+half/2, NH*0.09);
+  const half=NW/2;
+  ctx.strokeStyle='rgba(0,20,80,0.1)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(half,0);ctx.lineTo(half,NH);ctx.stroke();ctx.setLineDash([]);
 
-  // shake offset for NMC
-  const sx = shakeAmt > 0.5 ? (Math.random()-.5)*shakeAmt*2 : 0;
-  const sy = shakeAmt > 0.5 ? (Math.random()-.5)*shakeAmt : 0;
+  ctx.textAlign='center';
+  ctx.font=`bold ${Math.max(10,NW*0.016)}px 'Segoe UI',sans-serif`;
+  ctx.fillStyle='#cc3300';ctx.fillText('NMC / 18650 Cylindrical',half/2,NH*0.05);
+  ctx.fillStyle='#006a30';ctx.fillText('BYD Blade Battery (LFP)',half+half/2,NH*0.05);
+  ctx.font=`${Math.max(8,NW*0.011)}px 'Segoe UI',sans-serif`;
+  ctx.fillStyle='#475a88';
+  ctx.fillText('NMC Chemistry',half/2,NH*0.09);
+  ctx.fillText('LFP Chemistry',half+half/2,NH*0.09);
 
-  ctx.save();
-  ctx.translate(sx, sy);
+  // ── NMC 3-D ─────────────────────────────────────────────
+  const nmcSc=NH*0.19, nmcOx=half*0.5, nmcOy=NH*0.56;
+  const NR=0.7, NHC=2.4;
+  const sx=shakeAmt>0.5?(Math.random()-.5)*shakeAmt*2:0;
+  const sy=shakeAmt>0.5?(Math.random()-.5)*shakeAmt*0.8:0;
 
-  // ── DRAW NMC BATTERY ──
-  drawNMCBattery(ctx, nmcBatt);
+  if(nmcTemp>0.08){
+    const gc=n3p(0,0,0,nmcSc,nmcOx+sx,nmcOy+sy);
+    const gr=ctx.createRadialGradient(gc[0],gc[1],0,gc[0],gc[1],nmcSc*1.4);
+    gr.addColorStop(0,`rgba(255,${Math.round(110*(1-nmcTemp))},0,${nmcTemp*0.28})`);
+    gr.addColorStop(1,'rgba(255,80,0,0)');
+    ctx.fillStyle=gr;ctx.beginPath();ctx.arc(gc[0],gc[1],nmcSc*1.4,0,Math.PI*2);ctx.fill();
+  }
+  n3Cyl(ctx,0,0,0,NR,NHC,32,nmcTemp,nmcSc,nmcOx+sx,nmcOy+sy);
 
-  // ── NMC NAIL ──
-  const nailAbove = nmcBatt.y * 0.9;
-  const nmcNailX = nmcBatt.x + nmcBatt.w/2 - nailW/2;
-  const nmcNailTopY = nailAbove * (1 - nailProg);
-  const nmcNailBotY = nmcBatt.y + nmcBatt.h * Math.min(nailProg, 1.05);
-  drawNail(ctx, nmcNailX, nmcNailTopY, nailW, nmcNailBotY - nmcNailTopY, nmcTemp);
+  const nmcNailR=0.085, nmcShaftTop=-(NHC/2+1.45);
+  const nmcTipY=-(NHC/2)+NHC*nailProg;
+  n3Nail(ctx,0,nmcTipY,0,nmcNailR,nmcShaftTop,nmcTemp,nmcSc,nmcOx+sx,nmcOy+sy);
 
-  // ── FIRE PARTICLES ──
+  const tp=n3p(0,nmcTipY,0,nmcSc,nmcOx+sx,nmcOy+sy);
+  nmcNailTip2D={x:tp[0],y:tp[1]};
   drawFireParticles(ctx);
   drawSparks(ctx);
 
-  // ── NMC TEMPERATURE GAUGE ──
-  drawTempGauge(ctx, nmcBatt.x - 22, nmcBatt.y, 14, nmcBatt.h, nmcTemp, 600, true);
+  drawTempGauge(ctx,Math.max(4,nmcOx-nmcSc*NR-28),nmcOy-NH*0.24,14,NH*0.46,nmcTemp,600,true);
+  n3Axes(ctx,half*0.13,NH*0.9,nmcSc*0.55);
 
-  ctx.restore();
+  // ── BLADE 3-D ────────────────────────────────────────────
+  const bladeSc=Math.min(NW*0.098,NH*0.2);
+  const bladeOx=half+half*0.5, bladeOy=NH*0.52;
+  const BW=3.8, BHT=0.22, BD=0.85;
 
-  // ── DRAW BLADE BATTERY ──
-  drawBladeBattery(ctx, bladeBatt);
-
-  // ── BLADE NAIL ──
-  const bladeNailX = bladeBatt.x + bladeBatt.w/2 - nailW/2;
-  const bladeAbove = bladeBatt.y * 0.9;
-  const bladeNailTopY = bladeAbove * (1 - nailProg);
-  const bladeNailH = bladeBatt.y + bladeBatt.h * Math.min(nailProg, 1.1) - bladeNailTopY;
-  drawNail(ctx, bladeNailX, bladeNailTopY, nailW, bladeNailH, bladeTemp);
-
-  // ── BLADE TEMPERATURE GAUGE ──
-  drawTempGauge(ctx, bladeBatt.x + bladeBatt.w + 8, bladeBatt.y, 14, bladeBatt.h, bladeTemp, 60, false);
-
-  // ── STATUS OVERLAYS ──
-  if (nailPhase === 'done') {
-    drawResultOverlay(ctx, nmcBatt, false);
-    drawResultOverlay(ctx, bladeBatt, true);
+  if(nailProg>0.25){
+    const bc=n3p(0,0,0,bladeSc,bladeOx,bladeOy);
+    const bg=ctx.createRadialGradient(bc[0],bc[1],0,bc[0],bc[1],bladeSc*BW*0.55);
+    bg.addColorStop(0,`rgba(0,200,100,${Math.min(bladeTemp*0.6,0.18)})`);
+    bg.addColorStop(1,'rgba(0,200,100,0)');
+    ctx.fillStyle=bg;ctx.beginPath();ctx.arc(bc[0],bc[1],bladeSc*BW*0.55,0,Math.PI*2);ctx.fill();
   }
 
-  // ── PROGRESS INDICATOR ──
-  if (nailPhase !== 'ready') {
-    ctx.fillStyle = 'rgba(0,0,0,0.08)';
-    ctx.fillRect(NW*0.1, NH - 16, NW*0.8, 8);
-    const barC = nailProg < 0.5 ? '#cc8800' : '#cc3300';
-    ctx.fillStyle = barC;
-    ctx.fillRect(NW*0.1, NH - 16, NW*0.8*nailProg, 8);
-    ctx.fillStyle = 'rgba(0,0,0,0.6)';
-    ctx.font = `${Math.max(7,NW*0.011)}px monospace`;
-    ctx.textAlign = 'center';
-    ctx.fillText(`Nail penetration: ${Math.round(nailProg*100)}%`, NW/2, NH - 20);
+  n3Box(ctx,0,0,0,BW,BHT,BD,[
+    nailProg>0.5?'#1e5a30':'#1a3a5a',
+    '#0f2030','#1e4570','#0d2840','#162e4a','#1c3e62'
+  ],bladeSc,bladeOx,bladeOy);
+
+  // electrode layer lines on the front face
+  ctx.save();ctx.strokeStyle='rgba(40,120,220,0.3)';ctx.setLineDash([3,2]);ctx.lineWidth=0.8;
+  for(let li=1;li<6;li++){
+    const ly=-BHT/2+BHT*(li/6);
+    const[l0x,l0y]=n3p(-BW/2+0.1,ly,-BD/2+0.01,bladeSc,bladeOx,bladeOy);
+    const[l1x,l1y]=n3p( BW/2-0.1,ly,-BD/2+0.01,bladeSc,bladeOx,bladeOy);
+    ctx.beginPath();ctx.moveTo(l0x,l0y);ctx.lineTo(l1x,l1y);ctx.stroke();
   }
-}
+  ctx.setLineDash([]);ctx.restore();
 
-function drawNMCBattery(ctx, b) {
-  ctx.save();
-  // heat glow
-  if (nmcTemp > 0) {
-    const g = ctx.createRadialGradient(b.x+b.w/2, b.y+b.h/2, 0, b.x+b.w/2, b.y+b.h/2, b.w*0.7);
-    const r = Math.round(nmcTemp * 255);
-    const g2 = Math.round((1-nmcTemp)*100);
-    g.addColorStop(0, `rgba(${r},${g2},0,${nmcTemp*0.7})`);
-    g.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = g;
-    ctx.beginPath(); ctx.rect(b.x-20,b.y-20,b.w+40,b.h+40); ctx.fill();
-  }
+  const bladeNailR=0.055, bladeShaftTop=-(BHT/2+2.3);
+  const bladeTipY=-(BHT/2)+BHT*Math.min(nailProg,1.1);
+  n3Nail(ctx,0,bladeTipY,0,bladeNailR,bladeShaftTop,bladeTemp,bladeSc,bladeOx,bladeOy);
 
-  // body
-  roundRect(ctx, b.x, b.y, b.w, b.h, 8);
-  const bodyG = ctx.createLinearGradient(b.x,b.y,b.x+b.w,b.y);
-  bodyG.addColorStop(0,'#1a1a1a'); bodyG.addColorStop(.5,'#2a2a2a'); bodyG.addColorStop(1,'#1a1a1a');
-  ctx.fillStyle = bodyG;
-  ctx.fill();
-  ctx.strokeStyle = nmcTemp > 0.3 ? `rgba(255,${Math.round((1-nmcTemp)*100)},0,0.8)` : '#555';
-  ctx.lineWidth = 2;
-  ctx.stroke();
+  const brx=n3p(BW/2,0,-BD/2,bladeSc,bladeOx,bladeOy);
+  drawTempGauge(ctx,Math.min(brx[0]+10,NW-26),bladeOy-NH*0.16,14,NH*0.32,bladeTemp,60,false);
+  n3Axes(ctx,half+half*0.12,NH*0.9,bladeSc*0.55);
 
-  // jellyroll pattern
-  const cx = b.x + b.w/2, cy = b.y + b.h/2;
-  const maxR = Math.min(b.w, b.h) * 0.42;
-  for (let r = 4; r < maxR; r += 7) {
-    const hot = nmcTemp > 0.1;
-    ctx.strokeStyle = hot
-      ? `rgba(${Math.round(nmcTemp*255)},${Math.round((1-nmcTemp)*80)},0,${0.15+nmcTemp*0.3})`
-      : 'rgba(100,100,120,0.3)';
-    ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
+  // result overlays
+  if(nailPhase==='done'){
+    const nmcBotY=n3p(0,NHC/2,0,nmcSc,nmcOx,nmcOy)[1]+10;
+    ctx.save();ctx.globalAlpha=0.92;
+    roundRect(ctx,nmcOx-82,nmcBotY,164,24,6);
+    ctx.fillStyle='rgba(80,0,0,0.92)';ctx.fill();
+    ctx.strokeStyle='#ff4400';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.globalAlpha=1;ctx.fillStyle='#ff6644';
+    ctx.font=`bold ${Math.max(9,NW*0.014)}px 'Segoe UI',sans-serif`;
+    ctx.textAlign='center';ctx.fillText('🔥 THERMAL RUNAWAY',nmcOx,nmcBotY+16);ctx.restore();
+
+    const bladeBotY=n3p(0,BHT/2,0,bladeSc,bladeOx,bladeOy)[1]+18;
+    ctx.save();ctx.globalAlpha=0.92;
+    roundRect(ctx,bladeOx-82,bladeBotY,164,24,6);
+    ctx.fillStyle='rgba(0,60,30,0.92)';ctx.fill();
+    ctx.strokeStyle='#00e676';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.globalAlpha=1;ctx.fillStyle='#00e676';
+    ctx.font=`bold ${Math.max(9,NW*0.014)}px 'Segoe UI',sans-serif`;
+    ctx.textAlign='center';ctx.fillText('✅ SAFE — No Fire',bladeOx,bladeBotY+16);ctx.restore();
   }
 
-  // label
-  ctx.fillStyle = nmcTemp > 0.3 ? '#cc3300' : '#666';
-  ctx.font = `bold ${Math.max(8,b.w*0.07)}px 'Segoe UI',sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.fillText('18650', cx, b.y + b.h + 16);
-
-  ctx.restore();
-}
-
-function drawBladeBattery(ctx, b) {
-  ctx.save();
-  // safe glow
-  if (nailProg > 0.3) {
-    ctx.shadowColor = '#00e676';
-    ctx.shadowBlur = 10;
+  if(nailPhase!=='ready'){
+    ctx.fillStyle='rgba(0,0,0,0.08)';ctx.fillRect(NW*0.1,NH-16,NW*0.8,8);
+    ctx.fillStyle=nailProg<0.5?'#cc8800':'#cc3300';
+    ctx.fillRect(NW*0.1,NH-16,NW*0.8*nailProg,8);
+    ctx.fillStyle='rgba(0,0,0,0.6)';
+    ctx.font=`${Math.max(7,NW*0.011)}px monospace`;
+    ctx.textAlign='center';
+    ctx.fillText(`Nail penetration: ${Math.round(nailProg*100)}%`,NW/2,NH-20);
   }
-
-  roundRect(ctx, b.x, b.y, b.w, b.h, 5);
-  const bodyG = ctx.createLinearGradient(b.x,b.y,b.x,b.y+b.h);
-  bodyG.addColorStop(0,'#0a2040'); bodyG.addColorStop(.5,'#0d2e54'); bodyG.addColorStop(1,'#0a2040');
-  ctx.fillStyle = bodyG;
-  ctx.fill();
-  ctx.strokeStyle = nailProg > 0.5 ? 'rgba(0,230,118,0.7)' : '#2a5590';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.shadowBlur = 0;
-
-  // internal layer lines
-  const layerCount = 6;
-  const layerH = b.h / (layerCount + 1);
-  for (let i = 1; i <= layerCount; i++) {
-    const ly = b.y + i * layerH;
-    ctx.strokeStyle = 'rgba(0,170,255,0.2)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4,3]);
-    ctx.beginPath(); ctx.moveTo(b.x+4, ly); ctx.lineTo(b.x+b.w-4, ly); ctx.stroke();
-  }
-  ctx.setLineDash([]);
-
-  // heat dot at nail penetration (tiny)
-  if (nailProg > 0.5 && bladeTemp > 0) {
-    const nx = b.x + b.w/2;
-    const ny = b.y + b.h * 0.5;
-    const g = ctx.createRadialGradient(nx, ny, 0, nx, ny, 20);
-    g.addColorStop(0, `rgba(255,200,0,${bladeTemp*0.8})`);
-    g.addColorStop(1, 'rgba(255,200,0,0)');
-    ctx.fillStyle = g;
-    ctx.beginPath(); ctx.arc(nx,ny,20,0,Math.PI*2); ctx.fill();
-  }
-
-  ctx.fillStyle = '#3a8aaa';
-  ctx.font = `bold ${Math.max(8,b.w*0.04)}px 'Segoe UI',sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.fillText('BLADE (LFP)', b.x + b.w/2, b.y + b.h + 14);
-
-  ctx.restore();
-}
-
-function drawNail(ctx, x, y, w, h, temp) {
-  ctx.save();
-  // glow based on temp
-  if (temp > 0.1) {
-    ctx.shadowColor = `rgba(${Math.round(temp*255)},${Math.round((1-temp)*80)},0,0.9)`;
-    ctx.shadowBlur = 10 + temp * 15;
-  }
-  const g = ctx.createLinearGradient(x,0,x+w,0);
-  g.addColorStop(0,'#555'); g.addColorStop(.4,'#ccc'); g.addColorStop(.6,'#ccc'); g.addColorStop(1,'#555');
-  ctx.fillStyle = g;
-  // shaft
-  ctx.fillRect(x, y, w, h - w);
-  // tip (triangle)
-  ctx.beginPath();
-  ctx.moveTo(x, y+h-w);
-  ctx.lineTo(x+w/2, y+h);
-  ctx.lineTo(x+w, y+h-w);
-  ctx.closePath();
-  ctx.fill();
-  ctx.shadowBlur = 0;
-  ctx.restore();
 }
 
 function drawFireParticles(ctx) {
