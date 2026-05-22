@@ -322,13 +322,19 @@ h1.hero-title{
 .nail-status .safe{color:#006a30;}
 
 /* ═══ THERMAL CANVAS ══════════════════ */
-#thermalCanvas{display:block;width:100%;height:auto;border-radius:16px;border:1px solid var(--border);}
-
-.thermal-controls{display:flex;gap:1rem;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap;}
-.th-btn{
-  padding:.6rem 1.6rem;border-radius:99px;border:2px solid;
-  font-size:.9rem;font-weight:600;cursor:pointer;transition:all .25s;background:none;
-}
+.thermal-compare{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem;}
+@media(max-width:620px){.thermal-compare{grid-template-columns:1fr;}}
+.thermal-col{display:flex;flex-direction:column;gap:.75rem;}
+.thermal-col-hd{display:flex;align-items:center;justify-content:space-between;padding:.5rem .9rem;border-radius:12px;}
+.thermal-col-hd.nmc-hd{background:rgba(200,40,10,.06);border:1px solid rgba(200,40,10,.2);}
+.thermal-col-hd.blade-hd{background:rgba(0,150,60,.06);border:1px solid rgba(0,150,60,.2);}
+.thermal-col-lbl{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.95rem;}
+.nmc-lbl{color:#cc2200;}
+.blade-lbl{color:#006a30;}
+.thermal-col canvas{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--border);}
+.thermal-col-st{font-size:.82rem;color:var(--muted);line-height:1.5;text-align:center;min-height:2rem;}
+.thermal-reset-row{display:flex;justify-content:center;margin-top:.5rem;}
+.th-btn{padding:.55rem 1.3rem;border-radius:99px;border:2px solid;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .25s;background:none;}
 .th-btn-nmc{border-color:rgba(200,40,10,.5);color:#cc2200;}
 .th-btn-nmc:hover,.th-btn-nmc.active{background:rgba(200,40,10,.1);}
 .th-btn-blade{border-color:rgba(0,150,60,.4);color:#006a30;}
@@ -855,14 +861,27 @@ footer{text-align:center;padding:3rem 1.5rem;color:var(--muted);font-size:.82rem
     <h2 class="sec-title reveal">Heat Can't Spread — Here's Why</h2>
     <p class="sec-desc reveal">The Blade's <strong>thin flat shape</strong> gives it a huge surface-area-to-volume ratio. Heat dissipates across the large face before it can build up — like a thin pizza crust cooling faster than a deep-dish.</p>
 
-    <div class="thermal-controls reveal">
-      <button class="th-btn th-btn-nmc" id="th-nmc" onclick="startThermal('nmc')">🔥 Trigger NMC Cascade</button>
-      <button class="th-btn th-btn-blade" id="th-blade" onclick="startThermal('blade')">⚡ Trigger Blade Event</button>
-      <button class="th-btn th-btn-reset" onclick="resetThermal()">↺ Reset</button>
+    <div class="thermal-compare reveal">
+      <div class="thermal-col">
+        <div class="thermal-col-hd nmc-hd">
+          <span class="thermal-col-lbl nmc-lbl">🔥 NMC Pack</span>
+          <button class="th-btn th-btn-nmc" id="th-nmc" onclick="nmcSim.start()">Trigger Cascade</button>
+        </div>
+        <canvas id="thermalNmcCanvas"></canvas>
+        <p class="thermal-col-st" id="thermalNmcStatus">Click "Trigger Cascade" to simulate a thermal event.</p>
+      </div>
+      <div class="thermal-col">
+        <div class="thermal-col-hd blade-hd">
+          <span class="thermal-col-lbl blade-lbl">⚡ Blade Pack</span>
+          <button class="th-btn th-btn-blade" id="th-blade" onclick="bladeSim.start()">Trigger Event</button>
+        </div>
+        <canvas id="thermalBladeCanvas"></canvas>
+        <p class="thermal-col-st" id="thermalBladeStatus">Click "Trigger Event" to simulate a thermal event.</p>
+      </div>
     </div>
-
-    <canvas id="thermalCanvas" class="reveal"></canvas>
-    <p class="nail-status reveal" id="thermalStatus">Select a battery type above to simulate a thermal event in one cell and watch how heat spreads through the pack.</p>
+    <div class="thermal-reset-row reveal">
+      <button class="th-btn th-btn-reset" onclick="nmcSim.reset();bladeSim.reset()">↺ Reset Both</button>
+    </div>
   </div>
 </div>
 
@@ -1893,179 +1912,129 @@ function setNailStatus(html) {
 // ═══════════════════════════════════════════════════════
 //   THERMAL CANVAS
 // ═══════════════════════════════════════════════════════
-const thermalCanvas = document.getElementById('thermalCanvas');
-let thCtx, TW, TH;
-let thMode = null;    // null | 'nmc' | 'blade'
-let thGrid = null;    // 2D array of heat values
-let thTime = 0;
-let thRAF  = null;
-let thLastTS = null;
-const TH_COLS = 20, TH_ROWS = 6;
-let thCellW, thCellH;
+function makeThermalSim(canvasId, mode, btnId, statusId) {
+  const canvas = document.getElementById(canvasId);
+  let ctx, W, H, grid, time, raf, lastTS, cellW, cellH;
+  const COLS = 20, ROWS = 6;
 
-function resizeThermal() {
-  const container = thermalCanvas.parentElement.parentElement;
-  TW = Math.min(container.clientWidth - 40, 900);
-  TH = Math.round(TW * 0.28);
-  thCtx = setupCanvas(thermalCanvas, TW, TH);
-  thCellW = TW / TH_COLS;
-  thCellH = TH / TH_ROWS;
-  if (thGrid) drawThermal();
-}
-
-function initThermalGrid() {
-  thGrid = Array.from({length:TH_ROWS}, () => new Float32Array(TH_COLS));
-}
-
-function startThermal(mode) {
-  if (thRAF) cancelAnimationFrame(thRAF);
-  thMode = mode;
-  thTime = 0;
-  initThermalGrid();
-  // trigger cell at center
-  const trigR = Math.floor(TH_ROWS/2);
-  const trigC = Math.floor(TH_COLS/2);
-  thGrid[trigR][trigC] = 1.0;
-  thLastTS = null;
-  document.querySelectorAll('.th-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById(mode==='nmc'?'th-nmc':'th-blade').classList.add('active');
-  thermalRAF(performance.now());
-  document.getElementById('thermalStatus').innerHTML =
-    mode === 'nmc'
-      ? '🔥 <strong>NMC pack:</strong> Heat spreads rapidly to neighboring cells, triggering cascading thermal runaway across the entire pack.'
-      : '✅ <strong>Blade pack:</strong> Heat from the triggered cell dissipates along the thin blade surface — it cannot cascade to neighbors.';
-}
-
-function resetThermal() {
-  if (thRAF) cancelAnimationFrame(thRAF);
-  thMode = null;
-  thGrid = null;
-  thCtx.clearRect(0,0,TW,TH);
-  document.querySelectorAll('.th-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('thermalStatus').textContent = 'Select a battery type above to simulate a thermal event in one cell and watch how heat spreads through the pack.';
-  drawThermalIdle();
-}
-
-function thermalRAF(ts) {
-  if (!thLastTS) thLastTS = ts;
-  const dt = Math.min(ts - thLastTS, 50);
-  thLastTS = ts;
-  thTime += dt;
-  updateThermalGrid(dt);
-  drawThermal();
-  if (thTime < 8000) thRAF = requestAnimationFrame(thermalRAF);
-}
-
-function updateThermalGrid(dt) {
-  const next = Array.from({length:TH_ROWS}, () => new Float32Array(TH_COLS));
-  // diffusion rate differs by mode
-  const diff = thMode === 'nmc' ? 0.14 * (dt/16) : 0.018 * (dt/16);
-  const decay = thMode === 'nmc' ? 0.998 : 0.985;
-
-  for (let r=0;r<TH_ROWS;r++) {
-    for (let c=0;c<TH_COLS;c++) {
-      let v = thGrid[r][c];
-      // spread to neighbors
-      const neighbors = [];
-      if (r>0) neighbors.push(thGrid[r-1][c]);
-      if (r<TH_ROWS-1) neighbors.push(thGrid[r+1][c]);
-      if (c>0) neighbors.push(thGrid[r][c-1]);
-      if (c<TH_COLS-1) neighbors.push(thGrid[r][c+1]);
-      const avg = neighbors.reduce((a,b)=>a+b,0) / neighbors.length;
-      v = v * decay + (avg - v) * diff;
-      // NMC: cascade — if a cell reaches threshold, it ignites fully
-      if (thMode === 'nmc' && v > 0.35 && v < 0.98) {
-        v = Math.min(v + 0.04 * (dt/16), 1);
-      }
-      next[r][c] = Math.max(0, v);
-    }
+  function resize() {
+    W = canvas.parentElement.clientWidth;
+    if (!W) return;
+    H = Math.round(W * 0.38);
+    ctx = setupCanvas(canvas, W, H);
+    cellW = W / COLS; cellH = H / ROWS;
+    if (grid) draw(); else drawIdle();
   }
-  thGrid = next;
-}
 
-function drawThermal() {
-  const ctx = thCtx;
-  ctx.clearRect(0,0,TW,TH);
-  ctx.fillStyle = '#f4f7ff';
-  ctx.fillRect(0,0,TW,TH);
+  function start() {
+    if (raf) cancelAnimationFrame(raf);
+    time = 0;
+    grid = Array.from({length:ROWS}, () => new Float32Array(COLS));
+    grid[Math.floor(ROWS/2)][Math.floor(COLS/2)] = 1.0;
+    lastTS = null;
+    document.getElementById(btnId).classList.add('active');
+    document.getElementById(statusId).innerHTML = mode === 'nmc'
+      ? '🔥 <strong>NMC pack:</strong> Heat spreads rapidly — cascading thermal runaway across the entire pack.'
+      : '✅ <strong>Blade pack:</strong> Heat dissipates along the thin blade surface — cannot cascade to neighbors.';
+    tick(performance.now());
+  }
 
-  if (!thGrid) { drawThermalIdle(); return; }
+  function reset() {
+    if (raf) cancelAnimationFrame(raf);
+    grid = null;
+    document.getElementById(btnId).classList.remove('active');
+    document.getElementById(statusId).textContent = mode === 'nmc'
+      ? 'Click "Trigger Cascade" to simulate a thermal event.'
+      : 'Click "Trigger Event" to simulate a thermal event.';
+    if (ctx) { ctx.clearRect(0,0,W,H); drawIdle(); }
+  }
 
-  for (let r=0;r<TH_ROWS;r++) {
-    for (let c=0;c<TH_COLS;c++) {
-      const v = thGrid[r][c];
-      const x = c * thCellW, y = r * thCellH;
+  function tick(ts) {
+    if (!lastTS) lastTS = ts;
+    const dt = Math.min(ts - lastTS, 50);
+    lastTS = ts; time += dt;
+    update(dt); draw();
+    if (time < 8000) raf = requestAnimationFrame(tick);
+  }
 
-      // cell background
-      ctx.fillStyle = '#dde5f2';
-      ctx.fillRect(x+1, y+1, thCellW-2, thCellH-2);
+  function update(dt) {
+    const next = Array.from({length:ROWS}, () => new Float32Array(COLS));
+    const diff = mode === 'nmc' ? 0.14 * (dt/16) : 0.018 * (dt/16);
+    const decay = mode === 'nmc' ? 0.998 : 0.985;
+    for (let r=0;r<ROWS;r++) {
+      for (let c=0;c<COLS;c++) {
+        let v = grid[r][c];
+        const nb = [];
+        if (r>0) nb.push(grid[r-1][c]);
+        if (r<ROWS-1) nb.push(grid[r+1][c]);
+        if (c>0) nb.push(grid[r][c-1]);
+        if (c<COLS-1) nb.push(grid[r][c+1]);
+        const avg = nb.reduce((a,b)=>a+b,0) / nb.length;
+        v = v * decay + (avg - v) * diff;
+        if (mode === 'nmc' && v > 0.35 && v < 0.98) v = Math.min(v + 0.04 * (dt/16), 1);
+        next[r][c] = Math.max(0, v);
+      }
+    }
+    grid = next;
+  }
 
-      // heat color
-      if (v > 0.01) {
-        let hex;
-        if (thMode === 'nmc') {
-          // blue→yellow→orange→red
-          if (v < 0.33) hex = heatColor(v/0.33, [0,50,150],[255,200,0]);
-          else if (v < 0.66) hex = heatColor((v-0.33)/0.33, [255,200,0],[255,80,0]);
-          else hex = heatColor((v-0.66)/0.34, [255,80,0],[255,0,0]);
-        } else {
-          // blade: mostly stays green/teal
-          hex = heatColor(v, [0,80,150],[255,200,0]);
+  function draw() {
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#f4f7ff'; ctx.fillRect(0,0,W,H);
+    if (!grid) { drawIdle(); return; }
+    for (let r=0;r<ROWS;r++) {
+      for (let c=0;c<COLS;c++) {
+        const v = grid[r][c];
+        const x = c*cellW, y = r*cellH;
+        ctx.fillStyle='#dde5f2'; ctx.fillRect(x+1,y+1,cellW-2,cellH-2);
+        if (v > 0.01) {
+          let hex;
+          if (mode === 'nmc') {
+            if (v < 0.33) hex = heatColor(v/0.33,[0,50,150],[255,200,0]);
+            else if (v < 0.66) hex = heatColor((v-0.33)/0.33,[255,200,0],[255,80,0]);
+            else hex = heatColor((v-0.66)/0.34,[255,80,0],[255,0,0]);
+          } else {
+            hex = heatColor(v,[0,80,150],[255,200,0]);
+          }
+          ctx.fillStyle=hex; ctx.globalAlpha=0.2+v*0.75;
+          ctx.fillRect(x+2,y+2,cellW-4,cellH-4); ctx.globalAlpha=1;
         }
-        ctx.fillStyle = hex;
-        ctx.globalAlpha = 0.2 + v * 0.75;
-        ctx.fillRect(x+2, y+2, thCellW-4, thCellH-4);
-        ctx.globalAlpha = 1;
-      }
-
-      // cell border
-      ctx.strokeStyle = v > 0.1
-        ? (thMode==='nmc' ? `rgba(255,${Math.round((1-v)*200)},0,0.4)` : 'rgba(0,180,100,0.4)')
-        : 'rgba(100,140,200,0.3)';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(x+1, y+1, thCellW-2, thCellH-2);
-
-      // on-fire indicator
-      if (thMode === 'nmc' && v > 0.7) {
-        ctx.font = `${Math.min(thCellH*0.6,16)}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle = 'rgba(255,200,0,0.8)';
-        ctx.fillText('🔥', x+thCellW/2, y+thCellH/2);
+        ctx.strokeStyle = v > 0.1
+          ? (mode==='nmc' ? `rgba(255,${Math.round((1-v)*200)},0,0.4)` : 'rgba(0,180,100,0.4)')
+          : 'rgba(100,140,200,0.3)';
+        ctx.lineWidth=1; ctx.strokeRect(x+1,y+1,cellW-2,cellH-2);
+        if (mode==='nmc' && v > 0.7) {
+          ctx.font=`${Math.min(cellH*0.6,16)}px serif`;
+          ctx.textAlign='center'; ctx.textBaseline='middle';
+          ctx.fillStyle='rgba(255,200,0,0.8)'; ctx.fillText('🔥',x+cellW/2,y+cellH/2);
+        }
       }
     }
+    ctx.textAlign='left';
+    ctx.font=`bold ${Math.max(9,W*0.02)}px 'Segoe UI',sans-serif`;
+    ctx.fillStyle=mode==='nmc'?'#cc3300':'#006a30'; ctx.textBaseline='top';
+    ctx.fillText(mode==='nmc'?'NMC Pack — Cascading Thermal Runaway':'Blade Pack — Contained Heat Event', 8, 6);
   }
 
-  // label
-  ctx.textAlign = 'left';
-  ctx.font = `bold ${Math.max(9,TW*0.014)}px 'Segoe UI',sans-serif`;
-  ctx.fillStyle = thMode === 'nmc' ? '#cc3300' : '#006a30';
-  ctx.textBaseline = 'top';
-  ctx.fillText(
-    thMode === 'nmc' ? 'NMC Pack — Cascading Thermal Runaway' : 'Blade Pack — Contained Heat Event',
-    8, 6
-  );
-}
-
-function drawThermalIdle() {
-  const ctx = thCtx;
-  ctx.clearRect(0,0,TW,TH);
-  ctx.fillStyle = '#f4f7ff';
-  ctx.fillRect(0,0,TW,TH);
-  for (let r=0;r<TH_ROWS;r++) {
-    for (let c=0;c<TH_COLS;c++) {
-      ctx.fillStyle = '#dde5f2';
-      ctx.fillRect(c*thCellW+1, r*thCellH+1, thCellW-2, thCellH-2);
-      ctx.strokeStyle = 'rgba(100,140,200,0.3)';
-      ctx.lineWidth=1;
-      ctx.strokeRect(c*thCellW+1, r*thCellH+1, thCellW-2, thCellH-2);
+  function drawIdle() {
+    if (!ctx || !cellW) return;
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#f4f7ff'; ctx.fillRect(0,0,W,H);
+    for (let r=0;r<ROWS;r++) {
+      for (let c=0;c<COLS;c++) {
+        ctx.fillStyle='#dde5f2'; ctx.fillRect(c*cellW+1,r*cellH+1,cellW-2,cellH-2);
+        ctx.strokeStyle='rgba(100,140,200,0.3)'; ctx.lineWidth=1;
+        ctx.strokeRect(c*cellW+1,r*cellH+1,cellW-2,cellH-2);
+      }
     }
+    ctx.fillStyle='#475a88'; ctx.font=`${Math.max(10,W*0.024)}px 'Segoe UI',sans-serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(mode==='nmc'?'Trigger Cascade →':'Trigger Event →', W/2, H/2);
   }
-  ctx.fillStyle = '#475a88';
-  ctx.font = `${Math.max(10,TW*0.018)}px 'Segoe UI',sans-serif`;
-  ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText('Click a button above to simulate a thermal event', TW/2, TH/2);
+
+  return { resize, start, reset };
 }
+
+const nmcSim = makeThermalSim('thermalNmcCanvas', 'nmc', 'th-nmc', 'thermalNmcStatus');
+const bladeSim = makeThermalSim('thermalBladeCanvas', 'blade', 'th-blade', 'thermalBladeStatus');
 
 function heatColor(t, c1, c2) {
   const r = Math.round(c1[0] + (c2[0]-c1[0])*t);
@@ -2903,7 +2872,7 @@ function drawCurve(ctx, data, maxT, maxTemp, padL, padR, padT, padB, prog, color
 function onResize() {
   resizeCTP();
   resizeNail();
-  resizeThermal();
+  nmcSim.resize(); bladeSim.resize();
   resizeSeq();
   resizeTempTL();
 }
@@ -2917,7 +2886,6 @@ onResize();
 initReveal();
 initCounters();
 buildMolecules();
-drawThermalIdle();
 drawCTP(0);
 setTimeout(() => animateCTP(performance.now()), 600);
 updateSeqUI();
