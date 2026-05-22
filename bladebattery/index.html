@@ -1679,7 +1679,8 @@ function drawNailFrame() {
 
   // ── BLADE NAIL ──
   const bladeNailX = bladeBatt.x + bladeBatt.w/2 - nailW/2;
-  const bladeNailTopY = NH * 0.05;
+  const bladeAbove = bladeBatt.y * 0.9;
+  const bladeNailTopY = bladeAbove * (1 - nailProg);
   const bladeNailH = bladeBatt.y + bladeBatt.h * Math.min(nailProg, 1.1) - bladeNailTopY;
   drawNail(ctx, bladeNailX, bladeNailTopY, nailW, bladeNailH, bladeTemp);
 
