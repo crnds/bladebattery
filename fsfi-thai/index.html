@@ -1,0 +1,1031 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#b5266a">
+<title>แบบประเมิน FSFI ฉบับประชาชน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ─────────────────────────────────────────── */
+:root {
+  --bg:        #fff7fb;
+  --surface:   #ffffff;
+  --s2:        #fce4ec;
+  --s3:        #fdf2f8;
+  --acc:       #d4306e;
+  --acc-d:     #8f1040;
+  --acc-l:     #f48fb1;
+  --acc-glow:  rgba(212,48,110,.22);
+  --txt:       #2a1020;
+  --txt2:      #6b3055;
+  --muted:     #a0607a;
+  --grn:       #0d9488;
+  --yel:       #d97706;
+  --red:       #dc2626;
+  --bdr:       rgba(212,48,110,.13);
+  --r:         18px;
+  --rs:        12px;
+  --pill:      999px;
+  --sh:        0 2px 18px rgba(212,48,110,.10), 0 1px 3px rgba(0,0,0,.04);
+  --sh-raise:  0 8px 32px rgba(212,48,110,.18), 0 2px 6px rgba(0,0,0,.06);
+  --fh:        'Mitr', system-ui, sans-serif;
+  --fb:        'Sarabun', system-ui, sans-serif;
+}
+
+/* ── RESET ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg);
+  color: var(--txt);
+  font-family: var(--fb);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── APP SHELL ───────────────────────────────────────── */
+#app {
+  position: relative;
+  width: 100%; height: 100dvh;
+  max-width: 430px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+/* ── BACKGROUND ─────────────────────────────────────── */
+#bg {
+  position: fixed; inset: 0;
+  pointer-events: none; overflow: hidden; z-index: 0;
+}
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(70px); opacity: .26;
+}
+.o1 { width: 300px; height: 300px; background: #f48fb1; top: -100px; right: -80px;
+      animation: drift 9s ease-in-out infinite alternate; }
+.o2 { width: 220px; height: 220px; background: #d7aefb; bottom: 8%; left: -80px;
+      animation: drift 11s ease-in-out infinite alternate-reverse; }
+.o3 { width: 160px; height: 160px; background: #fce4ec; bottom: 35%; right: -30px;
+      animation: drift 7s ease-in-out infinite alternate; animation-delay: 2s; }
+
+@keyframes drift {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(14px,-22px) scale(1.1); }
+}
+
+/* ── PAGE SYSTEM ────────────────────────────────────── */
+.page {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  background: var(--bg);
+  opacity: 0;
+  transition: opacity .18s ease;
+  will-change: opacity;
+}
+.page.active  { opacity: 1; }
+.page.fade-out { opacity: 0; }
+
+/* ── PROGRESS ───────────────────────────────────────── */
+.prog {
+  position: relative; z-index: 1;
+  padding: 14px 20px 0; flex-shrink: 0;
+}
+.prog-track {
+  height: 5px;
+  background: var(--s2);
+  border-radius: 3px; overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--acc-l), var(--acc));
+  border-radius: 3px;
+  transition: width .5s cubic-bezier(.4,0,.2,1);
+}
+.prog-meta {
+  display: flex; justify-content: space-between;
+  margin-top: 7px;
+  font-size: 11.5px; font-weight: 500; color: var(--muted);
+}
+
+/* ── SCROLL ─────────────────────────────────────────── */
+.scroll {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 20px 20px 0;
+  position: relative; z-index: 1;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll::-webkit-scrollbar { display: none; }
+
+/* ── FOOTER ─────────────────────────────────────────── */
+.foot {
+  position: relative; z-index: 1; flex-shrink: 0;
+  padding: 12px 20px 36px;
+  background: linear-gradient(to top, var(--bg) 58%, transparent);
+}
+
+/* ── BUTTONS ────────────────────────────────────────── */
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 17px 20px;
+  border: none; border-radius: var(--pill);
+  font-family: var(--fh); font-size: 16px; font-weight: 700;
+  cursor: pointer; letter-spacing: .025em;
+  transition: transform .14s cubic-bezier(.34,1.56,.64,1), box-shadow .14s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:active { transform: scale(.95); }
+.btn-p {
+  background: linear-gradient(135deg, #eb6fa8 0%, var(--acc) 100%);
+  color: #fff;
+  box-shadow: 0 6px 26px var(--acc-glow);
+}
+.btn-p:active { box-shadow: 0 2px 12px var(--acc-glow); }
+.btn-g {
+  background: var(--s2);
+  color: var(--acc-d);
+  font-size: 15px;
+}
+.btn-row { display: grid; grid-template-columns: 1fr 2.2fr; gap: 12px; }
+
+/* ══════════════════════════════════════════════════════
+   INTRO PAGE
+══════════════════════════════════════════════════════ */
+.hero-strip {
+  position: relative;
+  width: 100%; height: 155px;
+  border-radius: var(--r); overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: var(--sh-raise);
+}
+.hero-strip img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 16%;
+}
+.hero-strip-veil {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg,
+    rgba(255,247,251,0)  0%,
+    rgba(255,247,251,.78) 72%,
+    rgba(255,247,251,1)  100%);
+}
+.hero-badge {
+  position: absolute; bottom: 11px; left: 50%; transform: translateX(-50%);
+  white-space: nowrap;
+  background: rgba(255,255,255,.88);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--bdr);
+  border-radius: var(--pill);
+  padding: 5px 16px;
+  font-family: var(--fh); font-size: 11px; font-weight: 700;
+  color: var(--acc-d); letter-spacing: .05em;
+}
+
+.intro-h {
+  text-align: center;
+  margin-bottom: 18px;
+}
+.intro-h h1 {
+  font-family: var(--fh);
+  font-size: clamp(21px, 5.5vw, 25px);
+  font-weight: 900; line-height: 1.25;
+  color: var(--acc-d);
+  margin-bottom: 6px;
+}
+.intro-h p { font-size: 12.5px; color: var(--muted); }
+
+.intro-lead {
+  font-size: 14.5px; line-height: 1.82;
+  color: var(--txt2); margin-bottom: 20px;
+}
+.intro-lead strong { color: var(--acc); font-weight: 700; }
+
+/* Domain list */
+.d-list { display: flex; flex-direction: column; gap: 9px; margin-bottom: 18px; }
+.d-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1.5px solid var(--bdr);
+  border-radius: var(--rs);
+  box-shadow: var(--sh);
+}
+.di-ico { font-size: 23px; flex-shrink: 0; }
+.di-txt { flex: 1; min-width: 0; }
+.di-name { font-family: var(--fb); font-size: 14px; font-weight: 700; color: var(--txt); }
+.di-en   { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.di-tag  {
+  font-family: var(--fh); font-size: 10.5px; font-weight: 700;
+  color: var(--muted); background: var(--s2);
+  border-radius: var(--pill); padding: 3px 10px;
+  flex-shrink: 0;
+}
+
+.icard {
+  background: var(--surface);
+  border: 1.5px solid var(--bdr);
+  border-radius: var(--rs);
+  padding: 14px 16px;
+  margin-bottom: 13px;
+  font-size: 13.5px; line-height: 1.74; color: var(--txt2);
+}
+.icard strong { color: var(--acc); font-weight: 700; }
+
+/* ══════════════════════════════════════════════════════
+   QUESTION PAGE
+══════════════════════════════════════════════════════ */
+.d-head {
+  text-align: center;
+  padding: 6px 0 20px;
+}
+.d-ico-big {
+  font-size: 54px; display: block;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 5px 10px rgba(0,0,0,.12));
+  animation: bob 2.6s ease-in-out infinite;
+}
+@keyframes bob {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+.d-title {
+  font-family: var(--fh);
+  font-size: 22px; font-weight: 800; color: var(--acc-d);
+  margin-bottom: 3px;
+}
+.d-en { font-size: 12px; color: var(--muted); }
+
+/* Question cards */
+.q-card {
+  background: var(--surface);
+  border: 1.5px solid var(--bdr);
+  border-radius: var(--r);
+  padding: 20px 20px 22px;
+  margin-bottom: 14px;
+  box-shadow: var(--sh);
+  animation: slide-in .3s ease backwards;
+}
+.q-card:nth-child(2) { animation-delay: .09s; }
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.q-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--fh); font-size: 10px; font-weight: 700;
+  color: var(--acc); letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.q-tag::before {
+  content: ''; width: 4px; height: 4px;
+  border-radius: 50%; background: var(--acc);
+}
+
+.q-text {
+  font-family: var(--fb);
+  font-size: 15.5px; line-height: 1.72;
+  color: var(--txt); font-weight: 500;
+  margin-bottom: 22px;
+}
+
+/* ── CUSTOM TAP-FRIENDLY SLIDER ─────────────────────── */
+.sl-wrap { padding: 4px 0 0; }
+
+/* Track + bubbles row */
+.csl {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Connecting line behind bubbles */
+.csl::before {
+  content: '';
+  position: absolute;
+  left: 18px; right: 18px;
+  top: 50%; transform: translateY(-50%);
+  height: 6px;
+  background: var(--s2);
+  border-radius: 3px;
+  z-index: 0;
+}
+
+/* Filled portion of line */
+.csl-fill {
+  position: absolute;
+  left: 18px;
+  top: 50%; transform: translateY(-50%);
+  height: 6px;
+  background: linear-gradient(to right, #eb6fa8, var(--acc));
+  border-radius: 3px;
+  z-index: 1;
+  pointer-events: none;
+  transition: width .18s cubic-bezier(.4,0,.2,1), left .18s cubic-bezier(.4,0,.2,1);
+}
+
+/* Each step bubble */
+.csl-dot {
+  position: relative; z-index: 2;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2.5px solid var(--bdr);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--fh); font-size: 15px; font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    background .18s, border-color .18s, color .18s,
+    transform .18s cubic-bezier(.34,1.56,.64,1),
+    box-shadow .18s;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+}
+.csl-dot:active { transform: scale(.92); }
+.csl-dot.active {
+  background: linear-gradient(135deg, #eb6fa8, var(--acc));
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(212,48,110,.50);
+  transform: scale(1.18);
+}
+
+/* Label row below bubbles */
+.csl-labs {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding: 0 4px;
+}
+.csl-labs span {
+  font-size: 10px; color: var(--muted); font-weight: 500;
+  text-align: center;
+  width: 40px;
+  line-height: 1.25;
+  transition: color .18s, font-weight .18s;
+}
+.csl-labs span.active {
+  color: var(--acc-d);
+  font-weight: 700;
+}
+
+/* Selected value banner */
+.val-badge { text-align: center; margin-top: 14px; }
+.val-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 22px;
+  background: var(--s2); border-radius: var(--pill);
+  transition: background .2s, color .2s;
+}
+.val-chip .vn {
+  font-family: var(--fh); font-size: 18px; font-weight: 800;
+  color: var(--acc-d); min-width: 18px; text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.val-chip .vs { font-size: 14px; color: var(--muted); }
+.val-chip .vl {
+  font-family: var(--fb); font-size: 14px; font-weight: 600; color: var(--txt2);
+}
+.val-chip.pw { background: #fef9c3; }
+.val-chip.pw .vn, .val-chip.pw .vl { color: #854d0e; }
+.val-chip.pa { background: #fee2e2; }
+.val-chip.pa .vn, .val-chip.pa .vl { color: #991b1b; }
+
+/* ══════════════════════════════════════════════════════
+   RESULTS PAGE
+══════════════════════════════════════════════════════ */
+.res-top { text-align: center; padding: 20px 0 12px; }
+.res-e   { font-size: 50px; display: block; margin-bottom: 6px; }
+.res-t   { font-family: var(--fh); font-size: 22px; font-weight: 900; color: var(--acc-d); }
+
+/* Gauge */
+.gauge-wrap { display: flex; justify-content: center; margin: 6px 0 20px; }
+.gauge {
+  position: relative; width: 180px; height: 180px;
+  animation: breathe 3.8s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.035); }
+}
+.gauge svg { width: 100%; height: 100%; }
+.gauge-c {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.gauge-n {
+  font-family: var(--fh); font-size: 42px; font-weight: 900; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.gauge-d { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+
+/* Interpretation */
+.interp {
+  border-radius: var(--r); padding: 18px;
+  margin-bottom: 20px;
+  display: flex; align-items: flex-start; gap: 14px;
+  box-shadow: var(--sh);
+}
+.interp.lv-ok  { background: #f0fdf9; border: 2px solid #6ee7d1; }
+.interp.lv-rsk { background: #fffbeb; border: 2px solid #fcd34d; }
+.interp.lv-con { background: #fff1f2; border: 2px solid #fda4af; }
+.ie { font-size: 30px; flex-shrink: 0; }
+.il { font-family: var(--fh); font-size: 16px; font-weight: 800; margin-bottom: 2px; }
+.ir { font-size: 11.5px; color: var(--muted); margin-bottom: 6px; }
+.id { font-size: 13.5px; color: var(--txt2); line-height: 1.65; }
+
+/* Bar chart */
+.bars-title {
+  font-family: var(--fh); font-size: 15px; font-weight: 700;
+  color: var(--txt); margin-bottom: 14px;
+}
+.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.br-ico  { font-size: 18px; width: 26px; text-align: center; flex-shrink: 0; }
+.br-name {
+  font-family: var(--fb); font-size: 12.5px; color: var(--txt2);
+  width: 88px; flex-shrink: 0; line-height: 1.4;
+}
+.br-track-w { flex: 1; }
+.br-track { height: 10px; background: var(--s2); border-radius: 5px; overflow: hidden; }
+.br-fill  { height: 100%; border-radius: 5px; transition: width 1.15s cubic-bezier(.4,0,.2,1); }
+.br-score {
+  font-family: var(--fh); font-size: 13px; font-weight: 700;
+  min-width: 40px; text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.disc {
+  background: var(--surface); border: 1.5px solid var(--bdr);
+  border-radius: var(--rs); padding: 14px 16px;
+  font-size: 13px; line-height: 1.72; color: var(--muted);
+  margin-bottom: 14px;
+}
+
+/* ── FLOATING EMOJI ─────────────────────────────────── */
+@keyframes float-up {
+  0%   { opacity: 0; transform: translateY(0) scale(.6); }
+  15%  { opacity: .95; }
+  100% { opacity: 0; transform: translateY(-82px) scale(1.3); }
+}
+.fe {
+  position: fixed; pointer-events: none;
+  font-size: 22px;
+  animation: float-up 2.1s ease-out forwards;
+  z-index: 9999;
+}
+
+/* ── UTILITY ────────────────────────────────────────── */
+.sp { height: 100px; }
+.mt { margin-top: 14px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div id="bg">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+</div>
+<div id="app"></div>
+
+<script>
+'use strict';
+
+// ── DATA ─────────────────────────────────────────────────────────────────────
+const DOMAINS = [
+  {
+    id:1, icon:'❤️', name:'ความต้องการทางเพศ', en:'Desire',
+    qs:[
+      { id:1, num:1,
+        text:'ในช่วง 4 สัปดาห์ที่ผ่านมา ท่านรู้สึกถึงการกระตุ้นใจทางเพศบ่อยเพียงใด?',
+        min:0, max:5, minL:'ไม่มีเลย', maxL:'มากที่สุด',
+        labs:['ไม่มีเลย','น้อยมาก','น้อย','ปานกลาง','มาก','มากที่สุด'], inv:false },
+      { id:2, num:2,
+        text:'ในช่วง 4 สัปดาห์ที่ผ่านมา ระดับความต้องการทางเพศของท่านมีอย่างไร?',
+        min:0, max:5, minL:'ไม่มีเลย', maxL:'มากที่สุด',
+        labs:['ไม่มีเลย','น้อยมาก','น้อย','ปานกลาง','มาก','มากที่สุด'], inv:false }
+    ]
+  },
+  {
+    id:2, icon:'💧', name:'การตื่นตัวทางเพศ', en:'Arousal',
+    qs:[
+      { id:3, num:3,
+        text:'เมื่อมีสิ่งกระตุ้นทางเพศ ท่านรู้สึกตื่นตัวทางเพศบ่อยเพียงใด?',
+        min:0, max:5, minL:'ไม่มีเลย', maxL:'มากที่สุด',
+        labs:['ไม่มีเลย','น้อยมาก','น้อย','ปานกลาง','มาก','มากที่สุด'], inv:false },
+      { id:4, num:4,
+        text:'เมื่อมีสิ่งกระตุ้นทางเพศ ท่านรู้สึกตื่นตัวทางเพศ ในระดับใด?',
+        min:0, max:5, minL:'ไม่มีเลย', maxL:'มากที่สุด',
+        labs:['ไม่มีเลย','น้อยมาก','น้อย','ปานกลาง','มาก','มากที่สุด'], inv:false }
+    ]
+  },
+  {
+    id:3, icon:'🌹', name:'การหล่อลื่น', en:'Lubrication',
+    qs:[
+      { id:5, num:5,
+        text:'เมื่อมีสิ่งกระตุ้นทางเพศ ท่านมีการหล่อลื่นหรือเปียกชื้นบ่อยเพียงใด?',
+        min:0, max:5, minL:'ไม่มีเลย', maxL:'มากที่สุด',
+        labs:['ไม่มีเลย','น้อยมาก','น้อย','ปานกลาง','มาก','มากที่สุด'], inv:false },
+      { id:6, num:6,
+        text:'เมื่อมีสิ่งกระตุ้นทางเพศ ท่านมีการหล่อลื่นหรือเปียกชื้น ในระดับใด?',
+        min:0, max:5, minL:'ไม่มีเลย', maxL:'มากที่สุด',
+        labs:['ไม่มีเลย','น้อยมาก','น้อย','ปานกลาง','มาก','มากที่สุด'], inv:false }
+    ]
+  },
+  {
+    id:4, icon:'✨', name:'การถึงจุดสุดยอด', en:'Orgasm',
+    qs:[
+      { id:7, num:7,
+        text:'เมื่อมีเพศสัมพันธ์ ท่านถึงจุดสุดยอดบ่อยเพียงใด?',
+        min:0, max:5, minL:'ไม่เคย', maxL:'เกือบทุกครั้ง',
+        labs:['ไม่เคย','น้อยมาก','น้อย','บางครั้ง','บ่อย','เกือบทุกครั้ง'], inv:false },
+      { id:8, num:8,
+        text:'เมื่อมีเพศสัมพันธ์ ท่านถึงจุดสุดยอด ในระดับใด?',
+        min:0, max:5, minL:'ยากมาก', maxL:'ง่ายมาก',
+        labs:['ยากมาก','ยาก','ค่อนข้างยาก','ปานกลาง','ค่อนข้างง่าย','ง่ายมาก'], inv:false }
+    ]
+  },
+  {
+    id:5, icon:'💕', name:'ความพึงพอใจ', en:'Satisfaction',
+    qs:[
+      { id:9, num:9,
+        text:'ท่านพึงพอใจกับความใกล้ชิดทางเพศบ่อยเพียงใด?',
+        min:0, max:5, minL:'ไม่พึงพอใจเลย', maxL:'พึงพอใจมากที่สุด',
+        labs:['ไม่พึงพอใจเลย','พึงพอใจน้อยมาก','พึงพอใจน้อย','พึงพอใจปานกลาง','พึงพอใจมาก','พึงพอใจมากที่สุด'], inv:false },
+      { id:10, num:10,
+        text:'ท่านพึงพอใจกับชีวิตทางเพศ ในระดับใด?',
+        min:0, max:5, minL:'ไม่พึงพอใจเลย', maxL:'พึงพอใจมากที่สุด',
+        labs:['ไม่พึงพอใจเลย','พึงพอใจน้อยมาก','พึงพอใจน้อย','พึงพอใจปานกลาง','พึงพอใจมาก','พึงพอใจมากที่สุด'], inv:false }
+    ]
+  },
+  {
+    id:6, icon:'🩹', name:'ความเจ็บปวด', en:'Pain',
+    qs:[
+      { id:11, num:11,
+        text:'ในช่วง 4 สัปดาห์ที่ผ่านมา ท่านมีอาการเจ็บปวดขณะมีเพศสัมพันธ์บ่อยเพียงใด?',
+        min:0, max:5, minL:'ไม่มีเลย', maxL:'บ่อยมาก',
+        labs:['ไม่มีเลย','น้อยมาก','น้อย','บางครั้ง','บ่อย','บ่อยมาก'], inv:true },
+      { id:12, num:12,
+        text:'ในช่วง 4 สัปดาห์ที่ผ่านมา ระดับความเจ็บปวดขณะมีเพศสัมพันธ์เป็นอย่างไร?',
+        min:0, max:5, minL:'ไม่มีเลย', maxL:'รุนแรงมาก',
+        labs:['ไม่มีเลย','เล็กน้อย','น้อย','ปานกลาง','รุนแรง','รุนแรงมาก'], inv:true }
+    ]
+  }
+];
+
+// คะแนน × 0.6 ต่อด้าน — สูงสุด 6 คะแนน / 36 รวม
+const LEVELS = [
+  { min:26.55, max:36,    label:'การทำงานทางเพศปกติ',        emoji:'😊', cls:'lv-ok',  col:'#0d9488',
+    desc:'ผลการประเมินอยู่ในเกณฑ์ปกติ สุขภาพทางเพศของท่านอยู่ในระดับดี ดูแลตัวเองและสื่อสารกับคู่ชีวิตต่อไปนะคะ' },
+  { min:19.80, max:26.54, label:'มีความเสี่ยงต่อความผิดปกติ', emoji:'😐', cls:'lv-rsk', col:'#d97706',
+    desc:'ผลการประเมินอยู่ในเกณฑ์ที่ควรระวัง ลองสังเกตอาการของตนเอง และปรึกษาผู้เชี่ยวชาญหากมีความกังวล' },
+  { min:0,     max:19.79, label:'อาจมีความผิดปกติ',           emoji:'😟', cls:'lv-con', col:'#dc2626',
+    desc:'ผลการประเมินต่ำกว่าเกณฑ์ปกติ แนะนำให้ปรึกษาแพทย์ด้านเวชศาสตร์ทางเพศ เพื่อรับการประเมินอย่างละเอียดต่อไป' }
+];
+
+// Flat question list with domain reference (built once)
+const QUESTIONS = DOMAINS.flatMap(d => d.qs.map(q => ({ ...q, domain: d })));
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const STATE = { page: 0, answers: {} };
+
+// ── SCORING ───────────────────────────────────────────────────────────────────
+function dScore(d) {
+  const raw = d.qs.reduce((s, q) => {
+    const v = STATE.answers[q.id] ?? q.min;
+    return s + (q.inv ? (q.max - v) : v);
+  }, 0);
+  return +(raw * 0.6).toFixed(2);
+}
+function total() {
+  return +DOMAINS.reduce((s, d) => s + dScore(d), 0).toFixed(2);
+}
+function level(t) {
+  return LEVELS.find(l => t >= l.min && t <= l.max) || LEVELS[2];
+}
+
+// ── UTILITIES ─────────────────────────────────────────────────────────────────
+function slBg(el) {
+  const mn = +el.min||0, mx = +el.max||5, v = +el.value;
+  const p = ((v - mn) / (mx - mn)) * 100;
+  el.style.background =
+    `linear-gradient(to right,#eb6fa8 0%,${getComputedStyle(document.documentElement).getPropertyValue('--acc').trim()} ${p}%,#fce4ec ${p}%,#fce4ec 100%)`;
+}
+function findQ(id) {
+  for (const d of DOMAINS) { const q = d.qs.find(q => q.id===id); if(q) return q; }
+  return null;
+}
+function barCol(pct) {
+  if (pct >= 75) return '#0d9488';
+  if (pct >= 45) return '#d97706';
+  return '#dc2626';
+}
+function spawn(x, y) {
+  const pool = ['❤️','💕','🌸','✨','🩷','🌺','🌷'];
+  const el = document.createElement('div');
+  el.className = 'fe';
+  el.textContent = pool[Math.floor(Math.random() * pool.length)];
+  el.style.left = (x - 14) + 'px';
+  el.style.top  = (y - 14) + 'px';
+  document.body.appendChild(el);
+  el.addEventListener('animationend', () => el.remove());
+}
+
+// ── RENDER: INTRO ─────────────────────────────────────────────────────────────
+function rIntro() {
+  return `<div class="page active" id="p0">
+  <div class="scroll">
+    <div class="hero-strip">
+      <img src="origin.jpeg" alt="แบบประเมิน FSFI ต้นฉบับ">
+      <div class="hero-strip-veil"></div>
+      <div class="hero-badge">ฉบับประชาชน &nbsp;·&nbsp; 12 ข้อ &nbsp;·&nbsp; ใช้เวลา 1–2 นาที</div>
+    </div>
+    <div class="intro-h">
+      <h1>แบบประเมินการทำงาน<br>ทางเพศของผู้หญิง</h1>
+      <p>Female Sexual Function Index (FSFI)</p>
+    </div>
+    <p class="intro-lead">
+      FSFI เป็นแบบประเมินมาตรฐานระดับสากล สำหรับประเมินสุขภาพทางเพศของผู้หญิง
+      ในช่วง <strong>4 สัปดาห์ที่ผ่านมา</strong> ครอบคลุม 6 ด้านสำคัญ ได้แก่
+    </p>
+    <div class="d-list">
+      ${DOMAINS.map((d,i) => `
+      <div class="d-item">
+        <span class="di-ico">${d.icon}</span>
+        <div class="di-txt">
+          <div class="di-name">${d.name}</div>
+          <div class="di-en">${d.en}</div>
+        </div>
+        <span class="di-tag">ด้านที่ ${i+1}</span>
+      </div>`).join('')}
+    </div>
+    <div class="icard">
+      📋 แบบประเมินนี้มี <strong>12 ข้อ</strong> คัดสรรจากคำถามสำคัญของแต่ละด้าน
+      ไม่ต้องลงทะเบียน ไม่ต้องระบุชื่อ และ <strong>ไม่มีการส่งข้อมูลออกนอกเครื่องของท่าน</strong>
+    </div>
+    <div class="icard">
+      ⚠️ แบบประเมินนี้ <strong>ไม่ใช่การวินิจฉัยโรค</strong>
+      หากมีข้อกังวลเกี่ยวกับสุขภาพทางเพศ ควรปรึกษาแพทย์ด้านเวชศาสตร์ทางเพศ
+    </div>
+    <div class="sp"></div>
+  </div>
+  <div class="foot">
+    <button class="btn btn-p" onclick="goTo(1,1)">เริ่มทำแบบประเมิน →</button>
+  </div>
+</div>`;
+}
+
+// ── RENDER: QUESTION (one per page, idx 1–12) ────────────────────────────────
+function rQ(idx) {
+  const item = QUESTIONS[idx - 1];
+  const d = item.domain;
+  const pct = ((idx - 1) / 12) * 100;
+  const v = STATE.answers[item.id] ?? item.min;
+  const painCls = item.inv ? (v >= 4 ? ' pa' : v >= 2 ? ' pw' : '') : '';
+  const steps = [];
+  for (let i = item.min; i <= item.max; i++) steps.push(i);
+
+  return `<div class="page" id="p${idx}">
+  <div class="prog">
+    <div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div>
+    <div class="prog-meta">
+      <span>ข้อที่ ${idx} จาก 12</span>
+      <span>${d.icon} ${d.name}</span>
+    </div>
+  </div>
+  <div class="scroll">
+    <div class="d-head">
+      <span class="d-ico-big">${d.icon}</span>
+      <div class="d-title">${d.name}</div>
+      <div class="d-en">${d.en}</div>
+    </div>
+    <div class="q-card">
+      <div class="q-tag">คำถามที่ ${item.num} / 12</div>
+      <div class="q-text">${item.text}</div>
+      <div class="sl-wrap">
+        <div class="csl" id="csl${item.id}" data-qid="${item.id}" data-min="${item.min}" data-max="${item.max}">
+          <div class="csl-fill" id="cslf${item.id}" style="width:0"></div>
+          ${steps.map(s => `<div class="csl-dot${s===v?' active':''}" data-val="${s}" onclick="tapSl(${item.id},${s})">${s}</div>`).join('')}
+        </div>
+        <div class="csl-labs" id="csll${item.id}">
+          ${steps.map(s => `<span class="${s===v?'active':''}">${item.labs[s]||''}</span>`).join('')}
+        </div>
+        <div class="val-badge">
+          <div class="val-chip${painCls}" id="chip${item.id}">
+            <span class="vn" id="vn${item.id}">${v}</span>
+            <span class="vs">·</span>
+            <span class="vl" id="vl${item.id}">${item.labs[v]||''}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sp"></div>
+  </div>
+  <div class="foot">
+    <div class="btn-row">
+      <button class="btn btn-g" onclick="goTo(${idx-1},-1)">← ก่อนหน้า</button>
+      <button class="btn btn-p" onclick="goTo(${idx===12?13:idx+1},1)">
+        ${idx===12 ? 'ดูผลการประเมิน 🌸' : 'ถัดไป →'}
+      </button>
+    </div>
+  </div>
+</div>`;
+}
+
+// ── RENDER: RESULTS ───────────────────────────────────────────────────────────
+function rResults() {
+  const t = total(), lv = level(t);
+  const R = 80, C = 90, circ = +(2*Math.PI*R).toFixed(2);
+  const rows = DOMAINS.map(d => ({ ...d, sc: dScore(d), pct: (dScore(d)/6)*100 }));
+
+  return `<div class="page" id="pR">
+  <div class="scroll">
+    <div class="res-top">
+      <span class="res-e">${lv.emoji}</span>
+      <div class="res-t">ผลการประเมินของท่าน</div>
+    </div>
+    <div class="gauge-wrap">
+      <div class="gauge">
+        <svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="${C}" cy="${C}" r="${R}" fill="none" stroke="#fce4ec" stroke-width="14"/>
+          <circle cx="${C}" cy="${C}" r="${R}" fill="none"
+            stroke="${lv.col}" stroke-width="14"
+            stroke-dasharray="${circ}" stroke-dashoffset="${circ}"
+            stroke-linecap="round"
+            transform="rotate(-90 ${C} ${C})"
+            id="garc"/>
+        </svg>
+        <div class="gauge-c">
+          <div class="gauge-n" id="gnum" style="color:${lv.col}">0</div>
+          <div class="gauge-d">จาก 36 คะแนน</div>
+        </div>
+      </div>
+    </div>
+    <div class="interp ${lv.cls}">
+      <span class="ie">${lv.emoji}</span>
+      <div>
+        <div class="il" style="color:${lv.col}">${lv.label}</div>
+        <div class="ir">คะแนนรวม ${t.toFixed(2)} คะแนน</div>
+        <div class="id">${lv.desc}</div>
+      </div>
+    </div>
+    <div class="bars-title">คะแนนรายด้าน (เต็ม 6.00 คะแนน)</div>
+    ${rows.map(d => {
+      const c = barCol(d.pct);
+      return `<div class="bar-row">
+        <span class="br-ico">${d.icon}</span>
+        <span class="br-name">${d.name}</span>
+        <div class="br-track-w"><div class="br-track">
+          <div class="br-fill" id="bf${d.id}" style="width:0%;background:${c}"></div>
+        </div></div>
+        <span class="br-score" style="color:${c}">${d.sc.toFixed(2)}</span>
+      </div>`;
+    }).join('')}
+    <div class="mt disc">
+      💡 แบบประเมินนี้เป็นเพียงเครื่องมือคัดกรองเบื้องต้น ไม่ใช่การวินิจฉัยโรค
+      หากท่านมีข้อกังวลเกี่ยวกับสุขภาพทางเพศ ควรปรึกษาแพทย์หรือผู้เชี่ยวชาญ<br><br>
+      🌸 สุขภาพทางเพศที่ดี หมายถึงการมีความสุข ความพึงพอใจ และคุณภาพชีวิตที่ดีในแบบของแต่ละคน
+    </div>
+    <div class="sp"></div>
+  </div>
+  <div class="foot">
+    <button class="btn btn-p" onclick="reset()">🔄 ประเมินใหม่อีกครั้ง</button>
+  </div>
+</div>`;
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function goTo(next, dir) {
+  const app = document.getElementById('app');
+  const curr = app.querySelector('.page.active');
+  const tmp = document.createElement('div');
+  tmp.innerHTML = next===0 ? rIntro() : (next<=12 ? rQ(next) : rResults());
+  const np = tmp.firstElementChild;
+  // start hidden, append behind current
+  app.appendChild(np);
+
+  // fade out current, fade in next
+  curr.classList.add('fade-out');
+  curr.classList.remove('active');
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      np.classList.add('active');
+      attachSliderDrag();
+      if (next===13) setTimeout(animRes, 220);
+      setTimeout(() => curr.remove(), 220);
+    });
+  });
+  STATE.page = next;
+}
+
+// ── SLIDER HANDLER ────────────────────────────────────────────────────────────
+
+// Tap on a bubble
+function tapSl(qId, val) {
+  updateSl(qId, val);
+  // spawn emoji near the tapped dot
+  const dots = document.querySelectorAll(`#csl${qId} .csl-dot`);
+  const q = findQ(qId);
+  const stepIdx = val - q.min;
+  if (dots[stepIdx] && Math.random() < 0.35) {
+    const r = dots[stepIdx].getBoundingClientRect();
+    spawn(r.left + r.width / 2, r.top + r.height / 2);
+  }
+}
+
+// Update just the fill bar using real pixel positions
+function updateFill(qId) {
+  const q = findQ(qId);
+  if (!q) return;
+  const val = STATE.answers[qId] ?? q.min;
+  const track = document.getElementById('csl' + qId);
+  const fill  = document.getElementById('cslf' + qId);
+  if (!track || !fill) return;
+  const dots = track.querySelectorAll('.csl-dot');
+  if (!dots.length) return;
+  const first = dots[0].getBoundingClientRect();
+  const selected = dots[val - q.min];
+  if (!selected) return;
+  const sel = selected.getBoundingClientRect();
+  const trackRect = track.getBoundingClientRect();
+  const startX = first.left + first.width / 2 - trackRect.left;
+  const endX   = sel.left   + sel.width   / 2 - trackRect.left;
+  fill.style.left  = startX + 'px';
+  fill.style.width = Math.max(0, endX - startX) + 'px';
+}
+
+// Core update: set value, repaint bubbles, label row, fill, chip
+function updateSl(qId, val) {
+  const q = findQ(qId);
+  if (!q) return;
+  val = Math.max(q.min, Math.min(q.max, val));
+  STATE.answers[qId] = val;
+
+  // Update bubble states
+  const track = document.getElementById('csl' + qId);
+  if (track) {
+    track.querySelectorAll('.csl-dot').forEach(dot => {
+      const dv = +dot.dataset.val;
+      dot.classList.toggle('active', dv === val);
+    });
+    // Update fill bar
+      updateFill(qId);
+  }
+
+  // Update label row
+  const labRow = document.getElementById('csll' + qId);
+  if (labRow) {
+    labRow.querySelectorAll('span').forEach((sp, i) => {
+      sp.classList.toggle('active', (q.min + i) === val);
+    });
+  }
+
+  // Update chip badge
+  const vn = document.getElementById('vn' + qId);
+  const vl = document.getElementById('vl' + qId);
+  const chip = document.getElementById('chip' + qId);
+  if (vn) vn.textContent = val;
+  if (vl) vl.textContent = q.labs[val] || '';
+  if (chip && q.inv) {
+    chip.classList.toggle('pa', val >= 4);
+    chip.classList.toggle('pw', val >= 2 && val < 4);
+    if (val < 2) chip.classList.remove('pa','pw');
+  }
+}
+
+// Drag support: resolve pointer X → nearest step value
+function slValFromX(track, x, q) {
+  const dots = track.querySelectorAll('.csl-dot');
+  if (!dots.length) return q.min;
+  let best = q.min, bestDist = Infinity;
+  dots.forEach(dot => {
+    const r = dot.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const dist = Math.abs(x - cx);
+    if (dist < bestDist) { bestDist = dist; best = +dot.dataset.val; }
+  });
+  return best;
+}
+
+// Attach drag listeners once a page is rendered
+function attachSliderDrag() {
+  document.querySelectorAll('.csl').forEach(track => {
+    if (track._dragBound) return;
+    track._dragBound = true;
+    const qId = +track.dataset.qid;
+    const q   = findQ(qId);
+
+    // Paint initial fill once layout is ready
+    requestAnimationFrame(() => updateFill(qId));
+
+    let dragging = false;
+
+    function onStart(e) {
+      // Only start drag when touching the track/fill area (not a dot tap)
+      dragging = true;
+      const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      updateSl(qId, slValFromX(track, cx, q));
+    }
+    function onMove(e) {
+      if (!dragging) return;
+      e.preventDefault();
+      const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      updateSl(qId, slValFromX(track, cx, q));
+    }
+    function onEnd() { dragging = false; }
+
+    track.addEventListener('touchstart',  onStart, { passive: true });
+    track.addEventListener('touchmove',   onMove,  { passive: false });
+    track.addEventListener('touchend',    onEnd);
+    track.addEventListener('mousedown',   onStart);
+    window.addEventListener('mousemove',  onMove);
+    window.addEventListener('mouseup',    onEnd);
+  });
+}
+
+// ── ANIMATE RESULTS ───────────────────────────────────────────────────────────
+function animRes() {
+  const t = total(), lv = level(t);
+  const circ = 2 * Math.PI * 80;
+
+  const arc = document.getElementById('garc');
+  if (arc) {
+    arc.style.transition = 'stroke-dashoffset 1.45s cubic-bezier(.4,0,.2,1)';
+    arc.style.strokeDashoffset = String(circ * (1 - t / 36));
+  }
+
+  const numEl = document.getElementById('gnum');
+  if (numEl) {
+    const t0 = performance.now(), dur = 1450;
+    (function tick(now) {
+      const p = Math.min((now - t0) / dur, 1);
+      const e = 1 - Math.pow(1 - p, 3);
+      numEl.textContent = (e * t).toFixed(2);
+      if (p < 1) requestAnimationFrame(tick);
+      else numEl.textContent = t.toFixed(2);
+    })(performance.now());
+  }
+
+  DOMAINS.forEach((d, i) => {
+    const bar = document.getElementById('bf' + d.id);
+    if (bar) setTimeout(() => { bar.style.width = ((dScore(d)/6)*100) + '%'; }, 160 + i*95);
+  });
+
+  if (t >= 26.55) {
+    const w = Math.min(window.innerWidth, 430);
+    for (let i = 0; i < 10; i++) {
+      setTimeout(() => spawn(
+        Math.random() * w,
+        Math.random() * window.innerHeight * 0.55
+      ), i * 190);
+    }
+  }
+}
+
+// ── RESET ─────────────────────────────────────────────────────────────────────
+function reset() {
+  STATE.answers = {};
+  const app = document.getElementById('app');
+  const curr = app.querySelector('.page.active');
+  const tmp = document.createElement('div');
+  tmp.innerHTML = rIntro();
+  const np = tmp.firstElementChild;
+  app.appendChild(np);
+  curr.classList.add('fade-out');
+  curr.classList.remove('active');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      np.classList.add('active');
+      setTimeout(() => curr.remove(), 220);
+    });
+  });
+  STATE.page = 0;
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.getElementById('app').innerHTML = rIntro();
+</script>
+</body>
+</html>
