@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EVA HUD Wallpaper</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="stage">
+  <section id="panel">
+
+    <div class="screen">
+      <div class="grain"></div>
+      <div class="vignette"></div>
+      <div class="bottom-band"></div>
+    </div>
+
+    <div class="fold"></div>
+    <div class="fold-edge"></div>
+
+    <div class="tab"><div class="label-pm"><span>午</span><span>後</span></div></div>
+
+    <section id="readout">
+      <div class="corner-mark tl"></div>
+      <div class="corner-mark tr"></div>
+      <div class="corner-mark bl"></div>
+      <div class="corner-mark br"></div>
+      <div class="label-en">ACTIVE TIME DISPLAY:</div>
+
+      <div id="clock" aria-hidden="true">
+        <div class="digit-group" id="digit-hh"></div>
+        <span class="dot-sep"><span class="dot"></span><span class="dot"></span></span>
+        <div class="digit-group" id="digit-mm"></div>
+        <span class="dot-sep"><span class="dot"></span><span class="dot"></span></span>
+        <div class="digit-group" id="digit-ss"></div>
+        <span class="dot-sep dot-sep-single"><span class="dot"></span></span>
+        <div class="digit-group digit-group-small" id="digit-ms"></div>
+      </div>
+    </section>
+
+    <div class="label-box">現在時刻表示</div>
+
+    <div class="tag-panel">
+      <div class="corner-mark tl"></div>
+      <div class="corner-mark tr"></div>
+      <div class="corner-mark bl"></div>
+      <div class="corner-mark br"></div>
+
+      <div class="tag-box tag-plain">
+        <div class="corner-mark tl"></div>
+        <div class="corner-mark tr"></div>
+        <div class="corner-mark bl"></div>
+        <div class="corner-mark br"></div>
+        <span class="jp">主電源供給システム</span>
+        <span class="en">MAIN ENERGY SUPPLY SYSTEM</span>
+      </div>
+      <div class="tag-box tag-hazard">
+        <div class="corner-mark tl"></div>
+        <div class="corner-mark tr"></div>
+        <div class="corner-mark bl"></div>
+        <div class="corner-mark br"></div>
+        <div class="tag-hazard-text">
+          <span class="jp">外部</span>
+          <span class="en">EXTERNAL</span>
+        </div>
+        <div class="tag-hazard-stripe"></div>
+      </div>
+    </div>
+
+    <div class="mode-bar">
+      <div class="mode-cell">STOP</div>
+      <div class="mode-cell">SLOW</div>
+      <div class="mode-cell mode-cell-active">
+        NORMAL
+        <div class="mode-fill"></div>
+      </div>
+      <div class="mode-cell">RACING</div>
+    </div>
+
+    <div class="baseline"></div>
+    <div id="ticks-top"></div>
+    <div id="ticks-left"></div>
+
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
